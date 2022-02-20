@@ -10,34 +10,34 @@
     <el-menu default-active="1" :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
              :collapse="collapse" :collapse-transition="false" :unique-opened="false"
              @open="handleOpen" @close="handleClose" @select="handleSelect">
-      <el-submenu index="1">
+      <el-submenu index="blog">
         <template slot="title">
           <i class="el-icon-location"></i>
           <span>博客</span>
         </template>
         <el-menu-item-group title="分类管理">
-          <el-menu-item index="1-1">分类列表</el-menu-item>
+          <el-menu-item index="categories">分类列表</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group title="文章管理">
-          <el-menu-item index="1-2">文章列表</el-menu-item>
+          <el-menu-item index="posts">文章列表</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="2">
+      <el-submenu index="photography">
         <template slot="title">
           <i class="el-icon-location"></i>
           <span>摄影</span>
         </template>
         <el-menu-item-group title="照片管理">
-          <el-menu-item index="2-1">照片列表</el-menu-item>
+          <el-menu-item index="photos">照片列表</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-menu-item index="3">
         <i class="el-icon-menu"></i>
         <span slot="title">导航2</span>
       </el-menu-item>
-      <el-menu-item index="4">
+      <el-menu-item index="login">
         <i class="el-icon-setting"></i>
-        <span slot="title">导航3</span>
+        <span slot="title">登录</span>
       </el-menu-item>
     </el-menu>
   </div>
@@ -61,10 +61,16 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
-    handleSelect(a, b) {
-      // console.log('handleSelect', a, b)
-      console.log('handleSelect', 'a', a)
-      console.log('handleSelect', 'b', b)
+    handleSelect(menuStr, menuArr) {
+      console.log('handleSelect', menuArr)
+      switch (menuArr[0]) {
+        case 'login':
+          this.$router.push('/login')
+          break
+        default:
+          console.log('default...')
+          break
+      }
     }
   }
 }

@@ -8,6 +8,16 @@
         <el-menu-item index="1" @click="onCollapse"><hamburger :isActive="collapse"></hamburger></el-menu-item>
       </el-menu>
     </span>
+    <!-- 导航菜单 -->
+    <span class="navbar">
+      <el-menu :default-active="activeIndex" class="el-menu-demo"
+               :background-color="themeColor" text-color="#fff" active-text-color="#ffd04b" mode="horizontal"
+               @select="selectNavBar()">
+        <el-menu-item index="1" @click="$router.push('/')">主页</el-menu-item>
+        <el-menu-item index="2" @click="openWindow('https://gitee.com/liuge1988/kitty/wikis/Home')">菜单1</el-menu-item>
+        <el-menu-item index="3" @click="openWindow('https://www.cnblogs.com/xifengxiaoma/')">菜单2</el-menu-item>
+      </el-menu>
+    </span>
     <!-- 工具栏 -->
     <span class="toolbar">
       <el-menu class="el-menu-demo" :background-color="themeColor" text-color="#14889A"
@@ -77,6 +87,9 @@ export default {
     }
   },
   methods: {
+    openWindow(url) {
+      window.open(url)
+    },
     selectNavBar(key, keyPath) {
       console.log(key, keyPath)
     },

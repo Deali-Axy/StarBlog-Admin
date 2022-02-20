@@ -1,18 +1,24 @@
 <template>
-  <div class="header" style="background:#14889A"
+  <div class="header" :style="{'background':themeColor}"
        :class="collapse?'position-collapse-left':'position-left'">
     <!-- 导航收缩 -->
     <span class="hamburg">
-      <el-menu class="el-menu-demo" background-color="#14889A" text-color="#fff" active-text-color="#14889A"
-               mode="horizontal">
+      <el-menu class="el-menu-demo" :background-color="themeColor" text-color="#fff"
+               :active-text-color="themeColor" mode="horizontal">
         <el-menu-item index="1" @click="onCollapse"><hamburger :isActive="collapse"></hamburger></el-menu-item>
       </el-menu>
     </span>
     <!-- 工具栏 -->
     <span class="toolbar">
-      <el-menu class="el-menu-demo" background-color="#14889A" text-color="#14889A" active-text-color="#14889A"
-               mode="horizontal">
+      <el-menu class="el-menu-demo" :background-color="themeColor" text-color="#14889A"
+               :active-text-color="themeColor" mode="horizontal">
         <el-menu-item index="1">
+          <!-- 主题切换 -->
+          <theme-picker class="theme-picker" :default="themeColor"
+                        @onThemeChange="onThemeChange">
+          </theme-picker>
+        </el-menu-item>
+        <el-menu-item index="2">
           <!-- 用户信息 -->
           <span class="user-info"><img :src="user.avatar"/>{{ user.name }}</span>
         </el-menu-item>
@@ -23,12 +29,14 @@
 
 <script>
 import {mapState} from 'vuex'
-import Hamburger from "@/components/Hamburger"
+import Hamburger from "../components/Hamburger"
+import ThemePicker from "../components/ThemePicker";
 
 export default {
   name: "HeaderBar",
   components: {
-    Hamburger
+    Hamburger,
+    ThemePicker
   },
   data() {
     return {
@@ -49,6 +57,10 @@ export default {
     onCollapse: function () {
       this.$store.commit('onCollapse')
     },
+    // 切换主题
+    onThemeChange: function (themeColor) {
+      this.$store.commit('setThemeColor', themeColor)
+    },
   },
   mounted() {
     let user = sessionStorage.getItem("user")
@@ -59,6 +71,7 @@ export default {
   },
   computed: {
     ...mapState({
+      themeColor: state => state.app.themeColor,
       collapse: state => state.app.collapse
     })
   }

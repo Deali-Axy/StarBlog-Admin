@@ -1,7 +1,7 @@
 <template>
   <div class="menu-bar-container">
     <!-- logo -->
-    <div class="logo" style="background:#14889A" :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
+    <div class="logo" :style="{'background':themeColor}" :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
          @click="$router.push('/')">
       <img v-if="collapse" src="@/assets/codelab.jpg"/>
       <div>{{ collapse ? '' : appName }}</div>
@@ -16,6 +16,7 @@ export default {
   computed: {
     ...mapState({
       appName: state => state.app.appName,
+      themeColor: state=>state.app.themeColor,
       collapse: state => state.app.collapse,
     })
   },

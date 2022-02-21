@@ -86,6 +86,15 @@ export default {
     handleSelect(menuStr, menuArr) {
       console.log('handleSelect', menuArr)
       switch (menuArr[0]) {
+        case 'blog':
+          if (menuArr.length>1){
+            switch (menuArr[1]){
+              case 'posts':
+                this.$router.push('posts')
+                break
+            }
+          }
+          break
         case 'test':
           this.$router.push('test')
           break

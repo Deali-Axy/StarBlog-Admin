@@ -20,7 +20,8 @@ export default function $axios(options) {
           config.headers.token = token
         } else {
           // 重定向到登录页面
-          router.push('/login')
+          // todo 后面做了登录我再来开启跳转
+          // router.push('/login')
         }
         return config
       },

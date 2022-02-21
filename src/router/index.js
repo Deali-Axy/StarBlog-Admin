@@ -2,9 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from "@/views/Login";
 import Home from "@/views/Home";
-import Intro from "@/views/Intro/Intro"
-import Test from "@/views/Intro/Test";
 import NotFound from '@/views/404'
+import Intro from "@/views/Intro/Intro"
+import Test from "@/views/Intro/Test"
+import Posts from "@/views/Blog/Posts"
 
 Vue.use(Router)
 
@@ -29,6 +30,15 @@ export default new Router({
           path: 'test',
           name: 'test',
           component: Test,
+          meta: {
+            icon: 'fa fa-home fa-lg',
+            index: 1
+          }
+        },
+        {
+          path: 'posts',
+          name: 'posts',
+          component: Posts,
           meta: {
             icon: 'fa fa-home fa-lg',
             index: 1

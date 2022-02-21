@@ -1,11 +1,11 @@
 import axios from '../axios'
 
 // 获取博客列表
-export const getList = (categoryId, page, pageSize) => {
+export const getList = (categoryId = 0, page = 1, pageSize = 20) => {
   return axios({
     url: 'BlogPost',
     method: 'get',
-    data: {categoryId, page, pageSize}
+    params: {categoryId, page, pageSize}
   })
 }
 

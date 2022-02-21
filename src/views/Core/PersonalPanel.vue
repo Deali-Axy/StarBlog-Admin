@@ -7,10 +7,10 @@
       <div class="name-role">
         <span class="sender">{{ user.name }} - {{ user.role }}</span>
       </div>
-      <div class="registe-info">
-          <span class="registe-info">
-            <li class="fa fa-clock-o"></li>
-            {{ user.registeInfo }}
+      <div class="register-info">
+          <span class="register-info">
+            <i class="fa fa-clock-o"></i>
+            {{ user.registerInfo }}
           </span>
       </div>
     </div>
@@ -63,7 +63,7 @@ export default {
         name: "admin",
         avatar: "@/assets/user.png",
         role: "超级管理员",
-        registeInfo: "注册时间：2018-12-25 "
+        registerInfo: "注册时间：2021-12-25 "
       }
     }
   },

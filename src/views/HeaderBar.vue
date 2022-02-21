@@ -79,8 +79,9 @@ export default {
     return {
       user: {
         name: "CodeLab",
-        avatar: require("@/assets/star.jpg"),
-        role: "超级管理员",
+        avatar: require("@/assets/user.png"),
+        role: "超级管理员2",
+        registerInfo: "注册时间：2021-12-25 "
       },
       activeIndex: '1',
       langVisible: false

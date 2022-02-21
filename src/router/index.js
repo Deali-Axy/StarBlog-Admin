@@ -9,6 +9,7 @@ import NotFound from '@/views/404'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',

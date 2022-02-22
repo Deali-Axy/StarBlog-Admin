@@ -85,14 +85,21 @@ export default {
     },
     handleSelect(menuStr, menuArr) {
       console.log('handleSelect', menuArr)
-      switch (menuArr[0]) {
+      let menu1 = menuArr[0]
+      let menu2 = menuArr.length > 1 ? menuArr[1] : ''
+      switch (menu1) {
         case 'blog':
-          if (menuArr.length>1){
-            switch (menuArr[1]){
-              case 'posts':
-                this.$router.push('posts')
-                break
-            }
+          switch (menu2) {
+            case 'posts':
+              this.$router.push('posts')
+              break
+          }
+          break
+        case 'photography':
+          switch (menu2){
+            case 'photos':
+              this.$router.push('photos')
+              break
           }
           break
         case 'test':

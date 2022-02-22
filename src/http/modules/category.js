@@ -1,10 +1,17 @@
 import axios from "../axios"
 
-// 获取博客分类列表
-export const getList = () => {
+export const getAll = () => {
+  return axios({
+    url: 'Category/All',
+    method: 'get',
+  })
+}
+
+export const getList = (page = 1, pageSize = 10) => {
   return axios({
     url: 'Category',
-    method: 'get'
+    method: 'get',
+    params: {page, pageSize}
   })
 }
 

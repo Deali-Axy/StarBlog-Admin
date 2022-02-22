@@ -2,13 +2,13 @@
   <el-container>
     <el-header height="30px">
       <el-row type="flex" justify="space-between">
-        <el-row gutter="10">
-          <el-col span="12">
+        <el-row :gutter="10">
+          <el-col :span="12">
             <el-input
               placeholder="请输入关键字"
               prefix-icon="el-icon-search"></el-input>
           </el-col>
-          <el-col span="12">
+          <el-col :span="12">
             <!-- 分类筛选 -->
             <!-- 为el-select添加filterable属性即可启用搜索功能。默认情况下，Select 会找出所有label属性包含输入值的选项。 -->
             <el-select v-model="currentCategoryName" filterable placeholder="请选择分类" v-on:change="handleCategoryChange">
@@ -87,13 +87,6 @@
       </el-pagination>
     </el-footer>
   </el-container>
-  <!--  <div>-->
-  <!--    <el-row style="margin-bottom: 5px;">-->
-  <!--      <el-col :span="4">-->
-  <!--        -->
-  <!--      </el-col>-->
-  <!--    </el-row>-->
-  <!--  </div>-->
 </template>
 
 <script>
@@ -108,12 +101,6 @@ export default {
       categories: [],
       currentCategoryId: 0,
       currentCategoryName: ''
-    }
-  },
-  watch: {
-    currentCategoryId: function (val, oldVal) {
-      console.log(val, oldVal)
-      this.loadBlogPosts()
     }
   },
   mounted() {

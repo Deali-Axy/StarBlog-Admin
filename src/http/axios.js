@@ -17,11 +17,11 @@ export default function $axios(options) {
         let token = Cookies.get('token')
         // 发送请求时携带token
         if (token) {
-          config.headers.token = token
+          config.headers.Authorization = `Bearer ${token}`
         } else {
           // 重定向到登录页面
           // todo 后面做了登录我再来开启跳转
-          // router.push('/login')
+          router.push('/login')
         }
         return config
       },

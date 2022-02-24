@@ -5,7 +5,7 @@
     </span>
     <h2 class="title">系统登录</h2>
     <el-form-item prop="account">
-      <el-input type="text" v-model="loginForm.account" auto-complete="off" placeholder="账号"></el-input>
+      <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="账号"></el-input>
     </el-form-item>
     <el-form-item prop="password">
       <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
@@ -26,12 +26,11 @@ export default {
     return {
       loading: false,
       loginForm: {
-        account: 'admin',
+        username: 'admin',
         password: 'admin',
-        src: ''
       },
       fieldRules: {
-        account: [
+        username: [
           {required: true, message: '请输入账号', trigger: 'blur'}
         ],
         password: [
@@ -45,19 +44,20 @@ export default {
     login() {
       this.loading = true
       let userInfo = {
-        account: this.loginForm.account,
+        username: this.loginForm.username,
         password: this.loginForm.password,
       }
-      this.$api.login.login(userInfo).then((res) => {  // 调用登录接口
-        if (res.msg != null) {
-          this.$message({message: res.msg, type: 'error'})
+      this.$api.login.login(userInfo).then(res => {  // 调用登录接口
+        if (res.message != null) {
+          this.$message({message: res.message, type: 'info'})
         } else {
           Cookies.set('token', res.data.token) // 放置token到Cookie
-          sessionStorage.setItem('user', userInfo.account) // 保存用户到本地会话
+          sessionStorage.setItem('user', userInfo.username) // 保存用户到本地会话
           this.$router.push('/')  // 登录成功，跳转到主页
         }
         this.loading = false
-      }).catch((res) => {
+      })
+        .catch((res) => {
         this.$message({message: res.message, type: 'error'})
       })
     },

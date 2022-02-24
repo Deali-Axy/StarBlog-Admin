@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import Cookies from "js-cookie"
+
 export default {
   name: 'PersonalPanel',
   components: {},
@@ -75,18 +77,12 @@ export default {
     logout: function () {
       this.$confirm("确认退出吗?", "提示", {
         type: "warning"
+      }).then(() => {
+        Cookies.set('token', '')
+        sessionStorage.removeItem('user')
+        this.$router.push("/login")
+      }).catch(() => {
       })
-        .then(() => {
-          sessionStorage.removeItem("user")
-          this.$router.push("/login")
-          this.$api.login.logout()
-            .then(res => {
-            })
-            .catch(res => {
-            })
-        })
-        .catch(() => {
-        })
     }
   },
   mounted() {

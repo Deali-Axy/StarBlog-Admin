@@ -8,8 +8,9 @@
         <el-input v-model="form.location" autocomplete="off"></el-input>
       </el-form-item>
     </el-form>
-    <el-upload ref="upload" drag action="" :limit="1"
+    <el-upload ref="upload" drag action=""
                accept="image/jpeg,image/png"
+               :file-list="fileList"
                :on-change="onUploadChange"
                :auto-upload="false">
       <i class="el-icon-upload"></i>
@@ -26,14 +27,15 @@
 <script>
 export default {
   name: "AddPhotoDialog",
-  props:{
-    onAddPhotoSucceed:{
+  props: {
+    onAddPhotoSucceed: {
       type: Function
     }
   },
   data() {
     return {
       dialogFormVisible: false,
+      fileList: [],
       form: {
         title: '',
         location: '',
@@ -55,6 +57,11 @@ export default {
         this.$message.error('只能上传jpg/png图片!')
         return false
       }
+
+      if (fileList.length > 0) {
+        this.fileList = [fileList[fileList.length - 1]]
+      }
+
       this.form.file = file
     },
     show() {

@@ -14,8 +14,8 @@
                :background-color="themeColor" text-color="#fff" active-text-color="#ffd04b" mode="horizontal"
                @select="selectNavBar()">
         <el-menu-item index="1" @click="$router.push('/')">主页</el-menu-item>
-        <el-menu-item index="2" @click="openWindow('https://gitee.com/liuge1988/kitty/wikis/Home')">菜单1</el-menu-item>
-        <el-menu-item index="3" @click="openWindow('https://www.cnblogs.com/xifengxiaoma/')">菜单2</el-menu-item>
+        <el-menu-item index="2" @click="openWindow('https://github.com/Deali-Axy')">菜单1</el-menu-item>
+        <el-menu-item index="3" @click="openWindow('https://www.cnblogs.com/deali')">菜单2</el-menu-item>
       </el-menu>
     </span>
     <!-- 工具栏 -->

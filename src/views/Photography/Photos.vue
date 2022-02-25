@@ -66,6 +66,8 @@
 </template>
 
 <script>
+import {baseUrl} from "@/utils/global";
+
 export default {
   name: "Photos",
   data() {
@@ -97,7 +99,7 @@ export default {
         this.totalCount = res.pagination.totalItemCount
         this.photos = res.data.map(item => ({
           ...item,
-          url: `http://localhost:5038/media/photography/${item.id}.jpg`
+          url: `${baseUrl}/media/photography/${item.id}.jpg`
         }))
         console.log(this.photos)
       })

@@ -3,7 +3,7 @@
     <el-header height="30px">
       <el-row type="flex" justify="start">
         <div>
-          <el-button @click="dialogFormVisible = true">添加</el-button>
+          <el-button @click="$refs.addPhotoDiaglog.show()">添加</el-button>
           <el-button type="danger">批量删除</el-button>
         </div>
       </el-row>
@@ -29,25 +29,7 @@
           </el-card>
         </el-col>
       </el-row>
-      <el-dialog title="上传图片" :visible.sync="dialogFormVisible" width="30%">
-        <el-form ref="uploadForm" :model="form" :rules="formRules" label-width="80px">
-          <el-form-item label="图片名称" prop="title">
-            <el-input v-model="form.title" autocomplete="off"></el-input>
-          </el-form-item>
-        </el-form>
-        <el-upload ref="upload" drag action=""
-                   accept="image/jpeg,image/png"
-                   :on-change="onUploadChange"
-                   :auto-upload="false">
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submitUpload">确 定</el-button>
-        </div>
-      </el-dialog>
+      <add-photo-dialog ref="addPhotoDiaglog" @onAddPhotoSucceed="onAddPhotoSucceed"></add-photo-dialog>
     </el-main>
     <el-footer height="30px">
       <!-- 分页 -->
@@ -66,27 +48,20 @@
 </template>
 
 <script>
-import {baseUrl} from "@/utils/global";
+import {baseUrl} from "@/utils/global"
+import addPhotoDialog from "@/views/Photography/AddPhotoDialog"
 
 export default {
   name: "Photos",
+  components: {
+    addPhotoDialog
+  },
   data() {
     return {
       currentPage: 1,
       pageSize: 20,
       totalCount: 1000,
       photos: [],
-      dialogFormVisible: false,
-      form: {
-        title: '',
-        file: null
-      },
-      formRules: {
-        title: [
-          {required: true, message: '请输入图片标题', trigger: 'blur'},
-          {min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur'}
-        ],
-      }
     }
   },
   mounted() {
@@ -114,29 +89,8 @@ export default {
       this.currentPage = page
       this.loadPhotos()
     },
-    onUploadChange(file) {
-      const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png')
-      if (!isIMAGE) {
-        this.$message.error('只能上传jpg/png图片!')
-        return false
-      }
-      this.form.file = file
-    },
-    submitUpload() {
-      // this.$refs.upload.submit()
-      this.$refs.uploadForm.validate((valid) => {
-        if (!valid) return false;
-        console.log(this.form)
-
-        this.$api.photo.add(this.form.title, this.form.file.raw)
-          .then(res => {
-            console.log(res.data)
-            if (res.successful) {
-              this.dialogFormVisible = false
-              this.loadPhotos()
-            }
-          })
-      })
+    onAddPhotoSucceed() {
+      this.loadPhotos()
     }
   }
 }

@@ -6950,6 +6950,11 @@ vue-template-es2015-compiler@^1.6.0:
   resolved "https://registry.npmmirror.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
+vue-waterfall@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.npmmirror.com/vue-waterfall/-/vue-waterfall-1.0.6.tgz#00324a8f97f449bf6f8cdebb4974b60cffac9eed"
+  integrity sha512-jjOlFLj37SDoxoRQALZrXnEJ4JpQXwQbiz6upxdutpBaKbe/mA+SN+65S15fvm/WUZnVsPUc+vsXC+OXAlkSsw==
+
 vue@^2.5.2:
   version "2.6.14"
   resolved "https://registry.npmmirror.com/vue/-/vue-2.6.14.tgz"

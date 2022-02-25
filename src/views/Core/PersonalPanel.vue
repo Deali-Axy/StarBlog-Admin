@@ -79,7 +79,7 @@ export default {
         type: "warning"
       }).then(() => {
         Cookies.set('token', '')
-        sessionStorage.removeItem('user')
+        localStorage.removeItem('user')
         this.$router.push("/login")
       }).catch(() => {
       })

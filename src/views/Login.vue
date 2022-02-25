@@ -52,7 +52,7 @@ export default {
           this.$message({message: res.message, type: 'info'})
         } else {
           Cookies.set('token', res.data.token) // 放置token到Cookie
-          sessionStorage.setItem('user', userInfo.username) // 保存用户到本地会话
+          localStorage.setItem('user', userInfo.username) // 保存用户到本地会话
           this.$router.push('/')  // 登录成功，跳转到主页
         }
         this.loading = false

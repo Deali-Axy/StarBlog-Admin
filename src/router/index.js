@@ -73,7 +73,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   // 登录界面登录成功之后，会把用户信息保存在会话
   // 存在时间为会话生命周期，页面关闭即失效。
-  let userName = sessionStorage.getItem('user')
+  let userName = localStorage.getItem('user')
   if (to.path === '/login') {
     // 如果是访问登录界面，如果用户会话信息存在，代表已登录过，跳转到主页
     if (userName) next({path: '/'})

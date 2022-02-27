@@ -1,41 +1,5 @@
 <template>
-  <div class="page-container" style="width:99%;margin-top:15px;">
-    <el-carousel :interval="3000" type="card" height="550px" class="carousel">
-      <el-carousel-item class="carousel-item-intro">
-        <h2>项目介绍</h2>
-        <ul>
-          <li>基于 Spring Boot、Spring Cloud、Vue、Element 的 Java EE 快速开发平台</li>
-          <li>旨在提供一套简洁易用的解决方案，帮助用户有效降低项目开发难度和成本</li>
-          <li>博客提供项目开发过程同步系列教程文章，手把手的教你如何开发同类系统</li>
-        </ul>
-        <div><img src="@/assets/user.png" alt=""/></div>
-      </el-carousel-item>
-      <el-carousel-item class="carousel-item-func">
-        <h2>功能计划</h2>
-        <ul>
-          <li>核心框架：Spring Boot 2.x。 服务治理：Spring Cloud。</li>
-          <li>视图框架：Spring MVC 5.x。 持久层框架：MyBatis 3.x。</li>
-          <li>数据库连接池：Druid 1.x。 安全框架：Shiro 1.4.x。</li>
-          <li>前端框架：Vue.js 2.x。 页面组件：Element 2.x。</li>
-          <li>状态管理：Vuex.js 2.x。 后台交互：axios 0.18.x。</li>
-          <li>...</li>
-        </ul>
-        <div><img src="@/assets/codelab.jpg" alt=""></div>
-      </el-carousel-item>
-      <el-carousel-item class="carousel-item-env">
-        <h2>开发环境</h2>
-        <ul>
-          <li>核心框架：Spring Boot 2.x。 服务治理：Spring Cloud。</li>
-          <li>视图框架：Spring MVC 5.x。 持久层框架：MyBatis 3.x。</li>
-          <li>数据库连接池：Druid 1.x。 安全框架：Shiro 1.4.x。</li>
-          <li>前端框架：Vue.js 2.x。 页面组件：Element 2.x。</li>
-          <li>状态管理：Vuex.js 2.x。 后台交互：axios 0.18.x。</li>
-          <li>...</li>
-        </ul>
-        <div><img src="@/assets/star.jpg" alt=""></div>
-      </el-carousel-item>
-    </el-carousel>
-  </div>
+  <el-skeleton :rows="6"></el-skeleton>
 </template>
 
 <script>

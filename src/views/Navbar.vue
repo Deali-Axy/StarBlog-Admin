@@ -31,10 +31,6 @@
           <el-menu-item index="photos">照片列表</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-menu-item index="test">
-        <i class="el-icon-menu"></i>
-        <span slot="title">test</span>
-      </el-menu-item>
       <el-menu-item index="login">
         <i class="el-icon-setting"></i>
         <span slot="title">登录</span>
@@ -90,6 +86,9 @@ export default {
       switch (menu1) {
         case 'blog':
           switch (menu2) {
+            case 'categories':
+              this.$router.push('categories')
+              break
             case 'posts':
               this.$router.push('posts')
               break
@@ -101,9 +100,6 @@ export default {
               this.$router.push('photos')
               break
           }
-          break
-        case 'test':
-          this.$router.push('test')
           break
         case 'login':
           this.$router.push('/login')

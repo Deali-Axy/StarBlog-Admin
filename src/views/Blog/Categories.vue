@@ -1,10 +1,10 @@
 <template>
-  <el-alert type="info" title="hello"></el-alert>
+  <el-empty></el-empty>
 </template>
 
 <script>
 export default {
-  name: "Test"
+  name: "Categories"
 }
 </script>
 

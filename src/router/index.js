@@ -4,7 +4,7 @@ import Login from "@/views/Login";
 import Home from "@/views/Home";
 import NotFound from '@/views/404'
 import Intro from "@/views/Intro/Intro"
-import Test from "@/views/Intro/Test"
+import Categories from "@/views/Blog/Categories"
 import Posts from "@/views/Blog/Posts"
 import Photos from "@/views/Photography/Photos"
 
@@ -28,12 +28,21 @@ const router = new Router({
           }
         },
         {
+          path: 'categories',
+          name: '分类列表',
+          component: Categories,
+          meta: {
+            icon: 'fa fa-list fa-lg',
+            index: 1
+          }
+        },
+        {
           path: 'posts',
           name: '文章列表',
           component: Posts,
           meta: {
             icon: 'fa fa-list fa-lg',
-            index: 1
+            index: 2
           }
         },
         {
@@ -42,15 +51,6 @@ const router = new Router({
           component: Photos,
           meta: {
             icon: 'fa fa-picture-o fa-lg',
-            index: 1
-          }
-        },
-        {
-          path: 'test',
-          name: 'test',
-          component: Test,
-          meta: {
-            icon: 'fa fa-home fa-lg',
             index: 3
           }
         },

@@ -18,8 +18,8 @@
             placement="top"
             width="200"
             trigger="hover">
-            <p>图片名称：{{photo.title}}</p>
-            <p>拍摄地点：{{photo.location}}</p>
+            <p>图片名称：{{ photo.title }}</p>
+            <p>拍摄地点：{{ photo.location }}</p>
             <el-button-group>
               <el-button type="" icon="el-icon-edit"></el-button>
               <el-button type="" icon="el-icon-share"></el-button>

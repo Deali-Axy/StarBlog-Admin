@@ -52,7 +52,9 @@ export default function $axios(options) {
         return response.data
       },
       err => {
+        let reason = err
         if (err && err.response) {
+          // 包装一下默认的错误提示
           switch (err.response.status) {
             case 400:
               err.message = '请求错误'
@@ -89,9 +91,14 @@ export default function $axios(options) {
               break
             default:
           }
+          // 如果有返回错误信息的话就处理一下
+          if (err.response.data) {
+            reason = err.response.data
+            if (reason.message) err.message = reason.message
+          }
         }
         console.error(err)
-        return Promise.reject(err) // 返回接口返回的错误信息
+        return Promise.reject(reason) // 返回接口返回的错误信息
       }
     )
     // 请求处理

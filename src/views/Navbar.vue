@@ -7,7 +7,7 @@
       <div>{{ collapse ? '' : appName }}</div>
     </div>
     <!-- 导航菜单 -->
-    <el-menu ref="navmenu" default-active="1" :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
+    <el-menu ref="navMenu" default-active="photography" :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
              :collapse="collapse" :collapse-transition="false" :unique-opened="false"
              @open="handleOpen" @close="handleClose" @select="handleSelect">
       <el-submenu index="blog">
@@ -31,9 +31,9 @@
           <el-menu-item index="photos">照片列表</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-menu-item index="login">
+      <el-menu-item index="test">
         <i class="el-icon-setting"></i>
-        <span slot="title">登录</span>
+        <span slot="title">配置</span>
       </el-menu-item>
     </el-menu>
   </div>
@@ -101,9 +101,6 @@ export default {
               break
           }
           break
-        case 'login':
-          this.$router.push('/login')
-          break
         default:
           console.log('default...')
           break
@@ -123,9 +120,9 @@ export default {
       }
       this.mainTabsActiveName = tab.name
       // 切换标签页时同步更新高亮菜单
-      if (this.$refs.navmenu != null) {
-        this.$refs.navmenu.activeIndex = '' + route.meta.index
-        this.$refs.navmenu.initOpenedMenu()
+      if (this.$refs.navMenu != null) {
+        this.$refs.navMenu.activeIndex = '' + route.meta.index
+        this.$refs.navMenu.initOpenedMenu()
       }
     }
   }

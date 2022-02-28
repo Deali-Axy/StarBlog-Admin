@@ -1,5 +1,8 @@
 <template>
-  <el-skeleton :rows="6"></el-skeleton>
+  <div>
+    <el-empty></el-empty>
+    <el-skeleton></el-skeleton>
+  </div>
 </template>
 
 <script>

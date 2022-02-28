@@ -47,19 +47,22 @@ export default {
         username: this.loginForm.username,
         password: this.loginForm.password,
       }
-      this.$api.login.login(userInfo).then(res => {  // 调用登录接口
-        if (res.message != null) {
-          this.$message({message: res.message, type: 'info'})
-        } else {
-          Cookies.set('token', res.data.token) // 放置token到Cookie
-          localStorage.setItem('user', userInfo.username) // 保存用户到本地会话
-          this.$router.push('/')  // 登录成功，跳转到主页
-        }
-        this.loading = false
-      })
-        .catch((res) => {
-        this.$message({message: res.message, type: 'error'})
-      })
+      this.$api.auth.login(userInfo)
+        .then(res => {  // 调用登录接口
+          if (res.successful) {
+            Cookies.set('token', res.data.token) // 放置token到Cookie
+            localStorage.setItem('user', userInfo.username) // 保存用户到本地会话
+            this.$router.push('/')  // 登录成功，跳转到主页
+            this.$message({message: '登录成功', type: 'success'})
+          } else {
+            this.$message({message: `登录失败 ${res.message}`, type: 'error'})
+          }
+          this.loading = false
+        })
+        .catch(err => {
+          this.$message({message: `登录失败：${err.message}`, type: 'error'})
+          this.loading = false
+        })
     },
     reset() {
       this.$refs.loginForm.resetFields()

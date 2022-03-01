@@ -22,19 +22,26 @@
           </el-col>
         </el-row>
         <div>
-          <el-button>添加</el-button>
-          <el-button type="danger">删除</el-button>
+          <el-button @click="addPost">添加</el-button>
+          <el-button type="danger" :disabled="cancelSelectionBtnDisabled">删除</el-button>
+          <el-button @click="toggleSelection()" :disabled="cancelSelectionBtnDisabled">取消选择</el-button>
         </div>
       </el-row>
     </el-header>
     <el-main>
       <!-- 只要在el-table元素中定义了height属性，即可实现固定表头的表格，而不需要额外的代码。 -->
       <el-table
+        ref="table"
         :data="posts"
         height="730"
         stripe
         style="width: 100%"
+        @selection-change="handleSelectionChange"
         :default-sort="{prop: 'lastUpdateTime',order:'descending'}">
+        <el-table-column
+          type="selection"
+          width="30">
+        </el-table-column>
         <el-table-column
           prop="id"
           label="ID"
@@ -44,7 +51,8 @@
           prop="title"
           label="标题"
           sortable
-          width="680">
+          :show-overflow-tooltip="true"
+          width="600">
         </el-table-column>
         <el-table-column
           prop="creationTime"
@@ -65,10 +73,20 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width="100">
+          width="150">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+            <el-link type="info" @click="handleClick(scope.row)">查看</el-link>
+            <el-link type="danger">删除</el-link>
+            <el-dropdown>
+              <el-button type="text" size="small">
+                更多<i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>设置推荐</el-dropdown-item>
+                <el-dropdown-item>取消推荐</el-dropdown-item>
+                <el-dropdown-item>设置置顶</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -100,26 +118,34 @@ export default {
       posts: [],
       categories: [],
       currentCategoryId: 0,
-      currentCategoryName: ''
+      currentCategoryName: '',
+      multipleSelection: [],
+      cancelSelectionBtnDisabled: true
     }
   },
   mounted() {
     // 加载分类
-    this.$api.category.getAll().then(res => {
-      let categories = [{id: 0, name: '全部'}]
-      categories = categories.concat(res)
-      this.categories = categories
-    })
+    this.loadCategories()
     // 加载博客文章
     this.loadBlogPosts()
   },
   methods: {
+    loadCategories() {
+      this.$api.category.getAll().then(res => {
+        let categories = [{id: 0, name: '全部'}]
+        categories = categories.concat(res.data)
+        this.categories = categories
+      })
+    },
     loadBlogPosts() {
       this.$api.blog.getList(this.currentCategoryId, this.currentPage, this.pageSize).then(res => {
         console.log(res)
         this.totalCount = res.pagination.totalItemCount
         this.posts = res.data
       })
+    },
+    addPost() {
+      this.$message('还没实现')
     },
     handleClick(row) {
       console.log(row)
@@ -138,6 +164,20 @@ export default {
       console.log(page)
       this.currentPage = page
       this.loadBlogPosts()
+    },
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.table.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.table.clearSelection();
+      }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+      console.log(this.multipleSelection)
+      this.cancelSelectionBtnDisabled = this.multipleSelection.length === 0
     }
   }
 }

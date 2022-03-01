@@ -7,19 +7,24 @@
       <div>{{ collapse ? '' : appName }}</div>
     </div>
     <!-- 导航菜单 -->
-    <el-menu ref="navMenu" default-active="photography" :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
-             :collapse="collapse" :collapse-transition="false" :unique-opened="false"
-             @open="handleOpen" @close="handleClose" @select="handleSelect">
+    <el-menu ref="navMenu" :default-active="$route.path" :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
+             :collapse="collapse" :collapse-transition="false" :unique-opened="false" router>
+      <el-menu-item index="/">
+        <i class="el-icon-s-home"></i>
+        <span slot="title">主页</span>
+      </el-menu-item>
       <el-submenu index="blog">
         <template slot="title">
           <i class="el-icon-location"></i>
           <span>博客</span>
         </template>
         <el-menu-item-group title="分类管理">
-          <el-menu-item index="categories">分类列表</el-menu-item>
+          <el-menu-item index="/category/list">分类列表</el-menu-item>
+          <el-menu-item index="/category/featured">推荐分类</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group title="文章管理">
-          <el-menu-item index="posts">文章列表</el-menu-item>
+          <el-menu-item index="/post/list">文章列表</el-menu-item>
+          <el-menu-item index="/post/featured">推荐文章</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="photography">
@@ -28,7 +33,7 @@
           <span>摄影</span>
         </template>
         <el-menu-item-group title="照片管理">
-          <el-menu-item index="photos">照片列表</el-menu-item>
+          <el-menu-item index="/photo/list">照片列表</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-menu-item index="test">
@@ -73,39 +78,6 @@ export default {
     this.handleRoute(this.$route)
   },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleSelect(menuStr, menuArr) {
-      console.log('handleSelect', menuArr)
-      let menu1 = menuArr[0]
-      let menu2 = menuArr.length > 1 ? menuArr[1] : ''
-      switch (menu1) {
-        case 'blog':
-          switch (menu2) {
-            case 'categories':
-              this.$router.push('categories')
-              break
-            case 'posts':
-              this.$router.push('posts')
-              break
-          }
-          break
-        case 'photography':
-          switch (menu2){
-            case 'photos':
-              this.$router.push('photos')
-              break
-          }
-          break
-        default:
-          console.log('default...')
-          break
-      }
-    },
     // 路由操作处理
     handleRoute(route) {
       // tab标签页选中, 如果不存在则先添加

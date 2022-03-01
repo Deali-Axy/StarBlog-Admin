@@ -33,45 +33,13 @@ const router = new Router({
             index: 0
           }
         },
-        {
-          path: 'categories',
-          name: '分类列表',
-          component: Categories,
-          meta: {
-            icon: 'fa fa-list fa-lg',
-            index: 1
-          }
-        },
-        {
-          path: 'posts',
-          name: '文章列表',
-          component: Posts,
-          meta: {
-            icon: 'fa fa-list fa-lg',
-            index: 2
-          }
-        },
-        {
-          path: 'photos',
-          name: '图片列表',
-          component: Photos,
-          meta: {
-            icon: 'fa fa-picture-o fa-lg',
-            index: 3
-          }
-        },
+        {path: 'category/list', name: '分类列表', component: Categories},
+        {path: 'post/list', name: '文章列表', component: Posts},
+        {path: 'photo/list', name: '图片列表', component: Photos},
       ]
     },
-    {
-      path: '/Login',
-      name: 'Login',
-      component: Login
-    },
-    {
-      path: '/404',
-      name: 'NotFound',
-      component: NotFound
-    },
+    {path: '/Login', name: 'Login', component: Login},
+    {path: '/404', name: 'NotFound', component: NotFound},
   ]
 })
 

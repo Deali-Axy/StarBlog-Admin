@@ -1,5 +1,6 @@
 import axios from '../axios'
 
+// 获取列表
 export const getList = (page = 1, pageSize = 10) => {
   return axios({
     url: 'Photo',
@@ -8,6 +9,7 @@ export const getList = (page = 1, pageSize = 10) => {
   })
 }
 
+// 获取指定项目
 export const get = photoId => {
   return axios({
     url: `Photo/${photoId}/`,
@@ -27,5 +29,29 @@ export const add = (title, location, file) => {
     method: 'post',
     headers: {'Content-Type': 'multipart/form-data;charset=UTF-8'},
     data: formData
+  })
+}
+
+// 删除指定项目
+export const deleteItem = itemId => {
+  return axios({
+    url: `Photo/${itemId}/`,
+    method: 'delete'
+  })
+}
+
+// 设置推荐
+export const setFeatured = itemId => {
+  return axios({
+    url: `Photo/${itemId}/SetFeatured`,
+    method: 'post'
+  })
+}
+
+// 取消推荐
+export const cancelFeatured = itemId => {
+  return axios({
+    url: `Photo/${itemId}/CancelFeatured`,
+    method: 'post'
   })
 }

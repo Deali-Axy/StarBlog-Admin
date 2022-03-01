@@ -10,41 +10,41 @@ export const getList = (categoryId = 0, page = 1, pageSize = 20) => {
 }
 
 // 获取指定博客文章
-export const get = postId => {
+export const get = itemId => {
   return axios({
-    url: `BlogPost/${postId}/`,
+    url: `BlogPost/${itemId}/`,
     method: 'get',
   })
 }
 
 // 删除指定博客
-export const deletePost = postId => {
+export const deleteItem = itemId => {
   return axios({
-    url: `BlogPost/${postId}/`,
+    url: `BlogPost/${itemId}/`,
     method: 'delete'
   })
 }
 
 // 设置推荐博客
-export const setFeatured = postId => {
+export const setFeatured = itemId => {
   return axios({
-    url: `BlogPost/${postId}/SetFeatured`,
+    url: `BlogPost/${itemId}/SetFeatured`,
     method: 'post'
   })
 }
 
 // 取消推荐博客
-export const cancelFeatured = postId => {
+export const cancelFeatured = itemId => {
   return axios({
-    url: `BlogPost/${postId}/CancelFeatured`,
+    url: `BlogPost/${itemId}/CancelFeatured`,
     method: 'post'
   })
 }
 
 // 设置置顶
-export const setTop = postId => {
+export const setTop = itemId => {
   return axios({
-    url: `BlogPost/${postId}/SetTop`,
+    url: `BlogPost/${itemId}/SetTop`,
     method: 'post'
   })
 }

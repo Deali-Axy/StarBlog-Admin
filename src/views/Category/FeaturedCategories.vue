@@ -1,10 +1,10 @@
 <template>
-  <el-empty description="分类列表"></el-empty>
+  <el-empty description="推荐分类"></el-empty>
 </template>
 
 <script>
 export default {
-  name: "Categories"
+  name: "FeaturedCategories"
 }
 </script>
 

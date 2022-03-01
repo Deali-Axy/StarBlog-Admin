@@ -36,10 +36,6 @@
           <el-menu-item index="/photo/list">照片列表</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-menu-item index="test">
-        <i class="el-icon-setting"></i>
-        <span slot="title">配置</span>
-      </el-menu-item>
     </el-menu>
   </div>
 </template>

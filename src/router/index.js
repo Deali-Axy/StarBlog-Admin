@@ -5,7 +5,9 @@ import Framework from "@/views/Framework";
 import NotFound from '@/views/404'
 import Home from "@/views/Home"
 import Categories from "@/views/Category/Categories"
+import FeaturedCategories from "@/views/Category/FeaturedCategories";
 import Posts from "@/views/Blog/Posts"
+import FeaturedPosts from "@/views/Blog/FeaturedPosts";
 import Photos from "@/views/Photography/Photos"
 
 const originalPush = Router.prototype.push
@@ -33,7 +35,9 @@ const router = new Router({
           }
         },
         {path: 'category/list', name: '分类列表', component: Categories},
+        {path: 'category/featured', name: '推荐分类', component: FeaturedCategories},
         {path: 'post/list', name: '文章列表', component: Posts},
+        {path: 'post/featured', name: '推荐文章', component: FeaturedPosts},
         {path: 'photo/list', name: '图片列表', component: Photos},
       ]
     },

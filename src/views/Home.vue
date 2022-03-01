@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-empty></el-empty>
+    <el-empty description="系统主页"></el-empty>
     <el-skeleton></el-skeleton>
   </div>
 </template>

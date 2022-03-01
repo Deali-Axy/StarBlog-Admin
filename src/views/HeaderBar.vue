@@ -60,11 +60,11 @@
 
 <script>
 import {mapState} from 'vuex'
-import Hamburger from "../components/Hamburger"
-import ThemePicker from "../components/ThemePicker"
-import NoticePanel from "./Core/NoticePanel"
-import MessagePanel from "./Core/MessagePanel"
-import PersonalPanel from "./Core/PersonalPanel"
+import Hamburger from "@/components/Hamburger"
+import ThemePicker from "@/components/ThemePicker"
+import NoticePanel from "./Auth/NoticePanel"
+import MessagePanel from "./Auth/MessagePanel"
+import PersonalPanel from "./Auth/PersonalPanel"
 
 export default {
   name: "HeaderBar",

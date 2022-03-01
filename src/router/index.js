@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from "@/views/Login";
-import Home from "@/views/Home";
+import Framework from "@/views/Framework";
 import NotFound from '@/views/404'
-import Intro from "@/views/Intro/Intro"
-import Categories from "@/views/Blog/Categories"
+import Home from "@/views/Home"
+import Categories from "@/views/Category/Categories"
 import Posts from "@/views/Blog/Posts"
 import Photos from "@/views/Photography/Photos"
 
@@ -21,13 +21,12 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      component: Home,
+      component: Framework,
       children: [
         {
           path: '',
-          name: '系统介绍',
-          component: Intro,
+          name: '系统主页',
+          component: Home,
           meta: {
             icon: 'fa fa-home fa-lg',
             index: 0

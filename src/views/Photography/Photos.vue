@@ -14,41 +14,7 @@
         <waterfall-slot v-for="(photo,index) in photos"
                         :height="photo.height" :width="photo.width"
                         :order="index" :key="photo.id" move-class="item-move">
-          <el-popover
-            placement="top"
-            width="200"
-            trigger="hover">
-            <p>图片名称：{{ photo.title }}</p>
-            <p>拍摄地点：{{ photo.location }}</p>
-            <el-button-group>
-              <el-button type="" icon="el-icon-edit"></el-button>
-              <el-button type="" icon="el-icon-share"></el-button>
-              <el-button type="" icon="el-icon-delete"></el-button>
-            </el-button-group>
-            <el-card slot="reference" :body-style="{ padding: '0px' }" style="margin: 5px;">
-              <el-image :src="photo.url" class="image" :preview-src-list="[photo.url]"></el-image>
-            </el-card>
-          </el-popover>
-
-
-          <!--          <el-card class="item" :body-style="{ padding: '0px' }" style="margin: 5px;">-->
-          <!--            <el-image :src="photo.url" class="image" :preview-src-list="[photo.url]"></el-image>-->
-          <!--            <div style="padding: 14px;">-->
-          <!--              <div>{{ photo.title }}</div>-->
-          <!--              <div>-->
-          <!--                <time class="time">{{ photo.createTime }}</time>-->
-          <!--              </div>-->
-          <!--              <div class="bottom clearfix">-->
-          <!--                <el-button-group>-->
-          <!--                  <el-button type="" icon="el-icon-edit"></el-button>-->
-          <!--                  <el-button type="" icon="el-icon-share"></el-button>-->
-          <!--                  <el-button type="" icon="el-icon-delete"></el-button>-->
-          <!--                </el-button-group>-->
-          <!--              </div>-->
-          <!--            </div>-->
-          <!--          </el-card>-->
-
-
+          <photo-card :photo="photo"></photo-card>
         </waterfall-slot>
       </Waterfall>
       <add-photo-dialog ref="addPhotoDialog" @onAddPhotoSucceed="onAddPhotoSucceed"></add-photo-dialog>
@@ -74,13 +40,15 @@ import {baseUrl} from "@/utils/global"
 import addPhotoDialog from "@/views/Photography/AddPhotoDialog"
 import Waterfall from 'vue-waterfall/lib/waterfall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
+import PhotoCard from "@/components/PhotoCard";
 
 export default {
   name: "Photos",
   components: {
     addPhotoDialog,
     Waterfall,
-    WaterfallSlot
+    WaterfallSlot,
+    PhotoCard
   },
   data() {
     return {

@@ -138,7 +138,7 @@ export default {
       })
     },
     loadBlogPosts() {
-      this.$api.blog.getList(this.currentCategoryId, this.currentPage, this.pageSize).then(res => {
+      this.$api.blogPost.getList(this.currentCategoryId, this.currentPage, this.pageSize).then(res => {
         console.log(res)
         this.totalCount = res.pagination.totalItemCount
         this.posts = res.data

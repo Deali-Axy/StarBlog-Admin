@@ -2,7 +2,7 @@
   <el-popover
     placement="bottom"
     width="200"
-    trigger="custom"
+    trigger="manual"
     v-model="visible">
     <p>图片名称：{{ photo.title }}</p>
     <p>拍摄地点：{{ photo.location }}</p>

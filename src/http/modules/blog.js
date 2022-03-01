@@ -1,18 +1,17 @@
 import axios from '../axios'
 
-// 获取博客列表
-export const getList = (categoryId = 0, page = 1, pageSize = 20) => {
+// 获取置顶博客
+export const top = () => {
   return axios({
-    url: 'BlogPost',
-    method: 'get',
-    params: {categoryId, page, pageSize}
+    url: 'Blog/Top',
+    method: 'get'
   })
 }
 
-// 获取指定博客文章
-export const get = postId => {
+// 获取推荐博客
+export const featured = () => {
   return axios({
-    url: `BlogPost/${postId}/`,
-    method: 'get',
+    url: 'Blog/Featured',
+    method: 'get'
   })
 }

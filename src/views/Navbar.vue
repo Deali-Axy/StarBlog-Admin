@@ -34,6 +34,7 @@
         </template>
         <el-menu-item-group title="照片管理">
           <el-menu-item index="/photo/list">照片列表</el-menu-item>
+          <el-menu-item index="/photo/featured">推荐图片</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>

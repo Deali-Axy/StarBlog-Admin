@@ -5,10 +5,11 @@ import Framework from "@/views/Framework";
 import NotFound from '@/views/404'
 import Home from "@/views/Home"
 import Categories from "@/views/Category/Categories"
-import FeaturedCategories from "@/views/Category/FeaturedCategories";
+import FeaturedCategories from "@/views/Category/FeaturedCategories"
 import Posts from "@/views/Blog/Posts"
-import FeaturedPosts from "@/views/Blog/FeaturedPosts";
+import FeaturedPosts from "@/views/Blog/FeaturedPosts"
 import Photos from "@/views/Photography/Photos"
+import FeaturedPhotos from "@/views/Photography/FeaturedPhotos"
 
 const originalPush = Router.prototype.push
 
@@ -39,6 +40,7 @@ const router = new Router({
         {path: 'post/list', name: '文章列表', component: Posts},
         {path: 'post/featured', name: '推荐文章', component: FeaturedPosts},
         {path: 'photo/list', name: '图片列表', component: Photos},
+        {path: 'photo/featured', name: '推荐图片', component: FeaturedPhotos},
       ]
     },
     {path: '/Login', name: 'Login', component: Login},

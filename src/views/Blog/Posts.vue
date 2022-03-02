@@ -23,8 +23,8 @@
         </el-row>
         <div>
           <el-button @click="addPost">添加</el-button>
-          <el-button type="danger" :disabled="cancelSelectionBtnDisabled">删除</el-button>
-          <el-button @click="toggleSelection()" :disabled="cancelSelectionBtnDisabled">取消选择</el-button>
+          <el-button type="danger" :disabled="!hasSelection">删除</el-button>
+          <el-button @click="toggleSelection()" :disabled="!hasSelection">取消选择</el-button>
         </div>
       </el-row>
     </el-header>
@@ -75,16 +75,16 @@
           label="操作"
           width="150">
           <template slot-scope="scope">
-            <el-link type="info" @click="handleClick(scope.row)">查看</el-link>
-            <el-link type="danger">删除</el-link>
-            <el-dropdown>
+            <el-link type="info" @click="onItemViewClick(scope.row)">查看</el-link>
+            <el-link type="danger" @click="onItemDeleteClick(scope.row)">删除</el-link>
+            <el-dropdown @command="cmd=>onItemDropdownClick(scope.row,cmd)">
               <el-button type="text" size="small">
                 更多<i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>设置推荐</el-dropdown-item>
-                <el-dropdown-item>取消推荐</el-dropdown-item>
-                <el-dropdown-item>设置置顶</el-dropdown-item>
+                <el-dropdown-item command="setFeatured">设置推荐</el-dropdown-item>
+                <el-dropdown-item command="cancelFeatured">取消推荐</el-dropdown-item>
+                <el-dropdown-item command="setTop">设置置顶</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -119,8 +119,8 @@ export default {
       categories: [],
       currentCategoryId: 0,
       currentCategoryName: '',
-      multipleSelection: [],
-      cancelSelectionBtnDisabled: true
+      selectedPosts: [],
+      hasSelection: false
     }
   },
   mounted() {
@@ -147,8 +147,33 @@ export default {
     addPost() {
       this.$message('还没实现')
     },
-    handleClick(row) {
-      console.log(row)
+    // 查看按钮
+    onItemViewClick(post) {
+      console.log(post)
+    },
+    // 删除按钮
+    onItemDeleteClick(post) {
+      console.log(post)
+    },
+    // 下拉菜单点击
+    onItemDropdownClick(post, command) {
+      switch (command) {
+        case 'setFeatured':
+          this.$api.blogPost.setFeatured(post.id)
+            .then(res => this.$message.success('设置推荐成功'))
+            .catch(res => this.$message.error(`操作失败。${res.message}`))
+          break
+        case 'cancelFeatured':
+          this.$api.blogPost.cancelFeatured(post.id)
+            .then(res => this.$message.success('取消推荐成功'))
+            .catch(res => this.$message.error(`操作失败。${res.message}`))
+          break
+        case 'setTop':
+          this.$api.blogPost.setTop(123123)
+            .then(res => this.$message.success(`设置置顶成功。${res.message}`))
+            .catch(res => this.$message.error(`设置置顶失败。${res.message}`))
+          break
+      }
     },
     handleCategoryChange(categoryId) {
       console.log('categoryId', categoryId)
@@ -175,9 +200,8 @@ export default {
       }
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val
-      console.log(this.multipleSelection)
-      this.cancelSelectionBtnDisabled = this.multipleSelection.length === 0
+      this.selectedPosts = val
+      this.hasSelection = this.selectedPosts.length > 0
     }
   }
 }

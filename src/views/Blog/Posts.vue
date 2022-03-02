@@ -149,11 +149,22 @@ export default {
     },
     // 查看按钮
     onItemViewClick(post) {
-      console.log(post)
+      this.$alert(post.content, post.title, {
+        confirmButtonText: '确定'
+      })
     },
     // 删除按钮
     onItemDeleteClick(post) {
-      console.log(post)
+      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$api.blogPost.deleteItem(post.id)
+          .then(res => this.$message.success(`删除成功。${res.message}`))
+          .catch(res => this.$message.error(`操作失败。${res.message}`))
+        this.loadBlogPosts()
+      }).catch(() => this.$message('已取消删除'))
     },
     // 下拉菜单点击
     onItemDropdownClick(post, command) {
@@ -169,7 +180,7 @@ export default {
             .catch(res => this.$message.error(`操作失败。${res.message}`))
           break
         case 'setTop':
-          this.$api.blogPost.setTop(123123)
+          this.$api.blogPost.setTop(post.id)
             .then(res => this.$message.success(`设置置顶成功。${res.message}`))
             .catch(res => this.$message.error(`设置置顶失败。${res.message}`))
           break

@@ -50,9 +50,13 @@ export default {
       this.$api.auth.login(userInfo)
         .then(res => {  // 调用登录接口
           if (res.successful) {
-            Cookies.set('token', res.data.token) // 放置token到Cookie
-            localStorage.setItem('user', userInfo.username) // 保存用户到本地会话
-            this.$router.push('/')  // 登录成功，跳转到主页
+            // 保存token到Cookie
+            Cookies.set('token', res.data.token)
+            // 保存登录数据到本地会话
+            localStorage.setItem('user', userInfo.username)
+            localStorage.setItem('expiration', res.data.expiration)
+            // 登录成功，跳转到主页
+            this.$router.push('/')
             this.$message({message: '登录成功', type: 'success'})
           } else {
             this.$message({message: `登录失败 ${res.message}`, type: 'error'})

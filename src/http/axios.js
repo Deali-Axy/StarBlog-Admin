@@ -14,13 +14,24 @@ export default function $axios(options) {
     // request 请求拦截器
     instance.interceptors.request.use(
       config => {
+        let expiration = localStorage.getItem('expiration')
+        if (expiration) {
+          let now = new Date()
+          let expirationTime = new Date(expiration)
+          if (now > expirationTime) {
+            console.log('token已经过期，跳转重新登录')
+            localStorage.removeItem('user')
+            localStorage.removeItem('expiration')
+            Cookies.set('token', null)
+            router.push('/login')
+          }
+        }
         let token = Cookies.get('token')
         // 发送请求时携带token
         if (token) {
           config.headers.Authorization = `Bearer ${token}`
         } else {
           // 重定向到登录页面
-          // todo 后面做了登录我再来开启跳转
           router.push('/login')
         }
         return config

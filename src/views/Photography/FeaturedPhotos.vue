@@ -54,19 +54,14 @@ export default {
       this.$message('还没实现哦~')
     },
     deleteItem(featuredPhoto) {
-      this.$confirm('此操作将删除这个推荐图片, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$api.featuredPhoto.deleteItem(featuredPhoto.id)
-          .then(res => {
-            this.$message.success(`删除成功。${res.message}`)
-            // 删除完成，重新加载数据
-            this.loadData()
-          })
-          .catch(res => this.$message.error(`操作失败。${res.message}`))
-      }).catch(() => this.$message('已取消删除'))
+      this.$confirm('此操作将删除这个推荐图片, 是否继续?', '提示', {type: 'warning'})
+        .then(() => {
+          this.$api.featuredPhoto.deleteItem(featuredPhoto.id)
+            .then(res => this.$message.success(`删除成功。${res.message}`))
+            .catch(res => this.$message.error(`操作失败。${res.message}`))
+            .finally(() => this.loadData())
+        })
+        .catch(() => this.$message('已取消删除'))
     }
   }
 }

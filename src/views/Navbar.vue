@@ -25,6 +25,7 @@
         <el-menu-item-group title="文章管理">
           <el-menu-item index="/post/list">文章列表</el-menu-item>
           <el-menu-item index="/post/featured">推荐文章</el-menu-item>
+          <el-menu-item index="/post/top">置顶文章</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="photography">

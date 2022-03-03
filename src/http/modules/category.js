@@ -32,10 +32,11 @@ export const wordCloud = () => {
 }
 
 // 设置推荐分类
-export const setFeatured = itemId => {
+export const setFeatured = (itemId, data) => {
   return axios({
     url: `Category/${itemId}/SetFeatured`,
-    method: 'post'
+    method: 'post',
+    data
   })
 }
 

@@ -1,37 +1,26 @@
 <template>
-  <el-container>
-    <el-header height="30px">
-      <el-row type="flex" justify="start">
-        <div>
-          <el-button @click="">添加</el-button>
+  <el-row v-if="featuredPhotos.length>0" :gutter="10">
+    <el-col :span="4" v-for="fp in featuredPhotos" :key="fp.id">
+      <el-card :body-style="{ padding: '0px' }">
+        <el-image :src="fp.photo.url" class="image" alt="" :preview-src-list="[fp.photo.url]"></el-image>
+        <div style="padding: 14px;">
+          <div>图片标题：{{ fp.photo.title }}</div>
+          <div>拍摄地点：{{ fp.photo.location }}</div>
+          <div style="margin-top: 3px;">
+            <time class="time">{{ fp.photo.dateTimeStr }}</time>
+          </div>
+          <div class="bottom clearfix" style="margin-top: 3px;">
+            <el-button-group>
+              <el-button type="info" icon="el-icon-warning-outline" plain @click="notImpl"></el-button>
+              <el-button type="primary" icon="el-icon-edit" plain @click="notImpl"></el-button>
+              <el-button type="danger" icon="el-icon-delete" plain @click="deleteItem(fp)"></el-button>
+            </el-button-group>
+          </div>
         </div>
-      </el-row>
-    </el-header>
-    <el-main>
-      <el-row v-if="featuredPhotos.length>0" :gutter="10">
-        <el-col :span="4" v-for="fp in featuredPhotos" :key="fp.id">
-          <el-card :body-style="{ padding: '0px' }">
-            <el-image :src="fp.photo.url" class="image" alt="" :preview-src-list="[fp.photo.url]"></el-image>
-            <div style="padding: 14px;">
-              <div>图片标题：{{ fp.photo.title }}</div>
-              <div>拍摄地点：{{ fp.photo.location }}</div>
-              <div style="margin-top: 3px;">
-                <time class="time">{{ fp.photo.dateTimeStr }}</time>
-              </div>
-              <div class="bottom clearfix" style="margin-top: 3px;">
-                <el-button-group>
-                  <el-button type="info" icon="el-icon-warning-outline" plain @click="notImpl"></el-button>
-                  <el-button type="primary" icon="el-icon-edit" plain @click="notImpl"></el-button>
-                  <el-button type="danger" icon="el-icon-delete" plain @click="deleteItem(fp)"></el-button>
-                </el-button-group>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-      <el-empty v-else description="推荐图片"></el-empty>
-    </el-main>
-  </el-container>
+      </el-card>
+    </el-col>
+  </el-row>
+  <el-empty v-else description="推荐图片"></el-empty>
 </template>
 
 <script>

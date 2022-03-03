@@ -73,19 +73,19 @@ export default {
   methods: {
     loadData() {
       this.$api.category.getAll()
-        .then(res => {
-          this.data = res.data
-        })
+        .then(res => this.data = res.data)
     },
     setFeatured(index, item) {
-      console.log(this.$refs)
-      // console.log()
       this.$refs[`setFeaturedDialog_${index}`].show()
     },
     cancelFeatured(index, item) {
-      this.$api.category.cancelFeatured(item.id)
-        .then(res => this.$message.success(`操作成功。${res.message}`))
-        .catch(res => this.$message.error(`操作失败。${res.message}`))
+      this.$confirm('你确定吗?', 'Are you sure?', {type: 'warning'})
+        .then(() => {
+          this.$api.category.cancelFeatured(item.id)
+            .then(res => this.$message.success(`操作成功。${res.message}`))
+            .catch(res => this.$message.error(`操作失败。${res.message}`))
+        })
+        .catch(() => this.$message('操作取消'))
     },
   }
 }

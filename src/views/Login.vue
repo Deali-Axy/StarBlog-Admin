@@ -1,18 +1,16 @@
 <template>
   <el-form :model="loginForm" :rules="fieldRules" ref="loginForm" label-position="left" label-width="0px"
            class="demo-ruleForm login-container">
-    <span class="tool-bar">
-    </span>
     <h2 class="title">系统登录</h2>
     <el-form-item prop="account">
-      <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="账号"></el-input>
+      <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="用户名"></el-input>
     </el-form-item>
     <el-form-item prop="password">
       <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
     <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:48%;" @click.native.prevent="reset">重 置</el-button>
-      <el-button type="primary" style="width:48%;" @click.native.prevent="login" :loading="loading">登 录</el-button>
+      <el-button type="primary" style="width:48%;" @click="reset">重 置</el-button>
+      <el-button type="primary" style="width:48%;" @click="login" :loading="loading">登 录</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -26,47 +24,31 @@ export default {
     return {
       loading: false,
       loginForm: {
-        username: 'admin',
-        password: 'admin',
+        username: '',
+        password: '',
       },
       fieldRules: {
-        username: [
-          {required: true, message: '请输入账号', trigger: 'blur'}
-        ],
-        password: [
-          {required: true, message: '请输入密码', trigger: 'blur'}
-        ]
+        username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+        password: [{required: true, message: '请输入密码', trigger: 'blur'}]
       },
-      checked: true
     }
   },
   methods: {
     login() {
       this.loading = true
-      let userInfo = {
-        username: this.loginForm.username,
-        password: this.loginForm.password,
-      }
-      this.$api.auth.login(userInfo)
+      this.$api.auth.login(this.loginForm)
         .then(res => {  // 调用登录接口
-          if (res.successful) {
-            // 保存token到Cookie
-            Cookies.set('token', res.data.token)
-            // 保存登录数据到本地会话
-            localStorage.setItem('user', userInfo.username)
-            localStorage.setItem('expiration', res.data.expiration)
-            // 登录成功，跳转到主页
-            this.$router.push('/')
-            this.$message({message: '登录成功', type: 'success'})
-          } else {
-            this.$message({message: `登录失败 ${res.message}`, type: 'error'})
-          }
-          this.loading = false
+          // 保存token到Cookie
+          Cookies.set('token', res.data.token)
+          // 保存登录数据到本地会话
+          localStorage.setItem('user', this.loginForm.username)
+          localStorage.setItem('expiration', res.data.expiration)
+          // 登录成功，跳转到主页
+          this.$message.success('登录成功')
+          this.$router.push('/')
         })
-        .catch(err => {
-          this.$message({message: `登录失败：${err.message}`, type: 'error'})
-          this.loading = false
-        })
+        .catch(err => this.$message.error(`登录失败：${err.message}`))
+        .finally(() => this.loading = false)
     },
     reset() {
       this.$refs.loginForm.resetFields()

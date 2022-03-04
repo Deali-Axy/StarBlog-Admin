@@ -11,6 +11,7 @@ import TopPost from "@/views/Blog/TopPost"
 import FeaturedPosts from "@/views/Blog/FeaturedPosts"
 import Photos from "@/views/Photography/Photos"
 import FeaturedPhotos from "@/views/Photography/FeaturedPhotos"
+import Cookies from "js-cookie";
 
 const originalPush = Router.prototype.push
 
@@ -50,11 +51,24 @@ const router = new Router({
   ]
 })
 
-
+// 路由守卫
 router.beforeEach((to, from, next) => {
-  // 登录界面登录成功之后，会把用户信息保存在会话
-  // 存在时间为会话生命周期，页面关闭即失效。
   let userName = localStorage.getItem('user')
+  let expiration = localStorage.getItem('expiration')
+
+  // token过期判断
+  if (expiration) {
+    let now = new Date()
+    let expirationTime = new Date(expiration)
+    if (now > expirationTime) {
+      console.log('token已经过期，跳转重新登录')
+      localStorage.removeItem('user')
+      localStorage.removeItem('expiration')
+      Cookies.set('token', null)
+      router.push('/login')
+    }
+  }
+
   if (to.path === '/login') {
     // 如果是访问登录界面，如果用户会话信息存在，代表已登录过，跳转到主页
     if (userName) next({path: '/'})

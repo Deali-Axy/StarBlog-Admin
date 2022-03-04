@@ -14,18 +14,7 @@ export default function $axios(options) {
     // request 请求拦截器
     instance.interceptors.request.use(
       config => {
-        let expiration = localStorage.getItem('expiration')
-        if (expiration) {
-          let now = new Date()
-          let expirationTime = new Date(expiration)
-          if (now > expirationTime) {
-            console.log('token已经过期，跳转重新登录')
-            localStorage.removeItem('user')
-            localStorage.removeItem('expiration')
-            Cookies.set('token', null)
-            router.push('/login')
-          }
-        }
+
         let token = Cookies.get('token')
         // 发送请求时携带token
         if (token) {
@@ -71,10 +60,10 @@ export default function $axios(options) {
               err.message = '请求错误'
               break
             case 401:
-              err.message = '未授权，请登录'
+              err.message = '请先登录再访问'
               break
             case 403:
-              err.message = '拒绝访问'
+              err.message = '拒绝访问，没有访问权限'
               break
             case 404:
               err.message = `请求地址出错: ${err.response.config.url}`

@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^0.26.0",
     "element-ui": "^2.15.6",
+    "exceptionless": "^1.6.4",
     "font-awesome": "^4.7.0",
     "js-cookie": "^3.0.1",
     "vue": "^2.5.2",

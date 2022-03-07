@@ -47,3 +47,19 @@ export const cancelFeatured = itemId => {
     method: 'post'
   })
 }
+
+// 设置为可见
+export const setVisible = itemId => {
+  return axios({
+    url: `Category/${itemId}/SetVisible`,
+    method: 'post',
+  })
+}
+
+// 设置为不可见
+export const setInvisible = itemId => {
+  return axios({
+    url: `Category/${itemId}/SetInvisible`,
+    method: 'post',
+  })
+}

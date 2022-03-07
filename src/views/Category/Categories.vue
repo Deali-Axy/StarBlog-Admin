@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col :span="9">
+    <el-col :span="10">
       <el-table
         :data="tableData"
         :height="800"
@@ -29,15 +29,18 @@
               placeholder="输入关键字搜索"/>
           </template>
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="success" plain
-              @click="setFeatured(scope.$index, scope.row)">设置推荐
+            <el-button size="mini" type="success" plain @click="setFeatured(scope.$index, scope.row)">
+              设置推荐
             </el-button>
-            <el-button
-              size="mini"
-              type="warning" plain
-              @click="cancelFeatured(scope.$index, scope.row)">取消推荐
+            <el-button size="mini" type="warning" plain @click="cancelFeatured(scope.$index, scope.row)">
+              取消推荐
+            </el-button>
+            <el-button v-if="scope.row.visible===true" size="mini" type="primary" plain
+                       @click="setInvisible(scope.row)">
+              <i class="fa fa-eye-slash fa-lg" aria-hidden="true"></i>
+            </el-button>
+            <el-button v-if="scope.row.visible===false" size="mini" type="danger" plain @click="setVisible(scope.row)">
+              <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
             </el-button>
             <set-featured-dialog :ref="`setFeaturedDialog_${scope.$index}`" :category="scope.row"></set-featured-dialog>
           </template>
@@ -87,6 +90,18 @@ export default {
         })
         .catch(() => this.$message('操作取消'))
     },
+    setVisible(item) {
+      this.$api.category.setVisible(item.id)
+        .then(res => this.$message.success(`操作成功。${res.message}`))
+        .catch(res => this.$message.error(`操作失败。${res.message}`))
+        .finally(() => this.loadData())
+    },
+    setInvisible(item) {
+      this.$api.category.setInvisible(item.id)
+        .then(res => this.$message.success(`操作成功。${res.message}`))
+        .catch(res => this.$message.error(`操作失败。${res.message}`))
+        .finally(() => this.loadData())
+    }
   }
 }
 </script>

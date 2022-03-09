@@ -11,6 +11,8 @@ import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.min.css'
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
 Vue.config.productionTip = false
 
@@ -20,6 +22,8 @@ Vue.use(ElementUI)
 Vue.use(api)
 // Exceptionless模块
 Vue.use(Exceptionless)
+// mavon-editor
+Vue.use(mavonEditor)
 // 全局异步处理模块
 Vue.use(ErrorHandler)
 

@@ -9,6 +9,7 @@ import FeaturedCategories from "@/views/Category/FeaturedCategories"
 import Posts from "@/views/Blog/Posts"
 import TopPost from "@/views/Blog/TopPost"
 import FeaturedPosts from "@/views/Blog/FeaturedPosts"
+import EditPost from "@/views/Blog/EditPost";
 import Photos from "@/views/Photography/Photos"
 import FeaturedPhotos from "@/views/Photography/FeaturedPhotos"
 import Cookies from "js-cookie";
@@ -42,6 +43,7 @@ const router = new Router({
         {path: 'post/list', name: '文章列表', component: Posts},
         {path: 'post/featured', name: '推荐文章', component: FeaturedPosts},
         {path: 'post/top', name: '置顶文章', component: TopPost},
+        {path: 'post/edit/:id', name: '编辑文章', component: EditPost},
         {path: 'photo/list', name: '图片列表', component: Photos},
         {path: 'photo/featured', name: '推荐图片', component: FeaturedPhotos},
       ]

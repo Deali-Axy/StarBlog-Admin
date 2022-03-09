@@ -75,7 +75,7 @@
           label="操作"
           width="150">
           <template slot-scope="scope">
-            <el-link type="info" @click="onItemViewClick(scope.row)">查看</el-link>
+            <el-link type="info" @click="onItemViewClick(scope.row)">编辑</el-link>
             <el-link type="danger" @click="onItemDeleteClick(scope.row)">删除</el-link>
             <el-dropdown @command="cmd=>onItemDropdownClick(scope.row,cmd)">
               <el-button type="text" size="small">
@@ -149,9 +149,10 @@ export default {
     },
     // 查看按钮
     onItemViewClick(post) {
-      this.$alert(post.content, post.title, {
-        confirmButtonText: '确定'
-      })
+      // this.$alert(post.content, post.title, {
+      //   confirmButtonText: '确定'
+      // })
+      this.$router.push(`/post/edit/${post.id}`)
     },
     // 删除按钮
     onItemDeleteClick(post) {

@@ -2,7 +2,17 @@
   <el-container>
     <el-header height="30px">
       <el-row :gutter="6">
-        <el-col :span="23">
+        <el-col :span="3">
+          <el-select v-model="postCategoryName" filterable placeholder="请选择分类" v-on:change="categoryChange">
+            <el-option
+              v-for="item in categories"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="20">
           <el-input v-model="postTitle" placeholder="文章标题"></el-input>
         </el-col>
         <el-col :span="1">
@@ -27,28 +37,42 @@ export default {
   data() {
     return {
       postTitle: '',
+      postCategoryName: '',
+      postCategoryId: 0,
       postContent: '',
       post: null,
+      categories: [],
     }
   },
   mounted() {
-    let id = this.$route.params.id
-    if (id) {
-      this.$api.blogPost.get(id)
-        .then(res => {
-          this.post = res.data
-          this.postTitle = this.post.title
-          this.postContent = this.post.content
-        })
-        .catch(res => this.$message.error(`获取信息失败。${res.message}`))
-    } else
-      this.$message.error('文章ID未指定')
+    this.loadPost()
+    this.loadCategories()
   },
   methods: {
     fullscreenChange(isFullscreen) {
-      console.log('切换全屏', isFullscreen)
       this.$store.commit('onFullscreenChange')
-    }
+    },
+    categoryChange(categoryId) {
+      this.postCategoryId = categoryId
+    },
+    loadPost() {
+      let id = this.$route.params.id
+      if (id) {
+        this.$api.blogPost.get(id)
+          .then(res => {
+            this.post = res.data
+            this.postTitle = this.post.title
+            this.postContent = this.post.content
+            this.postCategoryId =this.post.categoryId
+            this.postCategoryName = this.post.category.name
+          })
+          .catch(res => this.$message.error(`获取信息失败。${res.message}`))
+      } else
+        this.$message.error('文章ID未指定')
+    },
+    loadCategories() {
+      this.$api.category.getAll().then(res => this.categories = res.data)
+    },
   }
 }
 </script>

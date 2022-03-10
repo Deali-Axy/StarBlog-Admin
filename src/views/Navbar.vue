@@ -1,14 +1,23 @@
 <template>
   <div class="menu-bar-container">
     <!-- logo -->
-    <div class="logo" :style="{'background':themeColor}" :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
+    <div class="logo"
+         :style="{'background':themeColor, 'display': fullscreen? 'none':''}"
+         :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
          @click="$router.push('/')">
       <img v-if="collapse" src="@/assets/codelab.jpg"/>
       <div>{{ collapse ? '' : appName }}</div>
     </div>
     <!-- 导航菜单 -->
-    <el-menu ref="navMenu" :default-active="$route.path" :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
-             :collapse="collapse" :collapse-transition="false" :unique-opened="false" router>
+    <el-menu ref="navMenu"
+             :style="{'display': fullscreen? 'none':''}"
+             :default-active="$route.path"
+             :class="collapse?'menu-bar-collapse-width':'menu-bar-width'"
+             :collapse="collapse"
+             :collapse-transition="false"
+             :unique-opened="false"
+             router
+    >
       <el-menu-item index="/">
         <i class="el-icon-s-home"></i>
         <span slot="title">主页</span>
@@ -51,6 +60,7 @@ export default {
       appName: state => state.app.appName,
       themeColor: state => state.app.themeColor,
       collapse: state => state.app.collapse,
+      fullscreen: state => state.app.fullscreen,
     }),
     mainTabs: {
       get() {

@@ -3,10 +3,15 @@
        :class="$store.state.app.collapse?'position-collapse-left':'position-left'">
     <!-- 标签页 -->
     <!-- 标签页 -->
-    <div class="tab-container">
-      <el-tabs class="tabs" :class="$store.state.app.collapse?'position-collapse-left':'position-left'"
-               v-model="mainTabsActiveName" :closable="true" type="card"
-               @tab-click="selectedTabHandle" @tab-remove="removeTabHandle">
+    <div class="tab-container" :style="{'display': fullscreen? 'none':''}">
+      <el-tabs
+        class="tabs"
+        :class="$store.state.app.collapse?'position-collapse-left':'position-left'"
+        v-model="mainTabsActiveName"
+        :closable="true" type="card"
+        @tab-click="selectedTabHandle"
+        @tab-remove="removeTabHandle"
+      >
         <el-dropdown class="tabs-tools" :show-timeout="0" trigger="hover">
           <div style="font-size:20px;width:50px;"><i class="el-icon-arrow-down"></i></div>
           <el-dropdown-menu slot="dropdown">
@@ -34,6 +39,8 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+
 export default {
   name: "MainContent",
   computed: {
@@ -52,7 +59,12 @@ export default {
       set(val) {
         this.$store.commit('updateMainTabsActiveName', val)
       }
-    }
+    },
+    ...mapState({
+      themeColor: state => state.app.themeColor,
+      collapse: state => state.app.collapse,
+      fullscreen: state => state.app.fullscreen,
+    })
   },
   methods: {
     // tabs, 选中tab

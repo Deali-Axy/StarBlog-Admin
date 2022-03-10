@@ -11,12 +11,14 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@kangc/v-md-editor": "^1.7.8",
     "axios": "^0.26.0",
+    "codemirror": "^5.65.2",
     "element-ui": "^2.15.6",
     "exceptionless": "^1.6.4",
     "font-awesome": "^4.7.0",
+    "highlight.js": "^11.4.0",
     "js-cookie": "^3.0.1",
-    "mavon-editor": "^2.10.4",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vue-waterfall": "^1.0.6",

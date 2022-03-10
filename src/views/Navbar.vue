@@ -94,7 +94,11 @@ export default {
         tab = {
           name: route.name,
           title: route.name,
-          icon: route.meta.icon
+          icon: route.meta.icon,
+          fullPath: route.fullPath,
+          path: route.path,
+          params: route.params,
+          query: route.query
         }
         this.mainTabs = this.mainTabs.concat(tab)
       }

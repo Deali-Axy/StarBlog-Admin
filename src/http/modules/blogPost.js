@@ -25,6 +25,24 @@ export const deleteItem = itemId => {
   })
 }
 
+// 添加博客
+export const add = data => {
+  return axios({
+    url: `BlogPost`,
+    method: 'post',
+    data
+  })
+}
+
+// 更新博客文章
+export const update = data => {
+  return axios({
+    url: `BlogPost/${data.id}/`,
+    method: 'put',
+    data
+  })
+}
+
 // 设置推荐博客
 export const setFeatured = itemId => {
   return axios({

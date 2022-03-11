@@ -44,6 +44,7 @@ const router = new Router({
         {path: 'post/featured', name: '推荐文章', component: FeaturedPosts},
         {path: 'post/top', name: '置顶文章', component: TopPost},
         {path: 'post/edit/:id', name: '编辑文章', component: EditPost},
+        {path: 'post/new', name: '新增文章', component: EditPost},
         {path: 'photo/list', name: '图片列表', component: Photos},
         {path: 'photo/featured', name: '推荐图片', component: FeaturedPhotos},
       ]

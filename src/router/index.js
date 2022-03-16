@@ -12,7 +12,8 @@ import FeaturedPosts from "@/views/Blog/FeaturedPosts"
 import EditPost from "@/views/Blog/EditPost";
 import Photos from "@/views/Photography/Photos"
 import FeaturedPhotos from "@/views/Photography/FeaturedPhotos"
-import Cookies from "js-cookie";
+import * as auth from '@/utils/auth'
+
 
 const originalPush = Router.prototype.push
 
@@ -56,28 +57,17 @@ const router = new Router({
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
-  let userName = localStorage.getItem('user')
-  let expiration = localStorage.getItem('expiration')
-
-  // token过期判断
-  if (expiration) {
-    let now = new Date()
-    let expirationTime = new Date(expiration)
-    if (now > expirationTime) {
-      console.log('token已经过期，跳转重新登录')
-      localStorage.removeItem('user')
-      localStorage.removeItem('expiration')
-      Cookies.set('token', null)
-      router.push('/login')
-    }
+  if (auth.isExpired()) {
+    auth.logout()
+    router.push('/login')
   }
 
   if (to.path === '/login') {
-    // 如果是访问登录界面，如果用户会话信息存在，代表已登录过，跳转到主页
-    if (userName) next({path: '/'})
+    // 访问登录界面，如果已登录，跳转到主页
+    if (auth.isLogin()) next({path: '/'})
     else next()
   } else {
-    if (!userName) {
+    if (!auth.isLogin()) {
       // 如果访问非登录界面，且户会话信息不存在，代表未登录，则跳转到登录界面
       next({path: '/login'})
     }

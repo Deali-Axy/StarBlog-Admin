@@ -54,6 +54,7 @@
 
 <script>
 import Cookies from "js-cookie"
+import * as auth from '@/utils/auth'
 
 export default {
   name: 'PersonalPanel',
@@ -78,8 +79,7 @@ export default {
       this.$confirm("确认退出吗?", "提示", {
         type: "warning"
       }).then(() => {
-        Cookies.set('token', '')
-        localStorage.removeItem('user')
+        auth.logout()
         this.$router.push("/login")
       }).catch(() => {
       })

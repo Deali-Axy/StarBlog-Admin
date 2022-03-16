@@ -2,6 +2,7 @@ import axios from 'axios';
 import config from './config';
 import Cookies from "js-cookie";
 import router from '@/router'
+import * as auth from '@/utils/auth'
 
 export default function $axios(options) {
   return new Promise((resolve, reject) => {
@@ -14,15 +15,15 @@ export default function $axios(options) {
     // request 请求拦截器
     instance.interceptors.request.use(
       config => {
-
-        let token = Cookies.get('token')
-        // 发送请求时携带token
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`
-        } else {
+        if (!auth.isLogin()) {
           // 重定向到登录页面
           router.push('/login')
         }
+
+        // 发送请求时携带token
+        let token = auth.getToken()
+        config.headers.Authorization = `Bearer ${token}`
+
         return config
       },
       error => {

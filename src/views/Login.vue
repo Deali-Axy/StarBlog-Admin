@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Cookies from "js-cookie"
+import * as auth from '@/utils/auth'
 
 export default {
   name: "Login",
@@ -38,11 +38,9 @@ export default {
       this.loading = true
       this.$api.auth.login(this.loginForm)
         .then(res => {  // 调用登录接口
-          // 保存token到Cookie
-          Cookies.set('token', res.data.token)
-          // 保存登录数据到本地会话
-          localStorage.setItem('user', this.loginForm.username)
-          localStorage.setItem('expiration', res.data.expiration)
+          // 保存登录信息
+          auth.login(res.data.token, this.loginForm.username, res.data.expiration)
+
           // 登录成功，跳转到主页
           this.$message.success('登录成功')
           this.$router.push('/')

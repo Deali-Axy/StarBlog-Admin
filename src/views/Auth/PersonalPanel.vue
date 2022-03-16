@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import Cookies from "js-cookie"
 import * as auth from '@/utils/auth'
 
 export default {

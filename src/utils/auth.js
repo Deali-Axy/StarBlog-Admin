@@ -1,5 +1,4 @@
 import Cookies from "js-cookie";
-import fa from "element-ui/src/locale/lang/fa";
 
 /**
  * 检查是否已登录
@@ -53,7 +52,7 @@ export const login = (token, username, expiration) => {
 
 // 注销
 export const logout = () => {
-  Cookies.set('token', '')
+  Cookies.set('token', null)
   localStorage.removeItem('user')
   localStorage.removeItem('expiration')
 }

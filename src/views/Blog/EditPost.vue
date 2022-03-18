@@ -28,14 +28,18 @@
         v-model="postContent"
         :default-show-toc="true"
         :codemirror-style-reset="true"
+        :disabled-menus="[]"
         @save="onEditorSave"
         @fullscreen-change="fullscreenChange"
+        @upload-image="handleUploadImage"
         height="750px"/>
     </el-main>
   </el-container>
 </template>
 
 <script>
+// todo 应该增加一个关闭页面提示，或者是关闭页面自动保存的功能~
+
 export default {
   name: "EditPost",
   data() {
@@ -59,6 +63,25 @@ export default {
     // 全屏切换
     fullscreenChange(isFullscreen) {
       this.$store.commit('onFullscreenChange')
+    },
+    /**
+     * 上传图片处理
+     * @param event
+     * @param insertImage Function
+     * @param files
+     */
+    handleUploadImage(event, insertImage, files) {
+      let file = files[0]
+
+      this.$api.blogPost.uploadImage(this.post.id, file)
+        .then(res => {
+          this.$message.success(`添加图片：${res.data.imgName}`)
+          insertImage({
+            url: res.data.imgUrl.replaceAll('\\', '/'),
+            desc: res.data.imgName
+          })
+        })
+        .catch(res => this.$message.error(`上传图片失败。${res.message}`))
     },
     // 分类切换
     categoryChange(categoryId) {

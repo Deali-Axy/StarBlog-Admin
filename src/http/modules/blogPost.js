@@ -43,6 +43,32 @@ export const update = data => {
   })
 }
 
+/**
+ * 上传图片
+ * @param itemId 文章ID
+ * @param file 图片文件
+ * @returns {*}
+ */
+export const uploadImage = (itemId, file) => {
+  let formData = new FormData()
+  formData.append('file', file)
+
+  return axios({
+    url: `BlogPost/${itemId}/UploadImage`,
+    method: 'post',
+    headers: {'Content-Type': 'multipart/form-data;charset=UTF-8'},
+    data: formData
+  })
+}
+
+// 获取文章里的图片
+export const getImages = itemId => {
+  return axios({
+    url: `BlogPost/${itemId}/Images`,
+    method: 'get'
+  })
+}
+
 // 设置推荐博客
 export const setFeatured = itemId => {
   return axios({

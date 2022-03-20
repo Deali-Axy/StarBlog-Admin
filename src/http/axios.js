@@ -58,7 +58,7 @@ export default function $axios(options) {
           // 包装一下默认的错误提示
           switch (err.response.status) {
             case 400:
-              err.message = '请求错误'
+              err.message = '请求参数错误'
               break
             case 401:
               err.message = '请先登录再访问'
@@ -92,10 +92,12 @@ export default function $axios(options) {
               break
             default:
           }
-          // 如果有返回错误信息的话就处理一下
+
+          // 如果有错误响应的话就处理
           if (err.response.data) {
             reason = err.response.data
-            if (reason.message) err.message = reason.message
+            // 如果没有返回错误信息的话就用上面的默认信息
+            if (!reason.message) reason.message = err.message
           }
         }
         console.error(err)

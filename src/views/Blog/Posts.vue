@@ -4,11 +4,10 @@
       <el-row type="flex" justify="space-between">
         <el-row :gutter="10">
           <el-col :span="12">
-            <el-input
-              placeholder="请输入关键字"
-              prefix-icon="el-icon-search"></el-input>
+            <el-input v-model="search"
+                      placeholder="请输入关键字" prefix-icon="el-icon-search"></el-input>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="10">
             <!-- 分类筛选 -->
             <!-- 为el-select添加filterable属性即可启用搜索功能。默认情况下，Select 会找出所有label属性包含输入值的选项。 -->
             <el-select v-model="currentCategoryName" filterable placeholder="请选择分类" v-on:change="handleCategoryChange">
@@ -19,6 +18,9 @@
                 :value="item.id">
               </el-option>
             </el-select>
+          </el-col>
+          <el-col :span="2">
+            <el-button @click="handleSearchClick">搜索</el-button>
           </el-col>
         </el-row>
         <div>
@@ -115,6 +117,8 @@ export default {
       currentPage: 1,
       pageSize: 20,
       totalCount: 1000,
+      search: '',
+      sortBy: null,
       posts: [],
       categories: [],
       currentCategoryId: 0,
@@ -130,20 +134,26 @@ export default {
     this.loadBlogPosts()
   },
   methods: {
+    // 加载分类
     loadCategories() {
       this.$api.category.getAll().then(res => {
         let categories = [{id: 0, name: '全部'}]
         categories = categories.concat(res.data)
         this.categories = categories
-      })
+      }).catch(res => this.$message.error(`加载分类列表出错：${res.message}`))
     },
+    // 加载博客文章
     loadBlogPosts() {
-      this.$api.blogPost.getList(this.currentCategoryId, this.currentPage, this.pageSize).then(res => {
+      this.$api.blogPost.getList(
+        this.currentCategoryId, this.search, this.sortBy,
+        this.currentPage, this.pageSize
+      ).then(res => {
         console.log(res)
         this.totalCount = res.pagination.totalItemCount
         this.posts = res.data
-      })
+      }).catch(res => this.$message.error(`获取文章列表出错：${res.message}`))
     },
+    // 添加文章按钮
     addPost() {
       this.$router.push('/post/new')
     },
@@ -185,17 +195,13 @@ export default {
       }
     },
     handleCategoryChange(categoryId) {
-      console.log('categoryId', categoryId)
       this.currentCategoryId = categoryId
-      this.loadBlogPosts()
     },
     handlePageSizeChange(pageSize) {
-      console.log(pageSize)
       this.pageSize = pageSize
       this.loadBlogPosts()
     },
     handleCurrentPageChange(page) {
-      console.log(page)
       this.currentPage = page
       this.loadBlogPosts()
     },
@@ -211,7 +217,10 @@ export default {
     handleSelectionChange(val) {
       this.selectedPosts = val
       this.hasSelection = this.selectedPosts.length > 0
-    }
+    },
+    handleSearchClick() {
+      this.loadBlogPosts()
+    },
   }
 }
 </script>

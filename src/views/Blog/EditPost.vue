@@ -28,7 +28,7 @@
         v-model="postContent"
         :default-show-toc="true"
         :codemirror-style-reset="true"
-        :disabled-menus="[]"
+        :disabled-menus="mode==='edit' ? [] : ['image/upload-image']"
         @save="onEditorSave"
         @fullscreen-change="fullscreenChange"
         @upload-image="handleUploadImage"
@@ -106,6 +106,7 @@ export default {
       } else {
         this.mode = 'new'
         this.post = {}
+        this.$notify.warning({title: '当前模式：新建文章', message: '注意：只有保存文章之后才能上传图片！'})
       }
     },
     loadCategories() {
@@ -136,8 +137,15 @@ export default {
 
       if (this.mode === 'new') {
         this.$api.blogPost.add(post)
-          .then(res => this.$message.success(`保存成功。${res.message}`))
-          .catch(res => this.$message.error(`操作失败。${res.message}`))
+          .then(res => {
+            this.$message.success(`保存成功。${res.message}`)
+            // 新建完就跳转到编辑页面
+            this.$router.push(`/post/edit/${res.data.id}`)
+          })
+          .catch(res => {
+            console.log(res)
+            this.$message.error(`操作失败。${res.message}`)
+          })
       } else {
         this.$api.blogPost.update(post)
           .then(res => this.$message.success(`保存成功。${res.message}`))

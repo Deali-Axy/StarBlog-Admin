@@ -1,16 +1,25 @@
 <template>
   <el-form :model="loginForm" :rules="fieldRules" ref="loginForm" label-position="left" label-width="0px"
            class="demo-ruleForm login-container">
-    <h2 class="title">系统登录</h2>
+    <div class="title h2">
+      <h2>StarBlog</h2>
+      <h4>管理后台登录</h4>
+    </div>
     <el-form-item prop="account">
       <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="用户名"></el-input>
     </el-form-item>
     <el-form-item prop="password">
       <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
-    <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:48%;" @click="reset">重 置</el-button>
-      <el-button type="primary" style="width:48%;" @click="login" :loading="loading">登 录</el-button>
+    <el-form-item>
+      <el-row :gutter="8">
+        <el-col :span="12">
+          <el-button type="warning" plain class="w-100" @click="reset">重 置</el-button>
+        </el-col>
+        <el-col :span="12">
+          <el-button type="primary" class="w-100" @click="login" :loading="loading">登 录</el-button>
+        </el-col>
+      </el-row>
     </el-form-item>
   </el-form>
 </template>

@@ -169,9 +169,11 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$api.blogPost.deleteItem(post.id)
-          .then(res => this.$message.success(`删除成功。${res.message}`))
+          .then(res => {
+            this.$message.success(`删除成功。${res.message}`)
+            this.loadBlogPosts()
+          })
           .catch(res => this.$message.error(`操作失败。${res.message}`))
-        this.loadBlogPosts()
       }).catch(() => this.$message('已取消删除'))
     },
     // 下拉菜单点击

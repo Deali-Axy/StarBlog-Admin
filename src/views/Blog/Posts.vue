@@ -171,7 +171,7 @@ export default {
         this.$api.blogPost.deleteItem(post.id)
           .then(res => this.$message.success(`删除成功。${res.message}`))
           .catch(res => this.$message.error(`操作失败。${res.message}`))
-        this.loadBlogPosts()
+          .finally(() => this.loadBlogPosts())
       }).catch(() => this.$message('已取消删除'))
     },
     // 下拉菜单点击

@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+
 import App from './App'
 import router from './router'
 import api from './http'
@@ -8,10 +9,20 @@ import Exceptionless from './utils/exceptionless'
 import ErrorHandler from "./utils/errorHandler"
 import global from './utils/global'
 import store from './store'
+
+// bootstrap 的部分css引入
+import 'bootstrap/dist/css/bootstrap-reboot.css'
+import 'bootstrap/dist/css/bootstrap-utilities.css'
+
+// ElementUI
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 
+// DataV 图表
+import dataV from '@jiaminghi/data-view'
+
+// markdown编辑器
 import VMdEditor from '@kangc/v-md-editor/lib/codemirror-editor';
 import '@kangc/v-md-editor/lib/style/codemirror-editor.css';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
@@ -48,6 +59,7 @@ Vue.use(VMdEditor);
 
 Vue.config.productionTip = false
 
+Vue.use(dataV)
 // 引入Element
 Vue.use(ElementUI)
 // 引入API模块

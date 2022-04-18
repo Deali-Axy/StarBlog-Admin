@@ -15,3 +15,10 @@ export const featured = () => {
     method: 'get'
   })
 }
+
+// 获取博客概况信息
+export const overview = () => {
+  return axios({
+    url: 'Blog/Overview',
+  })
+}

@@ -11,8 +11,10 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@jiaminghi/data-view": "^2.10.0",
     "@kangc/v-md-editor": "^1.7.8",
     "axios": "^0.26.0",
+    "bootstrap": "^5.1.3",
     "codemirror": "^5.65.2",
     "element-ui": "^2.15.6",
     "exceptionless": "^1.6.4",

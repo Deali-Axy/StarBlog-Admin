@@ -50,6 +50,11 @@
           width="180">
         </el-table-column>
         <el-table-column
+          prop="status"
+          label="状态"
+          width="100"
+        />
+        <el-table-column
           prop="title"
           label="标题"
           sortable
@@ -60,13 +65,13 @@
           prop="creationTime"
           label="创建时间"
           sortable
-          width="250">
+          width="150">
         </el-table-column>
         <el-table-column
           prop="lastUpdateTime"
           label="上次更新"
           sortable
-          width="250">
+          width="150">
         </el-table-column>
         <el-table-column
           prop="category.name"
@@ -134,6 +139,12 @@ export default {
     this.loadBlogPosts()
   },
   methods: {
+    dateTimeBeautify(dateTimeStr) {
+      let dateObj = new Date(dateTimeStr)
+      let dateStr = `${dateObj.getFullYear()}-${dateObj.getMonth()}-${dateObj.getDay()}`
+      let timeStr = `${dateObj.getHours()}:${dateObj.getMinutes()}`
+      return `${dateStr} ${timeStr}`
+    },
     // 加载分类
     loadCategories() {
       this.$api.category.getAll().then(res => {
@@ -151,6 +162,10 @@ export default {
         console.log(res)
         this.totalCount = res.pagination.totalItemCount
         this.posts = res.data
+        this.posts.forEach(item => {
+          item.creationTime = this.dateTimeBeautify(item.creationTime)
+          item.lastUpdateTime = this.dateTimeBeautify(item.lastUpdateTime)
+        })
       }).catch(res => this.$message.error(`获取文章列表出错：${res.message}`))
     },
     // 添加文章按钮

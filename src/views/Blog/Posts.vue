@@ -3,23 +3,29 @@
     <el-header height="30px">
       <el-row type="flex" justify="space-between">
         <el-row :gutter="10">
-          <el-col :span="12">
+          <el-col :span="7">
             <el-input v-model="search"
                       placeholder="请输入关键字" prefix-icon="el-icon-search"></el-input>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="7">
             <!-- 分类筛选 -->
             <!-- 为el-select添加filterable属性即可启用搜索功能。默认情况下，Select 会找出所有label属性包含输入值的选项。 -->
             <el-select v-model="currentCategoryName" filterable placeholder="请选择分类" v-on:change="handleCategoryChange">
               <el-option
                 v-for="item in categories"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
+                :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </el-col>
-          <el-col :span="2">
+          <el-col :span="7">
+            <!-- todo 需要加一个清除选择的功能 -->
+            <el-select v-model="currentStatus" filterable placeholder="请选择文章状态">
+              <el-option
+                v-for="item in statusList"
+                :key="item" :label="item" :value="item"
+              />
+            </el-select>
+          </el-col>
+          <el-col :span="3">
             <el-button @click="handleSearchClick">搜索</el-button>
           </el-col>
         </el-row>
@@ -42,41 +48,34 @@
         :default-sort="{prop: 'lastUpdateTime',order:'descending'}">
         <el-table-column
           type="selection"
-          width="30">
-        </el-table-column>
+          width="30"/>
         <el-table-column
           prop="id"
           label="ID"
-          width="180">
-        </el-table-column>
+          width="180"/>
         <el-table-column
           prop="status"
-          label="状态"
-          width="100"
-        />
+          label="文章状态"
+          width="100"/>
         <el-table-column
           prop="title"
           label="标题"
           sortable
           :show-overflow-tooltip="true"
-          width="600">
-        </el-table-column>
+          width="600"/>
         <el-table-column
           prop="creationTime"
           label="创建时间"
           sortable
-          width="150">
-        </el-table-column>
+          width="150"/>
         <el-table-column
           prop="lastUpdateTime"
           label="上次更新"
           sortable
-          width="150">
-        </el-table-column>
+          width="150"/>
         <el-table-column
           prop="category.name"
-          label="分类">
-        </el-table-column>
+          label="分类"/>
         <el-table-column
           fixed="right"
           label="操作"
@@ -126,8 +125,10 @@ export default {
       sortBy: null,
       posts: [],
       categories: [],
+      statusList: [],
       currentCategoryId: 0,
       currentCategoryName: '',
+      currentStatus: '',
       selectedPosts: [],
       hasSelection: false
     }
@@ -137,6 +138,8 @@ export default {
     this.loadCategories()
     // 加载博客文章
     this.loadBlogPosts()
+    // 加载文章状态列表
+    this.loadStatusList()
   },
   methods: {
     dateTimeBeautify(dateTimeStr) {
@@ -156,6 +159,7 @@ export default {
     // 加载博客文章
     loadBlogPosts() {
       this.$api.blogPost.getList(
+        false, this.currentStatus,
         this.currentCategoryId, this.search, this.sortBy,
         this.currentPage, this.pageSize
       ).then(res => {
@@ -167,6 +171,12 @@ export default {
           item.lastUpdateTime = this.dateTimeBeautify(item.lastUpdateTime)
         })
       }).catch(res => this.$message.error(`获取文章列表出错：${res.message}`))
+    },
+    // 加载文章状态列表
+    loadStatusList() {
+      this.$api.blog.getStatusList().then(res => {
+        this.statusList = res.data
+      }).catch(res => this.$message.error(`加载状态列表出错：${res.message}`))
     },
     // 添加文章按钮
     addPost() {

@@ -2,6 +2,8 @@ import axios from '../axios'
 
 /**
  * 获取博客列表
+ * @param onlyPublished
+ * @param status
  * @param categoryId
  * @param search
  * @param sortBy
@@ -10,6 +12,8 @@ import axios from '../axios'
  * @returns {*}
  */
 export const getList = (
+  onlyPublished = false,
+  status = '',
   categoryId = 0,
   search = '',
   sortBy = '',
@@ -19,7 +23,7 @@ export const getList = (
   return axios({
     url: 'BlogPost',
     method: 'get',
-    params: {categoryId, search, sortBy, page, pageSize}
+    params: {onlyPublished, status, categoryId, search, sortBy, page, pageSize}
   })
 }
 

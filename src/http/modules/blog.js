@@ -22,3 +22,10 @@ export const overview = () => {
     url: 'Blog/Overview',
   })
 }
+
+// 博客文章状态列表
+export const getStatusList = () => {
+  return axios({
+    url: 'Blog/GetStatusList'
+  })
+}

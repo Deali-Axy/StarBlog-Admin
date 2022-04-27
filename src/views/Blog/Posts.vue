@@ -10,15 +10,14 @@
           <el-col :span="7">
             <!-- 分类筛选 -->
             <!-- 为el-select添加filterable属性即可启用搜索功能。默认情况下，Select 会找出所有label属性包含输入值的选项。 -->
-            <el-select v-model="currentCategoryName" filterable placeholder="请选择分类" v-on:change="handleCategoryChange">
+            <el-select v-model="currentCategoryName" clearable filterable placeholder="请选择分类" v-on:change="handleCategoryChange">
               <el-option
                 v-for="item in categories"
                 :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </el-col>
           <el-col :span="7">
-            <!-- todo 需要加一个清除选择的功能 -->
-            <el-select v-model="currentStatus" filterable placeholder="请选择文章状态">
+            <el-select v-model="currentStatus" clearable filterable placeholder="请选择文章状态">
               <el-option
                 v-for="item in statusList"
                 :key="item" :label="item" :value="item"

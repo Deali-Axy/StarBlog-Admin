@@ -17,6 +17,7 @@ import 'bootstrap/dist/css/bootstrap-utilities.css'
 // ElementUI
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+// FontAwesome
 import 'font-awesome/css/font-awesome.min.css'
 
 // DataV 图表

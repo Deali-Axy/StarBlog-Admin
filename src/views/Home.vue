@@ -5,11 +5,11 @@
         <!--阅读总量-->
         <el-card>
           <div slot="header">阅读总量</div>
-          <h1>10000</h1>
+          <h1>{{visitRecordOverview.totalVisit}}</h1>
           <div>
             今日
             <i class="el-icon-top text-primary"></i>
-            999
+            {{visitRecordOverview.todayVisit}}
           </div>
         </el-card>
         <!--新的创作-->
@@ -113,11 +113,14 @@
 </template>
 
 <script>
+import * as visitRecord from "@/http/modules/visitRecord";
+
 export default {
   components: {},
   data() {
     return {
       overview: null,
+      visitRecordOverview: null,
       option1: {
         xAxis: {
           name: '第一周',
@@ -164,10 +167,12 @@ export default {
   methods: {
     load() {
       this.$api.blog.overview()
-        .then(res => {
-          this.overview = res.data
-        })
+        .then(res => this.overview = res.data)
         .catch(res => this.$message.error(`获取失败！${res.message}`))
+
+      this.$api.visitRecord.getOverview()
+        .then(res => this.visitRecordOverview = res.data)
+        .catch(res => this.$message.error(`获取访问统计数据失败！${res.message}`))
     }
   }
 }

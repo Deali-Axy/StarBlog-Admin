@@ -7,6 +7,7 @@ import * as featuredCategory from './modules/featuredCategory'
 import * as featuredPhoto from './modules/featuredPhoto'
 import * as featuredPost from './modules/featuredPost'
 import * as photo from './modules/photo'
+import * as visitRecord from './modules/visitRecord'
 
 // 默认全部导出
 export default {
@@ -17,5 +18,6 @@ export default {
   featuredCategory,
   featuredPhoto,
   featuredPost,
-  photo
+  photo,
+  visitRecord,
 }

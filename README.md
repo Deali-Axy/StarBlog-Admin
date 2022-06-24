@@ -16,7 +16,7 @@ yarn
 yarn start
 
 # build for production with minification
-yarn run build
+yarn build
 ```
 
 ### npm build 操作

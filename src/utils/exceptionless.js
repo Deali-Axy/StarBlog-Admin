@@ -1,9 +1,10 @@
 import {ExceptionlessClient} from 'exceptionless/dist/exceptionless';
 
 const exLessClient = ExceptionlessClient.default;
-exLessClient.config.apiKey = '1suhJwX6x14Ao1UtfK5vhoKfzwun47KvJDvsKCzv';
-// exLessClient.config.serverUrl = 'http://exception-less.sblt.deali.cn:9800'
-exLessClient.config.serverUrl = 'http://10.116.163.185:5000'
+
+
+exLessClient.config.apiKey = process.env.EXCEPTION_LESS_API_KEY
+exLessClient.config.serverUrl = process.env.EXCEPTION_LESS_SERVER_URL
 
 const install = Vue => {
   if (install.installed)

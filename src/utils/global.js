@@ -5,7 +5,7 @@
  */
 
 // 后台管理系统服务器地址
-export const baseUrl = 'http://localhost:5038'
+export const baseUrl = process.env.BASE_URL
 
 export default {
   baseUrl

@@ -1,6 +1,6 @@
-import {ExceptionlessClient} from 'exceptionless/dist/exceptionless';
+// import {ExceptionlessClient} from 'exceptionless/dist/exceptionless';
 
-const exLessClient = ExceptionlessClient.default;
+// const exLessClient = ExceptionlessClient.default;
 
 function isPromise(ret) {
   return (ret && typeof ret.then === 'function' && typeof ret.catch === "function")
@@ -9,7 +9,7 @@ function isPromise(ret) {
 const errorHandler = (error, vm, info) => {
   console.error('抛出全局异常', 'vm=', vm, 'info=', info)
   console.error(error)
-  exLessClient.submitException(error)
+  // exLessClient.submitException(error)
 }
 
 function registerActionHandle(actions) {

@@ -175,6 +175,6 @@ export default {
 
 <style>
 .icon-lg {
-  font-size: 40px;
+  font-size: 40px !important;
 }
 </style>

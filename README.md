@@ -4,7 +4,24 @@
 
 ## Build Setup
 
-``` bash
+建议使用yarn
+
+### yarn
+
+```bash
+# install dependencies
+yarn
+
+# serve with hot reload at localhost:8080
+yarn start
+
+# build for production with minification
+yarn run build
+```
+
+### npm build 操作
+
+```bash
 # install dependencies
 npm install
 

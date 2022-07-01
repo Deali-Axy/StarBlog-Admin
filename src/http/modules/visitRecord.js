@@ -27,6 +27,15 @@ export const getOverview = () => {
   return axios({url: 'VisitRecord/Overview'})
 }
 
+// 获取趋势数据
+export const getTrend = (days = 7) => {
+  return axios({
+    url: 'VisitRecord/Trend',
+    method: 'get',
+    params: {days}
+  })
+}
+
 // 获取统计数据
 export const getStats = (date = null) => {
   return axios({

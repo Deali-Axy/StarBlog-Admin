@@ -117,9 +117,9 @@ export default {
   components: {},
   data() {
     return {
-      overview: null,
-      visitRecordOverview: null,
-      trend: null,
+      overview: {},
+      visitRecordOverview: {},
+      trend: {},
     }
   },
   computed: {
@@ -173,21 +173,30 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.load()
   },
   methods: {
     load() {
       this.$api.blog.overview()
-        .then(res => this.overview = res.data)
+        .then(res => {
+          this.overview = null
+          this.overview = res.data
+        })
         .catch(res => this.$message.error(`获取失败！${res.message}`))
 
       this.$api.visitRecord.getOverview()
-        .then(res => this.visitRecordOverview = res.data)
+        .then(res => {
+          this.visitRecordOverview = null
+          this.visitRecordOverview = res.data
+        })
         .catch(res => this.$message.error(`获取访问统计数据失败！${res.message}`))
 
       this.$api.visitRecord.getTrend(14)
-        .then(res => this.trend = res.data)
+        .then(res => {
+          this.trend = null
+          this.trend = res.data
+        })
         .catch(res => this.$message.error(`获取访问趋势数据失败！${res.message}`))
     }
   }

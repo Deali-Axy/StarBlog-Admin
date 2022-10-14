@@ -3,7 +3,7 @@
     <el-row :gutter="8">
       <el-col :span="4">
         <!--阅读总量-->
-        <el-card>
+        <el-card v-loading="loading">
           <div slot="header">阅读总量</div>
           <h1>{{ visitRecordOverview.totalVisit }}</h1>
           <div>
@@ -65,7 +65,7 @@
         </el-card>
       </el-col>
       <el-col :span="20">
-        <el-row :gutter="8">
+        <el-row :gutter="8" v-loading="loading">
           <el-col :span="4">
             <el-card>
               <div slot="header">文章数量</div>
@@ -103,7 +103,7 @@
             </el-card>
           </el-col>
         </el-row>
-        <el-card class="mt-2">
+        <el-card class="mt-2" v-loading="loading">
           <div slot="header">数据趋势</div>
           <dv-charts class="mt-2" :style="'height: 550px'" :option="trendChartOption"/>
         </el-card>
@@ -119,58 +119,67 @@ export default {
     return {
       overview: {},
       visitRecordOverview: {},
-      trend: {},
+      trend: null,
+      loadStage: 0
     }
   },
   computed: {
     trendChartOption() {
-      return {
-        xAxis: {
-          name: '日期',
-          data: this.trend.map(item => item.date),
-          nameTextStyle: {
-            fill: '#333',
-            fontSize: 20
-          },
-          axisLabel: {
-            style: {
+      let data = {}
+      if (this.trend !== null) {
+        data = {
+          xAxis: {
+            name: '日期',
+            data: this.trend.map(item => item.date),
+            nameTextStyle: {
               fill: '#333',
-              fontSize: 16,
-              rotate: 0
+              fontSize: 20
+            },
+            axisLabel: {
+              style: {
+                fill: '#333',
+                fontSize: 16,
+                rotate: 0
+              }
             }
-          }
-        },
-        yAxis: {
-          name: '阅读量',
-          data: 'value',
-          nameTextStyle: {
-            fill: '#333',
-            fontSize: 20
           },
-          axisLabel: {
-            style: {
+          yAxis: {
+            name: '阅读量',
+            data: 'value',
+            nameTextStyle: {
               fill: '#333',
-              fontSize: 16,
-              rotate: 0
+              fontSize: 20
+            },
+            axisLabel: {
+              style: {
+                fill: '#333',
+                fontSize: 16,
+                rotate: 0
+              }
             }
-          }
-        },
-        series: [
-          {
-            data: this.trend.map(item => item.count),
-            type: 'line',
-            smooth: true,
-            lineArea: {
-              show: true,
-              gradient: ['rgba(55, 162, 218, 0.6)', 'rgba(55, 162, 218, 0)']
-            },
-            label: {
-              show: true,
-              formatter: '{value} 次'
-            },
-          }
-        ]
+          },
+          series: [
+            {
+              data: this.trend.map(item => item.count),
+              type: 'line',
+              smooth: true,
+              lineArea: {
+                show: true,
+                gradient: ['rgba(55, 162, 218, 0.6)', 'rgba(55, 162, 218, 0)']
+              },
+              label: {
+                show: true,
+                formatter: '{value} 次'
+              },
+            }
+          ]
+        }
       }
+      return data
+    },
+    loading() {
+      console.log(this.loadStage)
+      return this.loadStage < 3
     }
   },
   created() {
@@ -182,6 +191,7 @@ export default {
         .then(res => {
           this.overview = null
           this.overview = res.data
+          this.loadStage++
         })
         .catch(res => this.$message.error(`获取失败！${res.message}`))
 
@@ -189,6 +199,7 @@ export default {
         .then(res => {
           this.visitRecordOverview = null
           this.visitRecordOverview = res.data
+          this.loadStage++
         })
         .catch(res => this.$message.error(`获取访问统计数据失败！${res.message}`))
 
@@ -196,6 +207,7 @@ export default {
         .then(res => {
           this.trend = null
           this.trend = res.data
+          this.loadStage++
         })
         .catch(res => this.$message.error(`获取访问趋势数据失败！${res.message}`))
     }

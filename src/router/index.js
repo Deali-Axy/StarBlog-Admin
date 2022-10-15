@@ -12,6 +12,7 @@ import FeaturedPosts from "@/views/Blog/FeaturedPosts"
 import EditPost from "@/views/Blog/EditPost";
 import Photos from "@/views/Photography/Photos"
 import FeaturedPhotos from "@/views/Photography/FeaturedPhotos"
+import VisitRecordList from "@/views/VisitRecord/List"
 import * as auth from '@/utils/auth'
 
 
@@ -48,6 +49,7 @@ const router = new Router({
         {path: 'post/new', name: '新增文章', component: EditPost},
         {path: 'photo/list', name: '图片列表', component: Photos},
         {path: 'photo/featured', name: '推荐图片', component: FeaturedPhotos},
+        {path: 'visit_record/list', name: '访问记录', component: VisitRecordList},
       ]
     },
     {path: '/Login', name: 'Login', component: Login},

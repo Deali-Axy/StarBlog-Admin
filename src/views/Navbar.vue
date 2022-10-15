@@ -24,7 +24,7 @@
       </el-menu-item>
       <el-submenu index="blog">
         <template slot="title">
-          <i class="el-icon-location"></i>
+          <i class="el-icon-s-grid"></i>
           <span>博客</span>
         </template>
         <el-menu-item-group title="分类管理">
@@ -39,7 +39,7 @@
       </el-submenu>
       <el-submenu index="photography">
         <template slot="title">
-          <i class="el-icon-location"></i>
+          <i class="el-icon-camera"></i>
           <span>摄影</span>
         </template>
         <el-menu-item-group title="照片管理">
@@ -47,6 +47,10 @@
           <el-menu-item index="/photo/featured">推荐图片</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
+      <el-menu-item index="/visit_record/list">
+        <i class="el-icon-menu"></i>
+        <span slot="title">访问日志</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>

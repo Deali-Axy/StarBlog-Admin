@@ -178,7 +178,6 @@ export default {
       return data
     },
     loading() {
-      console.log(this.loadStage)
       return this.loadStage < 3
     }
   },

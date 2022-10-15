@@ -17,13 +17,13 @@
           <div slot="header">新的创作</div>
           <el-row :gutter="8">
             <el-col :span="12">
-              <el-button type="warning" plain class="w-100">
+              <el-button type="warning" plain class="w-100" @click="$router.push('/post/new')">
                 <div><i class="icon-lg el-icon-tickets"></i></div>
                 <div class="mt-2">博客文章</div>
               </el-button>
             </el-col>
             <el-col :span="12">
-              <el-button type="primary" plain class="w-100">
+              <el-button type="primary" plain class="w-100" @click="$router.push('/category/list')">
                 <div><i class="icon-lg el-icon-folder"></i></div>
                 <div class="mt-2">文章分类</div>
               </el-button>
@@ -31,13 +31,13 @@
           </el-row>
           <el-row :gutter="8" class="mt-2">
             <el-col :span="12">
-              <el-button type="primary" plain class="w-100">
+              <el-button type="primary" plain class="w-100" @click="$router.push('/photo/list')">
                 <div><i class="icon-lg el-icon-picture-outline"></i></div>
                 <div class="mt-2">摄影作品</div>
               </el-button>
             </el-col>
             <el-col :span="12">
-              <el-button type="primary" plain class="w-100">
+              <el-button type="primary" plain class="w-100" @click="notImpl">
                 <div><i class="icon-lg fa fa-code"></i></div>
                 <div class="mt-2">代码片段</div>
               </el-button>
@@ -48,19 +48,19 @@
         <el-card class="mt-2">
           <div slot="header">快捷操作</div>
           <div>
-            <el-button type="info" plain class="w-100">批量导入文章</el-button>
+            <el-button type="info" plain class="w-100" @click="notImpl">批量导入文章</el-button>
           </div>
           <div class="mt-2">
-            <el-button type="info" plain class="w-100">上传文章</el-button>
+            <el-button type="info" plain class="w-100" @click="$router.push('post/upload')">上传文章</el-button>
           </div>
           <div class="mt-2">
-            <el-button type="info" plain class="w-100">批量导入图片</el-button>
+            <el-button type="info" plain class="w-100" @click="notImpl">批量导入图片</el-button>
           </div>
           <div class="mt-2">
-            <el-button type="info" plain class="w-100">上传图片</el-button>
+            <el-button type="info" plain class="w-100" @click="$router.push('/photo/list')">上传图片</el-button>
           </div>
           <div class="mt-2">
-            <el-button type="info" plain class="w-100">导出数据</el-button>
+            <el-button type="info" plain class="w-100" @click="notImpl">导出数据</el-button>
           </div>
         </el-card>
       </el-col>
@@ -209,6 +209,9 @@ export default {
           this.loadStage++
         })
         .catch(res => this.$message.error(`获取访问趋势数据失败！${res.message}`))
+    },
+    notImpl() {
+      this.$message.warning('功能正在开发中…')
     }
   }
 }

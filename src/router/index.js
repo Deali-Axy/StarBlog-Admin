@@ -10,6 +10,7 @@ import Posts from "@/views/Blog/Posts"
 import TopPost from "@/views/Blog/TopPost"
 import FeaturedPosts from "@/views/Blog/FeaturedPosts"
 import EditPost from "@/views/Blog/EditPost";
+import UploadPost from "@/views/Blog/UploadPost";
 import Photos from "@/views/Photography/Photos"
 import FeaturedPhotos from "@/views/Photography/FeaturedPhotos"
 import VisitRecordList from "@/views/VisitRecord/List"
@@ -47,6 +48,7 @@ const router = new Router({
         {path: 'post/top', name: '置顶文章', component: TopPost},
         {path: 'post/edit/:id', name: '编辑文章', component: EditPost},
         {path: 'post/new', name: '新增文章', component: EditPost},
+        {path: 'post/upload', name: '上传文章', component: UploadPost},
         {path: 'photo/list', name: '图片列表', component: Photos},
         {path: 'photo/featured', name: '推荐图片', component: FeaturedPhotos},
         {path: 'visit_record/list', name: '访问记录', component: VisitRecordList},

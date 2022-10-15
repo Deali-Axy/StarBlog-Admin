@@ -29,3 +29,19 @@ export const getStatusList = () => {
     url: 'Blog/GetStatusList'
   })
 }
+
+// 文章上传
+export const upload = (title, summary, categoryId, file) => {
+  let formData = new FormData()
+  formData.append('title', title)
+  formData.append('summary', summary)
+  formData.append('categoryId', categoryId)
+  formData.append('file', file)
+
+  return axios({
+    url: 'Blog/Upload',
+    method: 'post',
+    headers: {'Content-Type': 'multipart/form-data;charset=UTF-8'},
+    data: formData
+  })
+}

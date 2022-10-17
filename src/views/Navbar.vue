@@ -54,6 +54,10 @@
         <i class="el-icon-menu"></i>
         <span slot="title">访问日志</span>
       </el-menu-item>
+      <el-menu-item index="/config/list">
+        <i class="el-icon-s-tools"></i>
+        <span slot="title">配置中心</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>

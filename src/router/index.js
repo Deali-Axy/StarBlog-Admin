@@ -14,6 +14,7 @@ import UploadPost from "@/views/Blog/UploadPost";
 import Photos from "@/views/Photography/Photos"
 import FeaturedPhotos from "@/views/Photography/FeaturedPhotos"
 import VisitRecordList from "@/views/VisitRecord/List"
+import ConfigList from "@/views/Config/List"
 import * as auth from '@/utils/auth'
 
 
@@ -52,6 +53,7 @@ const router = new Router({
         {path: 'photo/list', name: '图片列表', component: Photos},
         {path: 'photo/featured', name: '推荐图片', component: FeaturedPhotos},
         {path: 'visit_record/list', name: '访问记录', component: VisitRecordList},
+        {path: 'config/list', name: '配置中心', component: ConfigList},
       ]
     },
     {path: '/Login', name: 'Login', component: Login},

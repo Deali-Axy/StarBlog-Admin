@@ -7,6 +7,7 @@ import * as config from './modules/config'
 import * as featuredCategory from './modules/featuredCategory'
 import * as featuredPhoto from './modules/featuredPhoto'
 import * as featuredPost from './modules/featuredPost'
+import * as link from './modules/link'
 import * as photo from './modules/photo'
 import * as visitRecord from './modules/visitRecord'
 
@@ -20,6 +21,7 @@ export default {
   featuredCategory,
   featuredPhoto,
   featuredPost,
+  link,
   photo,
   visitRecord,
 }

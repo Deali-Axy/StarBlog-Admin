@@ -45,6 +45,14 @@ export default {
     }
   },
   methods: {
+    resetForm() {
+      this.$refs.uploadForm.resetFields()
+      this.form = {
+        key: '',
+        value: '',
+        description: null
+      }
+    },
     show() {
       this.dialogFormVisible = true
     },
@@ -52,8 +60,8 @@ export default {
       this.dialogFormVisible = false
     },
     close() {
+      this.resetForm()
       this.hide()
-      this.$refs.uploadForm.resetFields()
     },
     edit(item) {
       this.mode = 'edit'

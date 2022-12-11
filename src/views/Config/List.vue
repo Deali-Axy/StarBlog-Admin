@@ -3,8 +3,8 @@
     <el-header height="30px">
       <el-row type="flex" justify="start">
         <div>
-          <el-button @click="$refs.addPhotoDialog.show()">添加</el-button>
-          <add-config-dialog ref="addPhotoDialog" @onAddSucceed="onAddSucceed"
+          <el-button @click="handleAdd">添加</el-button>
+          <add-config-dialog ref="addConfigDialog" @onAddSucceed="onAddSucceed"
                              @onUpdateSucceed="onUpdateSucceed"></add-config-dialog>
         </div>
       </el-row>
@@ -75,8 +75,11 @@ export default {
         .then(res => this.data = res.data)
         .catch(res => this.$message.error(`获取配置列表出错：${res.message}`))
     },
+    handleAdd(){
+      this.$refs.addConfigDialog.show()
+    },
     onItemEditClick(item) {
-      this.$refs.addPhotoDialog.edit(item)
+      this.$refs.addConfigDialog.edit(item)
     },
     onItemDeleteClick(item) {
       this.$confirm('此操作将删除该配置项, 是否继续?', '提示', {

@@ -8,6 +8,7 @@ import * as featuredCategory from './modules/featuredCategory'
 import * as featuredPhoto from './modules/featuredPhoto'
 import * as featuredPost from './modules/featuredPost'
 import * as link from './modules/link'
+import * as linkExchange from './modules/linkExchange'
 import * as photo from './modules/photo'
 import * as visitRecord from './modules/visitRecord'
 
@@ -22,6 +23,7 @@ export default {
   featuredPhoto,
   featuredPost,
   link,
+  linkExchange,
   photo,
   visitRecord,
 }

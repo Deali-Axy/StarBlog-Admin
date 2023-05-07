@@ -16,6 +16,7 @@ import FeaturedPhotos from "@/views/Photography/FeaturedPhotos"
 import VisitRecordList from "@/views/VisitRecord/List"
 import ConfigList from "@/views/Config/List"
 import LinkList from '@/views/Link/List'
+import LinkExchangeList from '@/views/LinkExchange/List.vue'
 import * as auth from '@/utils/auth'
 
 
@@ -56,6 +57,7 @@ const router = new Router({
         {path: 'visit_record/list', name: '访问记录', component: VisitRecordList},
         {path: 'config/list', name: '配置中心', component: ConfigList},
         {path: 'link/list', name: '友情链接管理', component: LinkList},
+        {path: 'link_exchange/list', name: '友链申请', component: LinkExchangeList},
       ]
     },
     {path: '/Login', name: 'Login', component: Login},

@@ -58,10 +58,16 @@
         <i class="el-icon-s-tools"></i>
         <span slot="title">配置中心</span>
       </el-menu-item>
-      <el-menu-item index="/link/list">
-        <i class="el-icon-link"></i>
-        <span slot="title">友情链接管理</span>
-      </el-menu-item>
+      <el-submenu index="link">
+        <template slot="title">
+          <i class="el-icon-link"></i>
+          <span>友情链接</span>
+        </template>
+        <el-menu-item-group title="友情链接管理">
+          <el-menu-item index="/link/list">友情链接</el-menu-item>
+          <el-menu-item index="/link_exchange/list">友链申请管理</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
     </el-menu>
   </div>
 </template>

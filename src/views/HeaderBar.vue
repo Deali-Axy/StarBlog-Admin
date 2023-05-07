@@ -14,8 +14,8 @@
                :background-color="themeColor" text-color="#fff" active-text-color="#ffd04b" mode="horizontal"
                @select="selectNavBar()">
         <el-menu-item index="1" @click="$router.push('/')">主页</el-menu-item>
-        <el-menu-item index="2" @click="openWindow('https://github.com/Deali-Axy')">菜单1</el-menu-item>
-        <el-menu-item index="3" @click="openWindow('https://www.cnblogs.com/deali')">菜单2</el-menu-item>
+        <el-menu-item index="2" @click="openWindow('https://github.com/Deali-Axy')">Github</el-menu-item>
+        <el-menu-item index="3" @click="openWindow('https://www.cnblogs.com/deali')">博客园</el-menu-item>
       </el-menu>
     </span>
     <!-- 工具栏 -->
@@ -28,24 +28,24 @@
                         @onThemeChange="onThemeChange">
           </theme-picker>
         </el-menu-item>
-        <el-menu-item index="2" v-popover:popover-message>
-          <!-- 我的私信 -->
-          <el-badge :value="5" :max="99" class="badge" type="danger">
-            <li style="color:#fff;" class="fa fa-envelope-o fa-lg"></li>
-          </el-badge>
-          <el-popover ref="popover-message" placement="bottom-end" trigger="click">
-            <message-panel></message-panel>
-          </el-popover>
-        </el-menu-item>
-        <el-menu-item index="3" v-popover:popover-notice>
-          <!-- 系统通知 -->
-          <el-badge :value="4" :max="99" class="badge" type="danger">
-            <li style="color:#fff;" class="fa fa-bell-o fa-lg"></li>
-          </el-badge>
-          <el-popover ref="popover-notice" placement="bottom-end" trigger="click">
-            <notice-panel></notice-panel>
-          </el-popover>
-        </el-menu-item>
+<!--        <el-menu-item index="2" v-popover:popover-message>-->
+<!--          &lt;!&ndash; 我的私信 &ndash;&gt;-->
+<!--          <el-badge :value="5" :max="99" class="badge" type="danger">-->
+<!--            <li style="color:#fff;" class="fa fa-envelope-o fa-lg"></li>-->
+<!--          </el-badge>-->
+<!--          <el-popover ref="popover-message" placement="bottom-end" trigger="click">-->
+<!--            <message-panel></message-panel>-->
+<!--          </el-popover>-->
+<!--        </el-menu-item>-->
+<!--        <el-menu-item index="3" v-popover:popover-notice>-->
+<!--          &lt;!&ndash; 系统通知 &ndash;&gt;-->
+<!--          <el-badge :value="4" :max="99" class="badge" type="danger">-->
+<!--            <li style="color:#fff;" class="fa fa-bell-o fa-lg"></li>-->
+<!--          </el-badge>-->
+<!--          <el-popover ref="popover-notice" placement="bottom-end" trigger="click">-->
+<!--            <notice-panel></notice-panel>-->
+<!--          </el-popover>-->
+<!--        </el-menu-item>-->
         <el-menu-item index="4" v-popover:popover-personal>
           <!-- 用户信息 -->
           <span class="user-info"><img :src="user.avatar"/>{{ user.name }}</span>

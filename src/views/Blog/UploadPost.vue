@@ -16,6 +16,11 @@
               :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
         </el-form-item>
+        <el-form-item label="ZIP压缩包编码" prop="zipEncoding">
+          <el-select v-model="form.zipEncoding" clearable filterable placeholder="ZIP压缩包编码">
+            <el-option v-for="item in zipCodings" :key="item" :label="item" :value="item"/>
+          </el-select>
+        </el-form-item>
       </el-form>
       <el-upload ref="upload" drag action=""
                  accept="application/x-zip-compressed,.zip"
@@ -44,10 +49,12 @@ export default {
       categories: [],
       currentCategoryName: '',
       currentCategoryId: 0,
+      zipCodings: ['utf-8', 'utf-16', 'gbk', 'gb2312'],
       form: {
         title: '',
         summary: '',
         categoryId: null,
+        zipEncoding: 'utf-8',
         file: null
       },
       formRules: {
@@ -90,13 +97,14 @@ export default {
       this.$refs.uploadForm.validate((valid) => {
         if (!valid) return false
 
-        this.$api.blog.upload(this.form.title, this.form.summary, this.form.categoryId, this.form.file.raw)
+        this.$api.blog.upload(this.form.title, this.form.summary, this.form.categoryId, this.form.file.raw, this.form.zipEncoding)
           .then(res => {
             if (res.successful) {
               this.$message({message: '上传文章成功', type: 'success'})
               this.$router.push('/post/list')
             }
           })
+          .catch(res => this.$message.error(`上传文章失败：${res.message}`))
       })
     },
   }

@@ -31,12 +31,13 @@ export const getStatusList = () => {
 }
 
 // 文章上传
-export const upload = (title, summary, categoryId, file) => {
+export const upload = (title, summary, categoryId, file, zipEncoding = 'utf-8') => {
   let formData = new FormData()
   formData.append('title', title)
   formData.append('summary', summary)
   formData.append('categoryId', categoryId)
   formData.append('file', file)
+  formData.append('zipEncoding', zipEncoding)
 
   return axios({
     url: 'Blog/Upload',

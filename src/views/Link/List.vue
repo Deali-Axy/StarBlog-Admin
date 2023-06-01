@@ -5,7 +5,7 @@
         <div>
           <el-button @click="handleAdd">添加</el-button>
           <add-link-dialog ref="addDialog" @onAddSucceed="onAddSucceed"
-                             @onUpdateSucceed="onUpdateSucceed"></add-link-dialog>
+                           @onUpdateSucceed="onUpdateSucceed"/>
         </div>
       </el-row>
     </el-header>
@@ -84,8 +84,8 @@ export default {
         .then(res => this.data = res.data)
         .catch(res => this.$message.error(`获取列表出错：${res.message}`))
     },
-    handleAdd(){
-      this.$refs.addDialog.show()
+    handleAdd() {
+      this.$refs.addDialog.add()
     },
     onItemEditClick(item) {
       this.$refs.addDialog.edit(item)

@@ -24,6 +24,31 @@ export const get = itemId => {
   })
 }
 
+// 添加分类
+export const add = data => {
+  return axios({
+    url: `Category`,
+    method: 'post',
+    data
+  })
+}
+
+// 更新分类
+export const update = data => {
+  return axios({
+    url: `Category/${data.id}/`,
+    method: 'put',
+    data
+  })
+}
+
+export const deleteItem = itemId => {
+  return axios({
+    url: `Category/${itemId}/`,
+    method: 'delete'
+  })
+}
+
 // 分类词云
 export const wordCloud = () => {
   return axios({

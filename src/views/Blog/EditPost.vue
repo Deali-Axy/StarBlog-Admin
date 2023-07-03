@@ -1,40 +1,51 @@
 <template>
-  <el-container>
-    <el-header height="30px">
-      <el-row :gutter="6">
-        <el-col :span="3">
-          <el-select v-model="postCategoryName" filterable placeholder="请选择分类" v-on:change="categoryChange">
-            <el-option
-              v-for="item in categories"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
+  <div class="pb-5">
+    <el-input v-model="postTitle" placeholder="文章标题"></el-input>
+
+
+    <v-md-editor
+      class="mb-3"
+      v-model="postContent"
+      :default-show-toc="true"
+      :codemirror-style-reset="true"
+      :disabled-menus="mode==='edit' ? [] : ['image/upload-image']"
+      @save="onEditorSave"
+      @fullscreen-change="fullscreenChange"
+      @upload-image="handleUploadImage"
+      height="750px"/>
+
+    <el-form label-position="top" label-width="80px" :model="form" class="text-start mt-5">
+      <el-form-item label="文章选项" prop="isPublish">
+        <el-radio v-model="form.isPublish" :label="true">发表</el-radio>
+        <el-radio v-model="form.isPublish" :label="false">保存草稿</el-radio>
+      </el-form-item>
+
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="URL Slug (友好地址名，只能使用字母、数字、-连字符、_下划线，不超过150个字符)" prop="slug">
+            <el-input v-model="form.slug" maxlength="150" show-word-limit placeholder="Slug"></el-input>
+          </el-form-item>
         </el-col>
-        <el-col :span="19">
-          <el-input v-model="postTitle" placeholder="文章标题"></el-input>
-        </el-col>
-        <el-col :span="1">
-          <el-button type="warning" plain @click="onSummaryClick" :style="'width:100%'">简介</el-button>
-        </el-col>
-        <el-col :span="1">
-          <el-button type="primary" plain @click="onSaveClick">保存</el-button>
+        <el-col :span="12">
+          <el-form-item label="分类" prop="category">
+            <el-cascader class="w-100" :options="categoryTree" :props="{
+                checkStrictly:true,
+                expandTrigger:'hover',
+                emitPath:false,
+              }" v-model="form.category" filterable></el-cascader>
+          </el-form-item>
         </el-col>
       </el-row>
-    </el-header>
-    <el-main>
-      <v-md-editor
-        v-model="postContent"
-        :default-show-toc="true"
-        :codemirror-style-reset="true"
-        :disabled-menus="mode==='edit' ? [] : ['image/upload-image']"
-        @save="onEditorSave"
-        @fullscreen-change="fullscreenChange"
-        @upload-image="handleUploadImage"
-        height="750px"/>
-    </el-main>
-  </el-container>
+
+      <el-form-item label="简介" prop="summary">
+        <el-input type="textarea" v-model="form.summary" :rows="8" maxlength="200" show-word-limit
+                  placeholder="简介"></el-input>
+      </el-form-item>
+    </el-form>
+
+    <el-button type="primary" plain @click="onSaveClick">保存</el-button>
+
+  </div>
 </template>
 
 <script>
@@ -47,12 +58,16 @@ export default {
       // 编辑模式：new / edit
       mode: 'new',
       postTitle: '',
-      postCategoryName: '',
-      postCategoryId: 0,
       postContent: '',
-      postSummary: '',
       post: null,
       categories: [],
+      categoryTree: [],
+      form: {
+        isPublish: false,
+        slug: '',
+        summary: '',
+        category: 0,
+      }
     }
   },
   mounted() {
@@ -83,10 +98,6 @@ export default {
         })
         .catch(res => this.$message.error(`上传图片失败。${res.message}`))
     },
-    // 分类切换
-    categoryChange(categoryId) {
-      this.postCategoryId = categoryId
-    },
     // 初始化
     init() {
       let id = this.$route.params.id
@@ -97,9 +108,10 @@ export default {
             this.post = res.data
             this.postTitle = this.post.title
             this.postContent = this.post.content
-            this.postSummary = this.post.summary
-            this.postCategoryId = this.post.categoryId
-            this.postCategoryName = this.post.category.name
+            this.form.slug = this.post.slug
+            this.form.isPublish = this.post.isPublish
+            this.form.summary = this.post.summary
+            this.form.category = this.post.categoryId
             this.$notify.info({title: '当前模式：修改文章', message: `加载文章：${this.postTitle}`})
           })
           .catch(res => this.$message.error(`获取信息失败。${res.message}`))
@@ -110,6 +122,20 @@ export default {
       }
     },
     loadCategories() {
+      const mapNodes = (nodes) => {
+        let items = []
+        if (!nodes) return null
+        for (const node of nodes) {
+          items.push({
+            label: `${node.text} (${node.tags[0]})`,
+            value: node.id,
+            children: mapNodes(node.nodes)
+          })
+        }
+        return items
+      }
+
+      this.$api.category.getNodes().then(res => this.categoryTree = mapNodes(res.data))
       this.$api.category.getAll().then(res => this.categories = res.data)
     },
     onEditorSave(text, html) {
@@ -118,22 +144,14 @@ export default {
     onSaveClick() {
       this.save()
     },
-    onSummaryClick() {
-      this.$prompt('请输入文章简介', '提示', {
-        inputValue: this.postSummary
-      })
-        .then(({value}) => {
-          this.postSummary = value
-          this.$notify.success(`编辑简介成功：${value}`)
-        })
-        .catch(() => this.$message.info('取消输入'));
-    },
     save() {
       let post = this.post
       post.title = this.postTitle
       post.content = this.postContent
-      post.summary = this.postSummary
-      post.categoryId = this.postCategoryId
+      post.isPublish = this.form.isPublish
+      post.slug = this.form.slug
+      post.summary = this.form.summary
+      post.categoryId = this.form.category
 
       if (this.mode === 'new') {
         this.$api.blogPost.add(post)
@@ -159,8 +177,9 @@ export default {
 <style lang="scss">
 .v-md-editor {
   text-align: start;
-  .codemirror-wrapper{
-    .CodeMirror{
+
+  .codemirror-wrapper {
+    .CodeMirror {
       font-size: 18px !important;
     }
   }

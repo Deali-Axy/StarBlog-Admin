@@ -1,5 +1,11 @@
 import axios from "../axios"
 
+export const getNodes = () => {
+  return axios({
+    url: `Category/Nodes`,
+  })
+}
+
 // 获取全部分类
 export const getAll = () => {
   return axios({

@@ -3,6 +3,7 @@ import * as auth from './modules/auth'
 import * as blog from './modules/blog'
 import * as blogPost from './modules/blogPost'
 import * as category from './modules/category'
+import * as comment from './modules/comment'
 import * as config from './modules/config'
 import * as featuredCategory from './modules/featuredCategory'
 import * as featuredPhoto from './modules/featuredPhoto'
@@ -18,6 +19,7 @@ export default {
   blog,
   blogPost,
   category,
+  comment,
   config,
   featuredCategory,
   featuredPhoto,

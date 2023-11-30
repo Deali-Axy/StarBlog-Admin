@@ -22,6 +22,7 @@
     <el-footer height="30px">
       <!-- 分页 -->
       <el-pagination
+        class="py-3 text-center"
         @size-change="handlePageSizeChange"
         @current-change="handleCurrentPageChange"
         :current-page="currentPage"

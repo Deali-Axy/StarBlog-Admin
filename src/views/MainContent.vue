@@ -124,7 +124,7 @@ export default {
   left: 1px;
   right: 1px;
   bottom: 0;
-  background: rgba(67, 69, 70, 0.1);
+  //background: rgba(67, 69, 70, 0.1);
 
   .tabs {
     position: fixed;
@@ -163,7 +163,7 @@ export default {
   }
 
   .tabs-tools:hover {
-    background: rgba(200, 206, 206, 1);
+     background: rgba(200, 206, 206, 1);
   }
 
   .main-content {

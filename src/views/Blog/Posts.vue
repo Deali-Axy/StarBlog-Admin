@@ -40,7 +40,6 @@
       <el-table
         ref="table"
         :data="posts"
-        height="730"
         stripe
         style="width: 100%"
         @selection-change="handleSelectionChange"
@@ -95,10 +94,10 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-main>
-    <el-footer height="30px">
+
       <!-- 分页 -->
       <el-pagination
+        class="py-3 text-center"
         @size-change="handlePageSizeChange"
         @current-change="handleCurrentPageChange"
         :current-page="currentPage"
@@ -108,7 +107,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalCount">
       </el-pagination>
-    </el-footer>
+    </el-main>
   </el-container>
 </template>
 

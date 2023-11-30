@@ -1,7 +1,7 @@
 <template>
   <el-row>
-    <el-col :span="8">
-      <el-form ref="uploadForm" :model="form" :rules="formRules" label-width="80px">
+    <el-col :span="8" :offset="8">
+      <el-form ref="uploadForm" :model="form" :rules="formRules" label-width="auto" label-position="top">
         <el-form-item label="文章标题" prop="title">
           <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
@@ -22,17 +22,20 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <el-upload ref="upload" drag action=""
-                 accept="application/x-zip-compressed,.zip"
-                 :file-list="fileList"
-                 :on-change="onUploadChange"
-                 :auto-upload="false">
+      <el-upload
+        class="w-100"
+        ref="upload" drag action=""
+        accept="application/x-zip-compressed,.zip"
+        :file-list="fileList"
+        :on-change="onUploadChange"
+        :auto-upload="false"
+      >
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip" slot="tip">只能上传zip文件</div>
       </el-upload>
 
-      <el-row type="flex" justify="end">
+      <el-row type="flex" justify="end" class="py-3">
         <el-button type="primary" @click="submitUpload">确 定</el-button>
       </el-row>
     </el-col>
@@ -111,8 +114,13 @@ export default {
 }
 </script>
 
-<style scoped>
-.el-select {
-  width: 100%;
+<style lang="scss">
+.el-upload {
+  width: 100% !important;
 }
+
+.el-upload-dragger {
+  width: 100% !important;
+}
+
 </style>

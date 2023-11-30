@@ -1,92 +1,101 @@
 <template>
-  <el-container>
-    <el-header height="30px">
-      <el-row type="flex" justify="start">
-        <el-button @click="handleRefresh" :loading="isRefreshLoading">刷新</el-button>
-      </el-row>
-    </el-header>
-    <el-main>
-      <el-table
-        ref="table"
-        :data="data"
-        height="730"
-        stripe
-        style="width: 100%"
-        :default-sort="{prop: 'time',order:'descending'}">
-        <el-table-column
-          type="selection"
-          width="30"/>
-        <el-table-column
-          prop="id"
-          label="id"
-          :show-overflow-tooltip="true"/>
-        <el-table-column
-          prop="anonymousUser.name"
-          label="用户名"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          prop="anonymousUser.email"
-          label="邮箱"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          prop="createdTime"
-          label="评论时间"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          prop="content"
-          label="评论内容"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          prop="visible"
-          label="是否展示"
-        >
-          <template slot-scope="scope">
-            <el-tag size="medium" v-if="scope.row.visible">{{ scope.row.visible }}</el-tag>
-            <el-tag size="medium" v-else type="danger">{{ scope.row.visible }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="150">
-          <template slot-scope="scope">
-            <el-popover
-              placement="top"
-              width="160"
-              v-model="visible">
-              <p>这是一段内容这是一段内容确定删除吗？</p>
-              <div style="text-align: right; margin: 0">
-                <el-button size="mini" type="text" @click="visible = false">取消</el-button>
-                <el-button type="primary" size="mini" @click="visible = false">确定</el-button>
-              </div>
-              <el-link slot="reference">删除</el-link>
-            </el-popover>
-            <el-link type="info" @click="handleAccept(scope.row)">通过</el-link>
-            <el-link type="danger" @click="handleReject(scope.row)">拒绝</el-link>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-main>
-  </el-container>
+  <div>
+    <audit-reason-dialog ref="auditReasonDialog" @onAccept="onAccept" @onReject="onReject"/>
+    <el-table
+      ref="table"
+      v-loading="loading"
+      :data="data"
+      stripe
+      class="w-100"
+      :default-sort="{prop: 'time',order:'descending'}">
+      <el-table-column
+        type="selection"
+        width="30"/>
+      <el-table-column
+        prop="id"
+        label="id"
+        :show-overflow-tooltip="true"/>
+      <el-table-column
+        prop="anonymousUser.name"
+        label="用户名"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="anonymousUser.email"
+        label="邮箱"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="文章"
+        :show-overflow-tooltip="true"
+      >
+        <template slot-scope="scope">
+          <el-link :href="`${baseUrl}/Blog/Post/${scope.row.post.id}`" target="_blank">{{ scope.row.post.title }}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="createdTime"
+        label="评论时间"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="content"
+        label="评论内容"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="visible"
+        label="是否展示"
+      >
+        <template slot-scope="scope">
+          <el-tag size="medium" v-if="scope.row.visible">是</el-tag>
+          <el-tag size="medium" v-else type="danger">否</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="right">
+        <template slot="header" slot-scope="scope">
+          <el-button @click="handleRefresh" :loading="isRefreshLoading" type="primary" size="mini">刷新</el-button>
+        </template>
+        <template slot-scope="scope">
+          <el-link type="primary" @click="handleAccept(scope.row)">通过</el-link>
+          <el-link type="danger" @click="handleReject(scope.row)">拒绝</el-link>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 分页 -->
+    <el-pagination
+      class="py-3 text-center"
+      @size-change="handlePageSizeChange"
+      @current-change="handleCurrentPageChange"
+      :current-page="pagination.pageNumber"
+      :page-sizes="[10, 20, 40, 60, 80, 100]"
+      :page-size="pagination.pageSize"
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="pagination.totalItemCount">
+    </el-pagination>
+  </div>
 </template>
 
 <script>
-import * as util from "util";
 import {dateTimeBeautify} from "@/utils/dateTime";
+import AuditReasonDialog from '@/views/Comment/AuditReasonDialog.vue'
+import {baseUrl} from '@/utils/global'
+
 
 export default {
   name: "CommentNeedAuditList",
   components: {
+    AuditReasonDialog,
   },
   data() {
     return {
       data: [],
+      pagination: null,
+      loading: false,
       isRefreshLoading: false,
-      visible: false,
+      baseUrl: baseUrl
     }
   },
   mounted() {
@@ -95,8 +104,10 @@ export default {
   methods: {
     async loadData() {
       return new Promise((resolve, reject) => {
+        this.loading = true
         this.$api.comment.getNeedAuditList()
           .then(res => {
+            this.pagination = res.pagination
             this.data = res.data
             this.data.forEach(e => {
               e.createdTime = dateTimeBeautify(e.createdTime)
@@ -108,6 +119,7 @@ export default {
             this.$message.error(`获取列表出错：${res.message}`)
             reject(res)
           })
+          .finally(() => this.loading = false)
       })
     },
     async handleRefresh() {
@@ -115,11 +127,36 @@ export default {
       await this.loadData()
       this.isRefreshLoading = false
     },
-    handleAccept() {
-
+    handleAccept(item) {
+      this.$refs.auditReasonDialog.accept(item.id)
     },
-    handleReject() {
+    onAccept(itemId, reason) {
+      this.loading = true
+      this.$api.comment.accept(itemId, reason)
+        .then(res => {
+          this.$message.success('操作成功！')
+        })
+        .catch(res => {
+          console.error(res)
+          this.$message.warning(`操作失败！${res.message}`)
+        })
+        .finally(() => this.loadData())
+    },
 
+    handleReject(item) {
+      this.$refs.auditReasonDialog.reject(item.id)
+    },
+    onReject(itemId, reason) {
+      this.loading = true
+      this.$api.comment.reject(itemId, reason)
+        .then(res => {
+          this.$message.info('操作成功！')
+        })
+        .catch(res => {
+          console.error(res)
+          this.$message.warning(`操作失败！${res.message}`)
+        })
+        .finally(() => this.loadData())
     },
     onItemDeleteClick(item) {
       this.$confirm('此操作将删除该链接, 是否继续?', '提示', {
@@ -132,6 +169,14 @@ export default {
           .catch(res => this.$message.error(`操作失败。${res.message}`))
           .finally(() => this.loadData())
       }).catch(() => this.$message('已取消删除'))
+    },
+    handlePageSizeChange(pageSize) {
+      this.pagination.pageSize = pageSize
+      this.loadData()
+    },
+    handleCurrentPageChange(page) {
+      this.pagination.pageNumber = page
+      this.loadData()
     },
   }
 }

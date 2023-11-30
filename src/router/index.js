@@ -47,7 +47,7 @@ const router = new Router({
         },
         {path: 'category/list', name: '分类列表', component: Categories},
         {path: 'category/featured', name: '推荐分类', component: FeaturedCategories},
-        {path: 'comment/need-audit', name: '推荐分类', component: CommentNeedAuditList},
+        {path: 'comment/need-audit', name: '审核评论', component: CommentNeedAuditList},
         {path: 'post/list', name: '文章列表', component: Posts},
         {path: 'post/featured', name: '推荐文章', component: FeaturedPosts},
         {path: 'post/top', name: '置顶文章', component: TopPost},

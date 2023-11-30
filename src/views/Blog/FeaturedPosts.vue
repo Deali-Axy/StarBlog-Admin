@@ -1,48 +1,43 @@
 <template>
-  <el-row>
-    <el-col :span="15">
-      <el-table
-        :data="tableData"
-        :height="800"
-        style="width: 100%;">
-        <el-table-column
-          prop="id"
-          label="ID"
-          width="50">
-        </el-table-column>
-        <el-table-column
-          prop="post.id"
-          label="文章ID"
-          width="150">
-        </el-table-column>
-        <el-table-column
-          prop="post.category.name"
-          label="文章分类"
-          width="250">
-        </el-table-column>
-        <el-table-column
-          prop="post.title"
-          label="文章标题"
-          width="400" :show-overflow-tooltip="true">
-        </el-table-column>
-        <el-table-column align="right">
-          <template slot="header" slot-scope="scope">
-            <el-input
-              v-model="search"
-              size="mini"
-              placeholder="输入关键字搜索"/>
-          </template>
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="warning" plain
-              @click="cancelFeatured(scope.$index, scope.row)">取消推荐
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-col>
-  </el-row>
+  <el-table
+    :data="tableData"
+    style="width: 100%;">
+    <el-table-column
+      prop="id"
+      label="ID"
+      width="50">
+    </el-table-column>
+    <el-table-column
+      prop="post.id"
+      label="文章ID"
+      width="150">
+    </el-table-column>
+    <el-table-column
+      prop="post.category.name"
+      label="文章分类"
+      width="250">
+    </el-table-column>
+    <el-table-column
+      prop="post.title"
+      label="文章标题"
+      :show-overflow-tooltip="true">
+    </el-table-column>
+    <el-table-column width="280" align="right">
+      <template slot="header" slot-scope="scope">
+        <el-input
+          v-model="search"
+          size="mini"
+          placeholder="输入关键字搜索"/>
+      </template>
+      <template slot-scope="scope">
+        <el-button
+          size="mini"
+          type="warning" plain
+          @click="cancelFeatured(scope.$index, scope.row)">取消推荐
+        </el-button>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script>

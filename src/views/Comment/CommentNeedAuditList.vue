@@ -2,6 +2,7 @@
   <el-container>
     <el-header height="30px">
       <el-row type="flex" justify="start">
+        <el-button @click="handleRefresh" :loading="isRefreshLoading">刷新</el-button>
       </el-row>
     </el-header>
     <el-main>
@@ -18,7 +19,7 @@
         <el-table-column
           prop="id"
           label="id"
-          width="100"/>
+          :show-overflow-tooltip="true"/>
         <el-table-column
           prop="anonymousUser.name"
           label="用户名"
@@ -30,13 +31,18 @@
           :show-overflow-tooltip="true"
         />
         <el-table-column
+          prop="createdTime"
+          label="评论时间"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
           prop="content"
           label="评论内容"
           :show-overflow-tooltip="true"
         />
         <el-table-column
           prop="visible"
-          label="visible"
+          label="是否展示"
         >
           <template slot-scope="scope">
             <el-tag size="medium" v-if="scope.row.visible">{{ scope.row.visible }}</el-tag>
@@ -48,8 +54,19 @@
           label="操作"
           width="150">
           <template slot-scope="scope">
-            <el-link type="info" @click="onItemEditClick(scope.row)">编辑</el-link>
-            <el-link type="danger" @click="onItemDeleteClick(scope.row)">删除</el-link>
+            <el-popover
+              placement="top"
+              width="160"
+              v-model="visible">
+              <p>这是一段内容这是一段内容确定删除吗？</p>
+              <div style="text-align: right; margin: 0">
+                <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+                <el-button type="primary" size="mini" @click="visible = false">确定</el-button>
+              </div>
+              <el-link slot="reference">删除</el-link>
+            </el-popover>
+            <el-link type="info" @click="handleAccept(scope.row)">通过</el-link>
+            <el-link type="danger" @click="handleReject(scope.row)">拒绝</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -58,22 +75,51 @@
 </template>
 
 <script>
+import * as util from "util";
+import {dateTimeBeautify} from "@/utils/dateTime";
+
 export default {
   name: "CommentNeedAuditList",
-  components: {},
+  components: {
+  },
   data() {
     return {
-      data: []
+      data: [],
+      isRefreshLoading: false,
+      visible: false,
     }
   },
   mounted() {
     this.loadData()
   },
   methods: {
-    loadData() {
-      this.$api.comment.getNeedAuditList()
-        .then(res => this.data = res.data)
-        .catch(res => this.$message.error(`获取列表出错：${res.message}`))
+    async loadData() {
+      return new Promise((resolve, reject) => {
+        this.$api.comment.getNeedAuditList()
+          .then(res => {
+            this.data = res.data
+            this.data.forEach(e => {
+              e.createdTime = dateTimeBeautify(e.createdTime)
+              e.updatedTime = dateTimeBeautify(e.updatedTime)
+            })
+            resolve(res.data)
+          })
+          .catch(res => {
+            this.$message.error(`获取列表出错：${res.message}`)
+            reject(res)
+          })
+      })
+    },
+    async handleRefresh() {
+      this.isRefreshLoading = true
+      await this.loadData()
+      this.isRefreshLoading = false
+    },
+    handleAccept() {
+
+    },
+    handleReject() {
+
     },
     onItemDeleteClick(item) {
       this.$confirm('此操作将删除该链接, 是否继续?', '提示', {

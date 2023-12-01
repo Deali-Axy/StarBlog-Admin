@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="text-center">
     <el-row :gutter="8">
       <el-col :span="4">
         <!--阅读总量-->

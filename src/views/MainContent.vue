@@ -5,7 +5,7 @@
     <!-- 标签页 -->
     <div class="tab-container" :style="{'display': fullscreen? 'none':''}">
       <el-tabs
-        class="tabs"
+        class="tabs text-center"
         :class="$store.state.app.collapse?'position-collapse-left':'position-left'"
         v-model="mainTabsActiveName"
         :closable="true" type="card"

@@ -1,5 +1,6 @@
 <template>
   <el-table
+    v-loading="loading"
     :data="tableData"
     :height="800"
     style="width: 100%;">
@@ -67,6 +68,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       data: [],
       search: ''
     }
@@ -82,8 +84,14 @@ export default {
   },
   methods: {
     loadData() {
+      this.loading = true
       this.$api.category.getAll()
         .then(res => this.data = res.data)
+        .catch(res => {
+          console.error(res)
+          this.$message.error(res.message)
+        })
+        .finally(() => this.loading = false)
     },
     handleAdd() {
       this.$refs.addDialog.add()

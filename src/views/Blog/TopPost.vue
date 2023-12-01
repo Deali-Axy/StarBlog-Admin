@@ -1,20 +1,22 @@
 <template>
   <el-result icon="info" title="置顶文章" subTitle="当前置顶文章信息">
     <template slot="extra">
-      <p>ID：{{ data.id }}</p>
-      <p>标题：{{ data.title }}</p>
       <p>分类：{{ data.category.name }}</p>
-      <el-button type="primary" size="medium" @click="viewPost" plain>查看文章</el-button>
+      <p>ID：{{ data.id }}</p>
+      <el-link type="primary" :href="`${baseUrl}/Blog/Post/${data.id}`" target="_blank">标题：{{ data.title }}</el-link>
     </template>
   </el-result>
 </template>
 
 <script>
+import {baseUrl} from "@/utils/global";
+
 export default {
   name: "TopPost",
   data() {
     return {
-      data: null
+      data: null,
+      baseUrl: baseUrl
     }
   },
   mounted() {
@@ -25,9 +27,6 @@ export default {
       this.$api.blog.top()
         .then(res => this.data = res.data)
     },
-    viewPost() {
-      this.$message('功能未实现')
-    }
   }
 }
 </script>

@@ -10,7 +10,8 @@
           <el-col :span="7">
             <!-- 分类筛选 -->
             <!-- 为el-select添加filterable属性即可启用搜索功能。默认情况下，Select 会找出所有label属性包含输入值的选项。 -->
-            <el-select v-model="currentCategoryName" clearable filterable placeholder="请选择分类" v-on:change="handleCategoryChange">
+            <el-select v-model="currentCategoryName" clearable filterable placeholder="请选择分类"
+                       v-on:change="handleCategoryChange">
               <el-option
                 v-for="item in categories"
                 :key="item.id" :label="item.name" :value="item.id"/>
@@ -38,6 +39,7 @@
     <el-main>
       <!-- 只要在el-table元素中定义了height属性，即可实现固定表头的表格，而不需要额外的代码。 -->
       <el-table
+        v-loading="loading"
         ref="table"
         :data="posts"
         stripe
@@ -113,10 +115,12 @@
 
 <script>
 import * as utils from '@/utils/dateTime'
+
 export default {
   name: 'Posts',
   data() {
     return {
+      loading: false,
       currentPage: 1,
       pageSize: 20,
       totalCount: 1000,
@@ -151,6 +155,7 @@ export default {
     },
     // 加载博客文章
     loadBlogPosts() {
+      this.loading = true
       this.$api.blogPost.getList(
         false, this.currentStatus,
         this.currentCategoryId, this.search, this.sortBy,
@@ -164,6 +169,7 @@ export default {
           item.lastUpdateTime = utils.dateTimeBeautify(item.lastUpdateTime)
         })
       }).catch(res => this.$message.error(`获取文章列表出错：${res.message}`))
+        .finally(() => this.loading = false)
     },
     // 加载文章状态列表
     loadStatusList() {

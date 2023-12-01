@@ -1,5 +1,6 @@
 <template>
   <el-table
+    v-loading="loading"
     :data="tableData"
     style="width: 100%;">
     <el-table-column
@@ -45,6 +46,7 @@ export default {
   name: "FeaturedPosts",
   data() {
     return {
+      loading: false,
       data: [],
       search: ''
     }
@@ -60,8 +62,14 @@ export default {
   },
   methods: {
     loadData() {
+      this.loading = true
       this.$api.featuredPost.getAll()
         .then(res => this.data = res.data)
+        .catch(res => {
+          console.error(res)
+          this.$message.error(res.message)
+        })
+        .finally(() => this.loading = false)
     },
     cancelFeatured(index, item) {
       this.$confirm('你确定吗?', 'Are you sure?', {type: 'warning'})

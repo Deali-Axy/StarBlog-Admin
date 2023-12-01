@@ -9,15 +9,15 @@
           <el-input v-model="form.summary" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="文章分类" prop="categoryId">
-          <el-select v-model="form.categoryId" clearable filterable placeholder="请选择分类"
-                     v-on:change="handleCategoryChange">
+          <el-select clearable filterable placeholder="请选择分类" class="w-100"
+                     v-model="form.categoryId"  v-on:change="handleCategoryChange">
             <el-option
               v-for="item in categories"
               :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
         </el-form-item>
         <el-form-item label="ZIP压缩包编码" prop="zipEncoding">
-          <el-select v-model="form.zipEncoding" clearable filterable placeholder="ZIP压缩包编码">
+          <el-select v-model="form.zipEncoding" class="w-100" clearable filterable placeholder="ZIP压缩包编码">
             <el-option v-for="item in zipCodings" :key="item" :label="item" :value="item"/>
           </el-select>
         </el-form-item>

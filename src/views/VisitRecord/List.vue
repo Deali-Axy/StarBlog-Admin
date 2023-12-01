@@ -2,6 +2,7 @@
   <div>
     <el-table
       ref="table"
+      v-loading="loading"
       :data="data"
       stripe
       style="width: 100%"
@@ -64,6 +65,7 @@ export default {
   name: "VisitRecordList",
   data() {
     return {
+      loading: false,
       currentPage: 1,
       pageSize: 20,
       totalCount: 1000,
@@ -77,6 +79,7 @@ export default {
   },
   methods: {
     loadVisitRecord: function () {
+      this.loading = true
       this.$api.visitRecord.getList(this.currentPage, this.pageSize)
         .then(res => {
           console.log(res)
@@ -87,6 +90,7 @@ export default {
           })
         })
         .catch(res => this.$message.error(`获取访问记录列表出错：${res.message}`))
+        .finally(() => this.loading = false)
     },
     handlePageSizeChange(pageSize) {
       this.pageSize = pageSize

@@ -221,4 +221,8 @@ export default {
 .icon-lg {
   font-size: 40px !important;
 }
+
+.el-card__header{
+  padding: 8px 20px;
+}
 </style>

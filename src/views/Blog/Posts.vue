@@ -3,22 +3,21 @@
     <el-header height="30px">
       <el-row type="flex" justify="space-between">
         <el-row :gutter="10">
-          <el-col :span="7">
+          <el-col :span="8">
             <el-input v-model="search"
                       placeholder="请输入关键字" prefix-icon="el-icon-search"></el-input>
           </el-col>
-          <el-col :span="7">
-            <!-- 分类筛选 -->
-            <!-- 为el-select添加filterable属性即可启用搜索功能。默认情况下，Select 会找出所有label属性包含输入值的选项。 -->
-            <el-select v-model="currentCategoryName" clearable filterable placeholder="请选择分类"
-                       v-on:change="handleCategoryChange">
-              <el-option
-                v-for="item in categories"
-                :key="item.id" :label="item.name" :value="item.id"/>
-            </el-select>
+          <el-col :span="9">
+            <el-cascader class="w-100" :options="categoriesTree" v-model="currentCategoryId" filterable clearable
+                         placeholder="分类筛选"
+                         :props="{
+                              checkStrictly:true,
+                              expandTrigger: 'hover',
+                              emitPath:false,
+                         }"></el-cascader>
           </el-col>
-          <el-col :span="7">
-            <el-select v-model="currentStatus" clearable filterable placeholder="请选择文章状态">
+          <el-col :span="4">
+            <el-select v-model="currentStatus" clearable filterable placeholder="文章状态">
               <el-option
                 v-for="item in statusList"
                 :key="item" :label="item" :value="item"
@@ -62,7 +61,11 @@
           label="标题"
           sortable
           :show-overflow-tooltip="true"
-          width="600"/>
+          width="600">
+          <template v-slot="scope">
+            <el-link :href="`${baseUrl}/Blog/Post/${scope.row.id}`" target="_blank">{{ scope.row.title }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="creationTime"
           label="创建时间"
@@ -80,14 +83,14 @@
           fixed="right"
           label="操作"
           width="150">
-          <template slot-scope="scope">
+          <template v-slot="scope">
             <el-link type="info" @click="onItemEditClick(scope.row)">编辑</el-link>
             <el-link type="danger" @click="onItemDeleteClick(scope.row)">删除</el-link>
             <el-dropdown @command="cmd=>onItemDropdownClick(scope.row,cmd)">
               <el-button type="text" size="small">
                 更多<i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
-              <el-dropdown-menu slot="dropdown">
+              <el-dropdown-menu v-slot="dropdown">
                 <el-dropdown-item command="setFeatured">设置推荐</el-dropdown-item>
                 <el-dropdown-item command="cancelFeatured">取消推荐</el-dropdown-item>
                 <el-dropdown-item command="setTop">设置置顶</el-dropdown-item>
@@ -115,11 +118,13 @@
 
 <script>
 import * as utils from '@/utils/dateTime'
+import {baseUrl} from "@/utils/global";
 
 export default {
   name: 'Posts',
   data() {
     return {
+      baseUrl: baseUrl,
       loading: false,
       currentPage: 1,
       pageSize: 20,
@@ -127,10 +132,9 @@ export default {
       search: '',
       sortBy: null,
       posts: [],
-      categories: [],
+      categoriesTree: [],
       statusList: [],
       currentCategoryId: 0,
-      currentCategoryName: '',
       currentStatus: '',
       selectedPosts: [],
       hasSelection: false
@@ -147,11 +151,22 @@ export default {
   methods: {
     // 加载分类
     loadCategories() {
-      this.$api.category.getAll().then(res => {
-        let categories = [{id: 0, name: '全部'}]
-        categories = categories.concat(res.data)
-        this.categories = categories
-      }).catch(res => this.$message.error(`加载分类列表出错：${res.message}`))
+      const mapNodes = (nodes) => {
+        let items = []
+        if (!nodes) return null
+        for (const node of nodes) {
+          items.push({
+            label: `${node.text} (${node.tags[0]})`,
+            value: node.id,
+            children: mapNodes(node.nodes)
+          })
+        }
+        return items
+      }
+
+      this.$api.category.getNodes()
+        .then(res => this.categoriesTree = mapNodes(res.data))
+        .catch(res => this.$message.error(`加载分类列表出错：${res.message}`))
     },
     // 加载博客文章
     loadBlogPosts() {

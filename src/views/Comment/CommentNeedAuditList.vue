@@ -29,7 +29,7 @@
         label="文章"
         :show-overflow-tooltip="true"
       >
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-link :href="`${baseUrl}/Blog/Post/${scope.row.post.id}`" target="_blank">{{ scope.row.post.title }}</el-link>
         </template>
       </el-table-column>

@@ -51,12 +51,12 @@
         <el-col :span="12">
           <el-form-item label="Slug" prop="slug">
             <el-input v-model="form.slug" maxlength="150" show-word-limit placeholder="Slug"></el-input>
-            <small>(友好地址名，只能使用字母、数字、-连字符、_下划线，不超过150个字符)</small>
+            <small>友好地址名，只能使用字母、数字、-连字符、_下划线，不超过150个字符</small>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="分类" prop="category">
-            <el-cascader class="w-100" :options="categoryTree" :props="{
+            <el-cascader class="w-100" :options="categoryTree" clearable :props="{
                 checkStrictly:true,
                 expandTrigger:'hover',
                 emitPath:false,

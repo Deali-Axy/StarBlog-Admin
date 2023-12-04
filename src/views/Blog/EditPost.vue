@@ -12,7 +12,7 @@
 
     <div class="d-flex justify-content-between mb-1">
       <div>标题</div>
-      <el-link type="primary" target="_blank">{{ `${baseUrl}/Blog/Post/${post.id}` }}</el-link>
+      <el-link v-if="post!==null" type="primary" target="_blank">{{ `${baseUrl}/Blog/Post/${post.id}` }}</el-link>
     </div>
     <el-input v-model="postTitle" placeholder="文章标题" class="mb-3"></el-input>
 
@@ -81,9 +81,13 @@
 // todo 应该增加一个关闭页面提示，或者是关闭页面自动保存的功能~
 import {baseUrl} from "@/utils/global";
 import {dateTimeBeautify} from "@/utils/dateTime";
+import VMdEditor from "@kangc/v-md-editor/lib/codemirror-editor";
 
 export default {
   name: "EditPost",
+  components: {
+    VMdEditor
+  },
   data() {
     return {
       baseUrl: baseUrl,

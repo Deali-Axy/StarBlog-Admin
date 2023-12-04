@@ -7,7 +7,7 @@
             <el-input v-model="search"
                       placeholder="请输入关键字" prefix-icon="el-icon-search"></el-input>
           </el-col>
-          <el-col :span="9">
+          <el-col :span="8">
             <el-cascader class="w-100" :options="categoriesTree" v-model="currentCategoryId" filterable clearable
                          placeholder="分类筛选"
                          :props="{
@@ -16,8 +16,8 @@
                               emitPath:false,
                          }"></el-cascader>
           </el-col>
-          <el-col :span="4">
-            <el-select v-model="currentStatus" clearable filterable placeholder="文章状态">
+          <el-col :span="3">
+            <el-select v-model="currentStatus" clearable filterable placeholder="文章标记">
               <el-option
                 v-for="item in statusList"
                 :key="item" :label="item" :value="item"
@@ -25,6 +25,12 @@
             </el-select>
           </el-col>
           <el-col :span="3">
+            <el-select v-model="currentIsPublish" clearable placeholder="文章状态">
+              <el-option label="已发布" :value="true"/>
+              <el-option label="草稿" :value="false"/>
+            </el-select>
+          </el-col>
+          <el-col :span="2">
             <el-button @click="handleSearchClick">搜索</el-button>
           </el-col>
         </el-row>
@@ -51,38 +57,43 @@
         <el-table-column
           prop="id"
           label="ID"
-          width="180"/>
+          :show-overflow-tooltip="true"/>
         <el-table-column
-          prop="status"
-          label="文章状态"
-          width="100"/>
+          prop="isPublish"
+          label="文章状态">
+          <template v-slot="scope">
+            <el-tag v-if="scope.row.isPublish">已发布</el-tag>
+            <el-tag type="info" v-else>草稿</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="title"
           label="标题"
+          width="500"
           sortable
-          :show-overflow-tooltip="true"
-          width="600">
+          :show-overflow-tooltip="true">
           <template v-slot="scope">
             <el-link :href="`${baseUrl}/Blog/Post/${scope.row.id}`" target="_blank">{{ scope.row.title }}</el-link>
           </template>
         </el-table-column>
         <el-table-column
+          prop="status"
+          label="文章标记"/>
+        <el-table-column
           prop="creationTime"
           label="创建时间"
-          sortable
-          width="150"/>
+          sortable/>
         <el-table-column
           prop="lastUpdateTime"
           label="上次更新"
-          sortable
-          width="150"/>
+          sortable/>
         <el-table-column
           prop="category.name"
-          label="分类"/>
+          label="分类"
+          :show-overflow-tooltip="true"/>
         <el-table-column
-          fixed="right"
-          label="操作"
-          width="150">
+          align="right"
+          label="操作">
           <template v-slot="scope">
             <el-link type="info" @click="onItemEditClick(scope.row)">编辑</el-link>
             <el-link type="danger" @click="onItemDeleteClick(scope.row)">删除</el-link>
@@ -136,6 +147,7 @@ export default {
       statusList: [],
       currentCategoryId: 0,
       currentStatus: '',
+      currentIsPublish: null,
       selectedPosts: [],
       hasSelection: false
     }

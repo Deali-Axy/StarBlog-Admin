@@ -48,19 +48,25 @@
       </el-form-item>
 
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item label="Slug" prop="slug">
             <el-input v-model="form.slug" maxlength="150" show-word-limit placeholder="Slug"></el-input>
             <small>友好地址名，只能使用字母、数字、-连字符、_下划线，不超过150个字符</small>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item label="分类" prop="category">
             <el-cascader class="w-100" :options="categoryTree" clearable :props="{
                 checkStrictly:true,
                 expandTrigger:'hover',
                 emitPath:false,
               }" v-model="form.category" filterable></el-cascader>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="文章标记" prop="status">
+            <el-input v-model="form.status" maxlength="20" show-word-limit placeholder="Status"></el-input>
+            <small>提取原markdown文件的文件名前缀，用于区分文章状态。如：未完成、老文</small>
           </el-form-item>
         </el-col>
       </el-row>
@@ -100,6 +106,7 @@ export default {
       categoryTree: [],
       form: {
         isPublish: false,
+        status: '',
         slug: '',
         summary: '',
         category: 0,
@@ -148,6 +155,7 @@ export default {
             this.post.creationTime = dateTimeBeautify(this.post.creationTime)
             this.post.lastUpdateTime = dateTimeBeautify(this.post.lastUpdateTime)
             this.form.slug = this.post.slug
+            this.form.status = this.post.status
             this.form.isPublish = this.post.isPublish
             this.form.summary = this.post.summary
             this.form.category = this.post.categoryId
@@ -189,6 +197,7 @@ export default {
       post.content = this.postContent
       post.isPublish = this.form.isPublish
       post.slug = this.form.slug
+      post.status = this.form.status
       post.summary = this.form.summary
       post.categoryId = this.form.category
 

@@ -26,6 +26,7 @@
           </el-col>
           <el-col :span="3">
             <el-select v-model="currentIsPublish" clearable placeholder="文章状态">
+              <el-option label="全部" :value="null"/>
               <el-option label="已发布" :value="true"/>
               <el-option label="草稿" :value="false"/>
             </el-select>
@@ -146,7 +147,7 @@ export default {
       categoriesTree: [],
       statusList: [],
       currentCategoryId: 0,
-      currentStatus: '',
+      currentStatus: null,
       currentIsPublish: null,
       selectedPosts: [],
       hasSelection: false
@@ -184,7 +185,7 @@ export default {
     loadBlogPosts() {
       this.loading = true
       this.$api.blogPost.getList(
-        false, this.currentStatus,
+        this.currentIsPublish, this.currentStatus,
         this.currentCategoryId, this.search, this.sortBy,
         this.currentPage, this.pageSize
       ).then(res => {

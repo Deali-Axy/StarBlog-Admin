@@ -1,6 +1,5 @@
 <template>
   <div>
-    <audit-reason-dialog ref="auditReasonDialog" @onAccept="onAccept" @onReject="onReject"/>
     <el-table
       ref="table"
       v-loading="loading"
@@ -16,21 +15,22 @@
         label="id"
         :show-overflow-tooltip="true"/>
       <el-table-column
-        prop="anonymousUser.name"
-        label="用户名"
+        label="用户信息"
         :show-overflow-tooltip="true"
-      />
-      <el-table-column
-        prop="anonymousUser.email"
-        label="邮箱"
-        :show-overflow-tooltip="true"
-      />
+      >
+        <template v-slot="scope">
+          <el-link type="text" @click="showUserInfo(scope.row)">{{ scope.row.anonymousUser.email }}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column
         label="文章"
         :show-overflow-tooltip="true"
       >
         <template v-slot="scope">
-          <el-link :href="`${baseUrl}/Blog/Post/${scope.row.post.id}`" target="_blank">{{ scope.row.post.title }}</el-link>
+          <el-link :href="`${baseUrl}/Blog/Post/${scope.row.post.id}`" target="_blank">{{
+              scope.row.post.title
+            }}
+          </el-link>
         </template>
       </el-table-column>
       <el-table-column
@@ -44,11 +44,24 @@
         :show-overflow-tooltip="true"
       />
       <el-table-column
+        prop="reason"
+        label="补充原因"
+        :show-overflow-tooltip="true"/>
+      <el-table-column
         prop="visible"
         label="是否展示"
       >
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tag size="medium" v-if="scope.row.visible">是</el-tag>
+          <el-tag size="medium" v-else type="danger">否</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="isNeedAudit"
+        label="需要审核"
+      >
+        <template v-slot="scope">
+          <el-tag size="medium" v-if="scope.row.isNeedAudit">是</el-tag>
           <el-tag size="medium" v-else type="danger">否</el-tag>
         </template>
       </el-table-column>
@@ -80,22 +93,24 @@
 
 <script>
 import {dateTimeBeautify} from "@/utils/dateTime";
-import AuditReasonDialog from '@/views/Comment/AuditReasonDialog.vue'
 import {baseUrl} from '@/utils/global'
 
 
 export default {
-  name: "CommentNeedAuditList",
-  components: {
-    AuditReasonDialog,
-  },
+  name: "Comments",
   data() {
     return {
       data: [],
-      pagination: null,
+      postId: null,
+      pagination: {
+        pageNumber: 1,
+        pageSize: 10,
+      },
       loading: false,
       isRefreshLoading: false,
-      baseUrl: baseUrl
+      baseUrl: baseUrl,
+      search: '',
+      sortBy: null,
     }
   },
   mounted() {
@@ -105,7 +120,13 @@ export default {
     async loadData() {
       return new Promise((resolve, reject) => {
         this.loading = true
-        this.$api.comment.getNeedAuditList()
+        this.$api.comment.getList(
+          this.postId,
+          this.search,
+          this.sortBy,
+          this.pagination.pageNumber,
+          this.pagination.pageSize,
+        )
           .then(res => {
             this.pagination = res.pagination
             this.data = res.data
@@ -128,35 +149,38 @@ export default {
       this.isRefreshLoading = false
     },
     handleAccept(item) {
-      this.$refs.auditReasonDialog.accept(item.id)
+      this.$prompt('请输入原因', '审核评论 - 补充原因', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({value}) => {
+        this.$api.comment.accept(item.id, value)
+          .then(res => {
+            this.$message.success('操作成功！')
+          })
+          .catch(res => {
+            console.error(res)
+            this.$message.warning(`操作失败！${res.message}`)
+          })
+          .finally(() => this.loadData())
+      }).catch(() => {
+      })
     },
-    onAccept(itemId, reason) {
-      this.loading = true
-      this.$api.comment.accept(itemId, reason)
-        .then(res => {
-          this.$message.success('操作成功！')
-        })
-        .catch(res => {
-          console.error(res)
-          this.$message.warning(`操作失败！${res.message}`)
-        })
-        .finally(() => this.loadData())
-    },
-
     handleReject(item) {
-      this.$refs.auditReasonDialog.reject(item.id)
-    },
-    onReject(itemId, reason) {
-      this.loading = true
-      this.$api.comment.reject(itemId, reason)
-        .then(res => {
-          this.$message.info('操作成功！')
-        })
-        .catch(res => {
-          console.error(res)
-          this.$message.warning(`操作失败！${res.message}`)
-        })
-        .finally(() => this.loadData())
+      this.$prompt('请输入原因', '审核评论 - 补充原因', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({value}) => {
+        this.$api.comment.reject(item.id, value)
+          .then(res => {
+            this.$message.success('操作成功！')
+          })
+          .catch(res => {
+            console.error(res)
+            this.$message.warning(`操作失败！${res.message}`)
+          })
+          .finally(() => this.loadData())
+      }).catch(() => {
+      })
     },
     onItemDeleteClick(item) {
       this.$confirm('此操作将删除该链接, 是否继续?', '提示', {
@@ -178,6 +202,24 @@ export default {
       this.pagination.pageNumber = page
       this.loadData()
     },
+    showUserInfo(comment) {
+      let user = comment.anonymousUser
+      const h = this.$createElement;
+      this.$msgbox({
+        title: '用户信息',
+        message: h('div', null, [
+          h('p', null, `ID: ${user.id}`),
+          h('p', null, `用户名: ${user.name}`),
+          h('p', null, `邮箱: ${user.email}`),
+          h('p', null, `网址: ${user.url}`),
+          h('p', null, `IP地址: ${user.ip}`),
+          h('p', null, `创建时间: ${dateTimeBeautify(user.createdTime)}`),
+          h('p', null, `UA标识: ${comment.userAgent}`),
+        ]),
+        showCancelButton: false,
+        showConfirmButton: false,
+      })
+    }
   }
 }
 </script>

@@ -1,9 +1,16 @@
 import axios from '../axios'
 
-export const getNeedAuditList = () => {
+export const getList = (
+  postId = null,
+  search = '',
+  sortBy = '',
+  page = 1,
+  pageSize = 20
+) => {
   return axios({
-    url: 'Comment/GetNeedAuditList',
+    url: 'Comment',
     method: 'get',
+    params: {postId, search, sortBy, page, pageSize}
   })
 }
 

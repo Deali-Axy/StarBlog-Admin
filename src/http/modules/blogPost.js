@@ -2,7 +2,7 @@ import axios from '../axios'
 
 /**
  * 获取博客列表
- * @param onlyPublished
+ * @param isPublish
  * @param status
  * @param categoryId
  * @param search

@@ -11,7 +11,7 @@ export default {
   // 参数
   data: {},
   // 设置超时时间
-  timeout: 10000,
+  timeout: 990000,
   // 携带凭证
   withCredentials: true,
   // 返回数据类型

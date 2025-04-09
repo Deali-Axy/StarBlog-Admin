@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="text-center">
     <el-row :gutter="8">
       <el-col :span="4">
         <!--阅读总量-->
@@ -220,5 +220,9 @@ export default {
 <style>
 .icon-lg {
   font-size: 40px !important;
+}
+
+.el-card__header{
+  padding: 8px 20px;
 }
 </style>

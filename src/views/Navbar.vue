@@ -36,6 +36,9 @@
           <el-menu-item index="/post/featured">推荐文章</el-menu-item>
           <el-menu-item index="/post/top">置顶文章</el-menu-item>
         </el-menu-item-group>
+        <el-menu-item-group title="评论管理">
+          <el-menu-item index="/comment/list">评论管理</el-menu-item>
+        </el-menu-item-group>
         <el-menu-item-group title="黑科技">
           <el-menu-item index="/post/upload">打包上传</el-menu-item>
         </el-menu-item-group>

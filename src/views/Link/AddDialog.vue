@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="添加友情链接" :visible.sync="dialogFormVisible" width="30%">
-    <el-form ref="uploadForm" :model="form" :rules="formRules" label-width="80px">
+    <el-form ref="uploadForm" label-position="left" :model="form" :rules="formRules" label-width="auto">
       <el-form-item label="name" prop="name">
         <el-input v-model="form.name" autocomplete="off"></el-input>
       </el-form-item>

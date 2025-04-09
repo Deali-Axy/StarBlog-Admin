@@ -4,7 +4,6 @@
     <el-table
       ref="table"
       :data="data"
-      height="730"
       stripe
       style="width: 100%"
       :default-sort="{prop: 'time',order:'descending'}">

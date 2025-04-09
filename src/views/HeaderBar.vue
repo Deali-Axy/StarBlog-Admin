@@ -22,12 +22,12 @@
     <span class="toolbar">
       <el-menu class="el-menu-demo" :background-color="themeColor" text-color="#14889A"
                :active-text-color="themeColor" mode="horizontal">
-        <el-menu-item index="1">
-          <!-- 主题切换 -->
-          <theme-picker class="theme-picker" :default="themeColor"
-                        @onThemeChange="onThemeChange">
-          </theme-picker>
-        </el-menu-item>
+<!--        <el-menu-item index="1">-->
+<!--          &lt;!&ndash; 主题切换 &ndash;&gt;-->
+<!--          <theme-picker class="theme-picker" :default="themeColor"-->
+<!--                        @onThemeChange="onThemeChange">-->
+<!--          </theme-picker>-->
+<!--        </el-menu-item>-->
 <!--        <el-menu-item index="2" v-popover:popover-message>-->
 <!--          &lt;!&ndash; 我的私信 &ndash;&gt;-->
 <!--          <el-badge :value="5" :max="99" class="badge" type="danger">-->

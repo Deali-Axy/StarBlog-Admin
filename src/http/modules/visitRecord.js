@@ -8,6 +8,10 @@ export const getList = (
     province = '',
     city = '',
     isp = '',
+    os = '',
+    device = '',
+    userAgent = '',
+    isSpider = null,
     search = '',
     sortBy = '',
     page = 1,
@@ -16,7 +20,12 @@ export const getList = (
   return axios({
     url: 'VisitRecord',
     method: 'get',
-    params: {excludeApi, country, province, city, isp, search, sortBy, page, pageSize}
+    params: {
+      excludeApi,
+      country, province, city, isp,
+      os, device, userAgent, isSpider,
+      search, sortBy, page, pageSize
+    }
   })
 }
 
@@ -66,5 +75,11 @@ export const getGeoFilterParams = (
   return axios({
     url: 'VisitRecord/GetGeoFilterParams',
     params: {param, country, province, city},
+  })
+}
+
+export const getUserAgentFilterParams = () => {
+  return axios({
+    url: 'VisitRecord/GetUserAgentFilterParams',
   })
 }

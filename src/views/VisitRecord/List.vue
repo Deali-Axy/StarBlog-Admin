@@ -3,17 +3,17 @@
     <el-header height="30px">
       <el-row type="flex" justify="space-between">
         <el-row :gutter="10">
-          <el-col :span="8">
+          <el-col :span="3">
             <el-input v-model="search"
                       placeholder="请输入关键字" prefix-icon="el-icon-search"></el-input>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="2">
             <el-select v-model="excludeApi" clearable placeholder="过滤API">
               <el-option label="是" :value="true"/>
               <el-option label="否" :value="false"/>
             </el-select>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="2">
             <el-select v-model="geoFilter.country" clearable filterable placeholder="国家"
                        @change="handleCountryChange">
               <el-option
@@ -22,7 +22,7 @@
               />
             </el-select>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="2">
             <el-select v-model="geoFilter.province" clearable filterable placeholder="省份"
                        @change="handleProvinceChange">
               <el-option
@@ -31,12 +31,43 @@
               />
             </el-select>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="2">
             <el-select v-model="geoFilter.city" clearable filterable placeholder="城市">
               <el-option
                 v-for="item in geoFilterParams.city"
                 :key="item" :label="item" :value="item"
               />
+            </el-select>
+          </el-col>
+
+          <el-col :span="2">
+            <el-select v-model="userAgentFilter.os" clearable filterable placeholder="操作系统">
+              <el-option
+                v-for="item in userAgentFilterParams.os"
+                :key="item" :label="item" :value="item"
+              />
+            </el-select>
+          </el-col>
+          <el-col :span="2">
+            <el-select v-model="userAgentFilter.device" clearable filterable placeholder="设备">
+              <el-option
+                v-for="item in userAgentFilterParams.device"
+                :key="item" :label="item" :value="item"
+              />
+            </el-select>
+          </el-col>
+          <el-col :span="2">
+            <el-select v-model="userAgentFilter.userAgent" clearable filterable placeholder="UserAgent">
+              <el-option
+                v-for="item in userAgentFilterParams.userAgent"
+                :key="item" :label="item" :value="item"
+              />
+            </el-select>
+          </el-col>
+          <el-col :span="2">
+            <el-select v-model="userAgentFilter.isSpider" clearable placeholder="是否爬虫">
+              <el-option label="是" :value="true"/>
+              <el-option label="否" :value="false"/>
             </el-select>
           </el-col>
 
@@ -110,7 +141,7 @@
         </el-table-column>
         <el-table-column
           prop="userAgentInfo.userAgent.family"
-          label="浏览器"/>
+          label="UserAgent"/>
         <el-table-column
           align="right"
           label="操作">
@@ -152,11 +183,17 @@
           </el-col>
           <el-col :span="12">
             <p><strong>User Agent:</strong> {{ selectedRecord.userAgent }}</p>
-            <p><strong>操作系统:</strong> {{ selectedRecord.userAgentInfo.os.family }} {{ selectedRecord.userAgentInfo.os.major }}.{{ selectedRecord.userAgentInfo.os.minor }}.{{ selectedRecord.userAgentInfo.os.patch }}</p>
+            <p><strong>操作系统:</strong> {{ selectedRecord.userAgentInfo.os.family }}
+              {{ selectedRecord.userAgentInfo.os.major }}.{{
+                selectedRecord.userAgentInfo.os.minor
+              }}.{{ selectedRecord.userAgentInfo.os.patch }}</p>
             <p><strong>设备品牌:</strong> {{ selectedRecord.userAgentInfo.device.brand }}</p>
             <p><strong>设备型号:</strong> {{ selectedRecord.userAgentInfo.device.model }}</p>
             <p><strong>设备类型:</strong> {{ selectedRecord.userAgentInfo.device.family }}</p>
-            <p><strong>浏览器:</strong> {{ selectedRecord.userAgentInfo.userAgent.family }} {{ selectedRecord.userAgentInfo.userAgent.major }}.{{ selectedRecord.userAgentInfo.userAgent.minor }}.{{ selectedRecord.userAgentInfo.userAgent.patch }}</p>
+            <p><strong>浏览器:</strong> {{ selectedRecord.userAgentInfo.userAgent.family }}
+              {{ selectedRecord.userAgentInfo.userAgent.major }}.{{
+                selectedRecord.userAgentInfo.userAgent.minor
+              }}.{{ selectedRecord.userAgentInfo.userAgent.patch }}</p>
             <p><strong>爬虫:</strong> {{ selectedRecord.userAgentInfo.device.isSpider ? '是' : '否' }}</p>
             <p><strong>访问时间:</strong> {{ selectedRecord.timeStr }}</p>
             <p><strong>来源页面:</strong> {{ selectedRecord.referrer || '无' }}</p>
@@ -196,6 +233,17 @@ export default {
         province: [],
         city: [],
       },
+      userAgentFilter: {
+        os: null,
+        device: null,
+        userAgent: null,
+        isSpider: null,
+      },
+      userAgentFilterParams: {
+        os: [],
+        device: [],
+        userAgent: [],
+      },
       data: [],
       dialogVisible: false,
       selectedRecord: null,
@@ -203,6 +251,7 @@ export default {
   },
   mounted() {
     this.loadGeoFilterParams()
+    this.loadUserAgentFilterParams()
     this.loadVisitRecord()
   },
   methods: {
@@ -213,12 +262,23 @@ export default {
         })
         .catch(res => this.$message.error(`获取地理信息筛选参数出错：${res.message}`))
     },
+    loadUserAgentFilterParams: function () {
+      this.$api.visitRecord.getUserAgentFilterParams()
+        .then(res => {
+          this.userAgentFilterParams = res.data
+        })
+        .catch(res => this.$message.error(`获取UserAgent信息筛选参数出错：${res.message}`))
+    },
     loadVisitRecord: function () {
       this.loading = true
       this.$api.visitRecord.getList({
         excludeApi: this.excludeApi,
         country: this.geoFilter.country,
         province: this.geoFilter.province,
+        os: this.userAgentFilter.os,
+        device: this.userAgentFilter.device,
+        userAgent: this.userAgentFilter.userAgent,
+        isSpider: this.userAgentFilter.isSpider,
         city: this.geoFilter.city,
         page: this.currentPage,
         pageSize: this.pageSize,

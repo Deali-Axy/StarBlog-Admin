@@ -9,7 +9,7 @@
           </el-col>
 
           <el-col :span="3">
-            <el-select v-model="geoFilter.country" clearable filterable placeholder="国家">
+            <el-select v-model="geoFilter.country" clearable filterable placeholder="国家" @change="handleCountryChange">
               <el-option
                 v-for="item in geoFilterParams.country"
                 :key="item" :label="item" :value="item"
@@ -17,7 +17,7 @@
             </el-select>
           </el-col>
           <el-col :span="3">
-            <el-select v-model="geoFilter.province" clearable filterable placeholder="省份">
+            <el-select v-model="geoFilter.province" clearable filterable placeholder="省份" @change="handleProvinceChange">
               <el-option
                 v-for="item in geoFilterParams.province"
                 :key="item" :label="item" :value="item"
@@ -148,6 +148,9 @@ export default {
     loadVisitRecord: function () {
       this.loading = true
       this.$api.visitRecord.getList({
+        country: this.geoFilter.country,
+        province: this.geoFilter.province,
+        city: this.geoFilter.city,
         page: this.currentPage,
         pageSize: this.pageSize,
       })
@@ -161,6 +164,17 @@ export default {
         })
         .catch(res => this.$message.error(`获取访问记录列表出错：${res.message}`))
         .finally(() => this.loading = false)
+    },
+    handleCountryChange: function(val) {
+      this.geoFilter.province = null
+      this.geoFilter.city = null
+      this.geoFilter.param = 'province'
+      this.loadGeoFilterParams()
+    },
+    handleProvinceChange: function(val) {
+      this.geoFilter.city = null
+      this.geoFilter.param = 'city'
+      this.loadGeoFilterParams()
     },
     handlePageSizeChange(pageSize) {
       this.pageSize = pageSize

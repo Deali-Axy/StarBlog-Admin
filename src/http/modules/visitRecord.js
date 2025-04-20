@@ -3,6 +3,7 @@ import axios from '../axios'
 // 获取列表
 export const getList = (
   {
+    excludeApi = false,
     country = '',
     province = '',
     city = '',
@@ -15,7 +16,7 @@ export const getList = (
   return axios({
     url: 'VisitRecord',
     method: 'get',
-    params: {country, province, city, isp, search, sortBy, page, pageSize}
+    params: {excludeApi, country, province, city, isp, search, sortBy, page, pageSize}
   })
 }
 

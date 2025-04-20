@@ -1,18 +1,28 @@
 import axios from '../axios'
 
 // 获取列表
-export const getList = (page = 1, pageSize = 10) => {
+export const getList = (
+  {
+    country = '',
+    province = '',
+    city = '',
+    isp = '',
+    search = '',
+    sortBy = '',
+    page = 1,
+    pageSize = 10,
+  }) => {
   return axios({
     url: 'VisitRecord',
     method: 'get',
-    params: {page, pageSize}
+    params: {country, province, city, isp, search, sortBy, page, pageSize}
   })
 }
 
 // 获取指定项目
-export const get = photoId => {
+export const get = id => {
   return axios({
-    url: `VisitRecord/${photoId}/`,
+    url: `VisitRecord/${id}/`,
     method: 'get',
   })
 }
@@ -42,5 +52,18 @@ export const getStats = (date = null) => {
     url: 'VisitRecord/Stats',
     method: 'get',
     params: date === null ? null : {...date}
+  })
+}
+
+export const getGeoFilterParams = (
+  {
+    param = 'country',
+    country = '',
+    province = '',
+    city = '',
+  }) => {
+  return axios({
+    url: 'VisitRecord/GetGeoFilterParams',
+    params: {param, country, province, city},
   })
 }

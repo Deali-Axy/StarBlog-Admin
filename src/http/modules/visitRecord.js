@@ -4,6 +4,7 @@ import axios from '../axios'
 export const getList = (
   {
     excludeApi = false,
+    excludeIntranetIp = false,
     country = '',
     province = '',
     city = '',
@@ -21,7 +22,7 @@ export const getList = (
     url: 'VisitRecord',
     method: 'get',
     params: {
-      excludeApi,
+      excludeApi, excludeIntranetIp,
       country, province, city, isp,
       os, device, userAgent, isSpider,
       search, sortBy, page, pageSize

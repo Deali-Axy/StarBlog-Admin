@@ -14,6 +14,12 @@
             </el-select>
           </el-col>
           <el-col :span="2">
+            <el-select v-model="excludeIntranetIp" clearable placeholder="过滤内网">
+              <el-option label="是" :value="true"/>
+              <el-option label="否" :value="false"/>
+            </el-select>
+          </el-col>
+          <el-col :span="2">
             <el-select v-model="geoFilter.country" clearable filterable placeholder="国家"
                        @change="handleCountryChange">
               <el-option
@@ -87,7 +93,8 @@
         :data="data"
         stripe
         style="width: 100%"
-        :default-sort="{prop: 'time',order:'descending'}">
+        :default-sort="{prop: 'time',order:'descending'}"
+        @sort-change="handleSortChange">
         <el-table-column
           type="selection"
           width="30"/>
@@ -101,7 +108,13 @@
           label="请求地址"
           sortable
           :show-overflow-tooltip="true"
-        />
+        >
+          <template v-slot="scope">
+            <el-link type="text" :href="`${baseUrl}${scope.row.requestPath}`" target="_blank">
+              {{ scope.row.requestPath }}
+            </el-link>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="requestMethod"
           label="HTTP方法"
@@ -112,27 +125,35 @@
           label="状态码"/>
         <el-table-column
           prop="responseTimeMs"
+          sortable
           label="响应时间"/>
         <el-table-column
           prop="ipInfo.country"
+          sortable
           label="国家"/>
         <el-table-column
           prop="ipInfo.province"
+          sortable
           label="省"/>
         <el-table-column
           prop="ipInfo.city"
+          sortable
           label="城市"/>
         <el-table-column
           prop="ipInfo.isp"
+          sortable
           label="运营商"/>
         <el-table-column
           prop="userAgentInfo.os.family"
+          sortable
           label="操作系统"/>
         <el-table-column
           prop="userAgentInfo.device.family"
+          sortable
           label="设备"/>
         <el-table-column
           prop="userAgentInfo.device.isSpider"
+          sortable
           label="爬虫">
           <template v-slot="scope">
             <el-tag v-if="scope.row.userAgentInfo.device.isSpider">爬虫</el-tag>
@@ -175,7 +196,11 @@
             <p><strong>省份:</strong> {{ selectedRecord.ipInfo.province }}</p>
             <p><strong>城市:</strong> {{ selectedRecord.ipInfo.city }}</p>
             <p><strong>运营商:</strong> {{ selectedRecord.ipInfo.isp }}</p>
-            <p><strong>请求地址:</strong> {{ selectedRecord.requestPath }}</p>
+            <p><strong>请求地址:</strong>
+              <el-link type="text" :href="`${baseUrl}${selectedRecord.requestPath}`" target="_blank">
+                {{ selectedRecord.requestPath }}
+              </el-link>
+            </p>
             <p><strong>请求参数:</strong> {{ selectedRecord.requestQueryString || '无' }}</p>
             <p><strong>请求方法:</strong> {{ selectedRecord.requestMethod }}</p>
             <p><strong>状态码:</strong> {{ selectedRecord.statusCode }}</p>
@@ -209,12 +234,14 @@
 
 <script>
 import * as utils from '@/utils/dateTime'
-import {getGeoFilterParams} from "@/http/modules/visitRecord";
+import {baseUrl} from "@/utils/global";
+
 
 export default {
   name: "VisitRecordList",
   data() {
     return {
+      baseUrl: baseUrl,
       loading: false,
       currentPage: 1,
       pageSize: 20,
@@ -222,6 +249,7 @@ export default {
       search: '',
       sortBy: null,
       excludeApi: null,
+      excludeIntranetIp: null,
       geoFilter: {
         param: 'country',
         country: null,
@@ -273,6 +301,7 @@ export default {
       this.loading = true
       this.$api.visitRecord.getList({
         excludeApi: this.excludeApi,
+        excludeIntranetIp: this.excludeIntranetIp,
         country: this.geoFilter.country,
         province: this.geoFilter.province,
         os: this.userAgentFilter.os,
@@ -282,6 +311,7 @@ export default {
         city: this.geoFilter.city,
         page: this.currentPage,
         pageSize: this.pageSize,
+        sortBy: this.sortBy
       })
         .then(res => {
           console.log(res)
@@ -309,6 +339,19 @@ export default {
       this.geoFilter.city = null
       this.geoFilter.param = 'city'
       this.loadGeoFilterParams()
+    },
+    handleSortChange: function (column) {
+      let orderProp = column.prop
+      orderProp = orderProp.replaceAll('timeStr', 'time')
+
+      if (column.order === 'ascending') {
+        this.sortBy = orderProp
+      } else if (column.order === 'descending') {
+        this.sortBy = '-' + orderProp
+      } else {
+        this.sortBy = null
+      }
+      this.loadVisitRecord()
     },
     handlePageSizeChange(pageSize) {
       this.pageSize = pageSize

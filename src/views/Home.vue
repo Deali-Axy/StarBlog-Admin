@@ -104,7 +104,16 @@
           </el-col>
         </el-row>
         <el-card class="mt-2" v-loading="loading">
-          <div slot="header">数据趋势</div>
+          <div slot="header" class="d-flex align-items-center justify-content-between">
+            <span>数据趋势</span>
+            <div style="width: 200px">
+              <el-slider v-model="trendDays" :min="1" :max="14" :step="1" @change="handleTrendDaysChange">
+                <template #default="{ value }">
+                  <span>{{ value }}天</span>
+                </template>
+              </el-slider>
+            </div>
+          </div>
           <dv-charts class="mt-2" :style="'height: 550px'" :option="trendChartOption"/>
         </el-card>
       </el-col>
@@ -120,7 +129,8 @@ export default {
       overview: {},
       visitRecordOverview: {},
       trend: null,
-      loadStage: 0
+      loadStage: 0,
+      trendDays: 10
     }
   },
   computed: {
@@ -144,8 +154,9 @@ export default {
             }
           },
           yAxis: {
-            name: '阅读量',
+            name: '浏览量',
             data: 'value',
+            min: 0,
             nameTextStyle: {
               fill: '#333',
               fontSize: 20
@@ -158,20 +169,55 @@ export default {
               }
             }
           },
+          legend: {
+            data: ['总浏览量', 'PV', 'UV', 'API', '爬虫'],
+            bottom: 10,
+          },
           series: [
             {
-              data: this.trend.map(item => item.count),
-              type: 'line',
-              smooth: true,
-              lineArea: {
-                show: true,
-                gradient: ['rgba(55, 162, 218, 0.6)', 'rgba(55, 162, 218, 0)']
+              name: '总浏览量',
+              data: this.trend.map(item => item.total),
+              type: 'bar',
+              gradient: {
+                color: ['#37a2da', '#67e0e3']
               },
               label: {
                 show: true,
                 formatter: '{value} 次'
               },
-            }
+            },
+            {
+              name: 'PV',
+              data: this.trend.map(item => item.pv),
+              type: 'bar',
+              label: {
+                show: true,
+              },
+            },
+            {
+              name: 'UV',
+              data: this.trend.map(item => item.uv),
+              type: 'bar',
+              label: {
+                show: true,
+              },
+            },
+            {
+              name: 'API',
+              data: this.trend.map(item => item.api),
+              type: 'bar',
+              lineStyle: {
+                lineDash: [5, 5]
+              }
+            },
+            {
+              name: '爬虫',
+              data: this.trend.map(item => item.spider),
+              type: 'bar',
+              label: {
+                show: true,
+              },
+            },
           ]
         }
       }
@@ -202,7 +248,7 @@ export default {
         })
         .catch(res => this.$message.error(`获取访问统计数据失败！${res.message}`))
 
-      this.$api.visitRecord.getTrend(14)
+      this.$api.visitRecord.getTrend(this.trendDays)
         .then(res => {
           this.trend = null
           this.trend = res.data
@@ -212,6 +258,14 @@ export default {
     },
     notImpl() {
       this.$message.warning('功能正在开发中…')
+    },
+    handleTrendDaysChange(value) {
+      this.$api.visitRecord.getTrend(value)
+        .then(res => {
+          this.trend = null
+          this.trend = res.data
+        })
+        .catch(res => this.$message.error(`获取访问趋势数据失败！${res.message}`))
     }
   }
 }
@@ -222,7 +276,7 @@ export default {
   font-size: 40px !important;
 }
 
-.el-card__header{
+.el-card__header {
   padding: 8px 20px;
 }
 </style>

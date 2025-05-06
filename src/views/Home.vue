@@ -4,12 +4,12 @@
       <el-col :span="4">
         <!--阅读总量-->
         <el-card v-loading="loading">
-          <div slot="header">阅读总量</div>
-          <h1>{{ visitRecordOverview.totalVisit }}</h1>
+          <div slot="header">访问总量</div>
+          <h1>{{ visitRecordOverview.total }}</h1>
           <div>
-            今日
+            Pv / Uv
             <i class="el-icon-top text-primary"></i>
-            {{ visitRecordOverview.todayVisit }}
+            {{ visitRecordOverview.pv }} / {{ visitRecordOverview.uv }}
           </div>
         </el-card>
         <!--新的创作-->

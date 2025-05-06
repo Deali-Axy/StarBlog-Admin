@@ -74,13 +74,13 @@ export const getGeoFilterParams = (
     city = '',
   }) => {
   return axios({
-    url: 'VisitRecord/GetGeoFilterParams',
+    url: 'VisitRecord/GeoFilterParams',
     params: {param, country, province, city},
   })
 }
 
 export const getUserAgentFilterParams = () => {
   return axios({
-    url: 'VisitRecord/GetUserAgentFilterParams',
+    url: 'VisitRecord/UserAgentFilterParams',
   })
 }

@@ -51,7 +51,7 @@ export const getOverview = () => {
 // 获取趋势数据
 export const getTrend = (days = 7) => {
   return axios({
-    url: 'VisitRecord/Trend',
+    url: 'VisitRecord/DailyTrend',
     method: 'get',
     params: {days}
   })

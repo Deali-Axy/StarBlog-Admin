@@ -136,21 +136,13 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="lastUpdateTime" label="更新时间" width="180" sortable :show-overflow-tooltip="true">
-          <template v-slot="scope">
-            <div class="time-cell">
-              <i class="el-icon-refresh"></i>
-              <span>{{ formatDateTime(scope.row.lastUpdateTime) }}</span>
-            </div>
-          </template>
-        </el-table-column>
         <el-table-column prop="category.name" label="分类" width="150" :show-overflow-tooltip="true">
           <template v-slot="scope">
             <el-tag v-if="scope.row.category" size="small">{{ scope.row.category.name }}</el-tag>
             <span v-else>未分类</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="200" fixed="right">
+        <el-table-column align="center" label="操作" width="300" fixed="right">
           <template v-slot="scope">
             <div class="action-buttons">
               <el-button type="text" size="small" @click="onItemEditClick(scope.row)">

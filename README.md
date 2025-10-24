@@ -38,19 +38,19 @@ StarBlog Admin 是 [StarBlog](https://github.com/Deali-Axy/StarBlog) 博客系�
 ### 环境要求
 
 - Node.js >= 6.0.0
-- npm >= 3.0.0 或 yarn
+- npm >= 3.0.0 或 pnpm
 
-### 推荐使用 yarn
+### 推荐使用 pnpm
 
 ```bash
 # 安装依赖
-yarn
+pnpm i
 
 # 启动开发服务器，默认地址 localhost:8080
-yarn start
+pnpm dev
 
 # 构建生产环境版本
-yarn build
+pnpm build
 ```
 
 ### 使用 npm

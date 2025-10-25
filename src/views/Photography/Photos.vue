@@ -42,7 +42,7 @@
         </div>
       </template>
       <template v-else>
-        <div v-if="photos.length > 0" class="photo-grid">
+        <Masonry v-if="photos.length > 0" :column-width="260" :gap="16">
           <photo-card v-for="photo in photos"
                       :key="photo.id"
                       :photo="photo"
@@ -53,7 +53,7 @@
                       @onFeaturedChange="onCardFeaturedChange"
                       @onEdit="openEditDialog"
           />
-        </div>
+        </Masonry>
         <el-empty v-else description="暂无数据"/>
       </template>
       <add-photo-dialog ref="addPhotoDialog" @onAddPhotoSucceed="onAddPhotoSucceed"></add-photo-dialog>
@@ -79,8 +79,7 @@
 import { baseUrl } from "@/utils/global"
 import addPhotoDialog from "@/views/Photography/AddPhotoDialog"
 import editPhotoDialog from "@/views/Photography/EditPhotoDialog"
-import Waterfall from 'vue-waterfall/lib/waterfall'
-import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
+import Masonry from "@/components/Masonry/index.vue"
 import PhotoCard from "@/components/PhotoCard";
 
 export default {
@@ -88,8 +87,7 @@ export default {
   components: {
     addPhotoDialog,
     editPhotoDialog,
-    Waterfall,
-    WaterfallSlot,
+    Masonry,
     PhotoCard
   },
   data() {
@@ -263,16 +261,16 @@ export default {
 </script>
 
 <style scoped>
-.header-left > * { margin-right: 8px; }
-.header-right > * { margin-left: 8px; }
-.mt-2 { margin-top: 8px; }
-.mr-2 { margin-right: 8px; }
-.skeleton-grid { display: flex; flex-wrap: wrap; justify-content: center; }
-.image { width: 100%; display: block; }
-.photo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-  padding: 16px;
-}
+ .header-left > * { margin-right: 8px; }
+ .header-right > * { margin-left: 8px; }
+ .mt-2 { margin-top: 8px; }
+ .mr-2 { margin-right: 8px; }
+ .skeleton-grid { display: flex; flex-wrap: wrap; justify-content: center; }
+ .image { width: 100%; display: block; }
+ .photo-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+   gap: 16px;
+   padding: 16px;
+ }
 </style>

@@ -267,10 +267,5 @@ export default {
  .mr-2 { margin-right: 8px; }
  .skeleton-grid { display: flex; flex-wrap: wrap; justify-content: center; }
  .image { width: 100%; display: block; }
- .photo-grid {
-   display: grid;
-   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-   gap: 16px;
-   padding: 16px;
- }
+ 
 </style>

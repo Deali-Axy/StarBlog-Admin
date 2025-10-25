@@ -33,28 +33,28 @@
                 description="点击图片可预览，右上角“更多”查看操作；可开启选择模式进行批量删除/推荐/取消推荐。"/>
     </el-header>
     <el-main v-loading="loading">
+      <div style="margin-bottom: 10px; font-size: 12px; color: #666;">
+        调试信息: loading={{loading}}, photos.length={{photos.length}}, allPhotos.length={{allPhotos.length}}
+      </div>
       <template v-if="loading">
         <div class="skeleton-grid">
           <el-skeleton v-for="n in 8" :key="n" :rows="4" animated style="margin: 8px; width: 260px;"/>
         </div>
       </template>
       <template v-else>
-        <Waterfall align="center"
-                   :line-gap="300" :min-line-gap="250" :max-line-gap="400" :watch="photos">
-          <waterfall-slot v-for="(photo,index) in photos"
-                          :height="photo.height" :width="photo.width"
-                          :order="index" :key="photo.id" move-class="item-move">
-            <photo-card :photo="photo"
-                        :selection-mode="selectionMode"
-                        :selected="selectedIds.includes(photo.id)"
-                        @onItemDeleted="loadPhotos"
-                        @onSelectChange="onCardSelectChange"
-                        @onFeaturedChange="onCardFeaturedChange"
-                        @onEdit="openEditDialog"
-            />
-          </waterfall-slot>
-        </Waterfall>
-        <el-empty v-if="!loading && photos.length===0" description="暂无数据"/>
+        <div v-if="photos.length > 0" class="photo-grid">
+          <photo-card v-for="photo in photos"
+                      :key="photo.id"
+                      :photo="photo"
+                      :selection-mode="selectionMode"
+                      :selected="selectedIds.includes(photo.id)"
+                      @onItemDeleted="loadPhotos"
+                      @onSelectChange="onCardSelectChange"
+                      @onFeaturedChange="onCardFeaturedChange"
+                      @onEdit="openEditDialog"
+          />
+        </div>
+        <el-empty v-else description="暂无数据"/>
       </template>
       <add-photo-dialog ref="addPhotoDialog" @onAddPhotoSucceed="onAddPhotoSucceed"></add-photo-dialog>
       <edit-photo-dialog ref="editPhotoDialog" @onUpdateSucceed="onEditSucceed"></edit-photo-dialog>
@@ -117,45 +117,65 @@ export default {
   methods: {
     async loadPhotos() {
       this.loading = true
+      console.log('开始加载照片...')
       try {
         const res = await this.$api.photo.getList(this.currentPage, this.pageSize)
+        console.log('API响应:', res)
         this.totalCount = res.pagination.totalItemCount
         this.allPhotos = res.data.map(item => ({
           ...item,
           url: `${baseUrl}/media/photography/${item.id}.jpg`,
           isFeatured: false,
+          // 为瀑布流添加默认尺寸，实际会根据图片自适应
+          width: 260,
+          height: Math.floor(Math.random() * 200) + 200, // 随机高度200-400px
         }))
+        console.log('处理后的照片数据:', this.allPhotos)
+        // 等待推荐状态同步完成后再应用筛选
         await this.syncFeatured()
         this.applyFilters()
+        console.log('最终显示的照片:', this.photos)
       } catch (err) {
+        console.error('加载图片失败:', err)
         this.$message.error(`加载图片失败：${err.message || err}`)
       } finally {
         this.loading = false
+        console.log('加载完成，loading状态:', this.loading)
       }
     },
     async syncFeatured() {
+      console.log('开始同步推荐状态...')
       try {
         const resFeatured = await this.$api.featuredPhoto.getAll()
+        console.log('推荐照片API响应:', resFeatured)
         const ids = new Set((resFeatured.data || []).map(fp => fp.photo.id))
         this.featuredIdSet = ids
         this.allPhotos = this.allPhotos.map(p => ({ ...p, isFeatured: ids.has(p.id) }))
+        console.log('同步推荐状态后的照片:', this.allPhotos)
       } catch (err) {
+        console.error('获取推荐状态失败:', err)
         // 非关键失败，提示但不中断
         this.$message.warning(`获取推荐状态失败：${err.message || err}`)
       }
     },
     applyFilters() {
+      console.log('应用筛选，当前条件:', { searchKeyword: this.searchKeyword, featuredFilter: this.featuredFilter })
       const kw = (this.searchKeyword || '').trim().toLowerCase()
       let list = this.allPhotos.slice()
+      console.log('筛选前的照片数量:', list.length)
       if (kw) {
         list = list.filter(p => (p.title || '').toLowerCase().includes(kw) || (p.location || '').toLowerCase().includes(kw))
+        console.log('搜索筛选后的照片数量:', list.length)
       }
       if (this.featuredFilter === 'featured') {
         list = list.filter(p => p.isFeatured)
+        console.log('推荐筛选后的照片数量:', list.length)
       } else if (this.featuredFilter === 'unfeatured') {
         list = list.filter(p => !p.isFeatured)
+        console.log('未推荐筛选后的照片数量:', list.length)
       }
       this.photos = list
+      console.log('最终筛选结果:', this.photos)
     },
     onFilterInput() {
       clearTimeout(this.filterTimer)
@@ -249,4 +269,10 @@ export default {
 .mr-2 { margin-right: 8px; }
 .skeleton-grid { display: flex; flex-wrap: wrap; justify-content: center; }
 .image { width: 100%; display: block; }
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
 </style>

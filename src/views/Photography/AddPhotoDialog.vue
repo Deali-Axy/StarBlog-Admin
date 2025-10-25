@@ -58,6 +58,12 @@ export default {
         return false
       }
 
+      const isLt500KB = file.raw.size / 1024 <= 500
+      if (!isLt500KB) {
+        this.$message.error('图片大小不得超过500KB')
+        return false
+      }
+
       if (fileList.length > 0) {
         this.fileList = [fileList[fileList.length - 1]]
       }
@@ -73,6 +79,7 @@ export default {
     close() {
       this.hide()
       this.$refs.uploadForm.resetFields()
+      this.fileList = []
     },
     submitUpload() {
       this.$refs.uploadForm.validate((valid) => {

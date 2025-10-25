@@ -55,3 +55,12 @@ export const cancelFeatured = itemId => {
     method: 'post'
   })
 }
+
+// 更新图片信息
+export const update = data => {
+  return axios({
+    url: `Photo/${data.id}/`,
+    method: 'put',
+    data
+  })
+}

@@ -44,9 +44,6 @@ importers:
       vue-router:
         specifier: ^3.0.1
         version: 3.6.5(vue@2.7.16)
-      vue-waterfall:
-        specifier: ^1.0.6
-        version: 1.0.6
       vuex:
         specifier: 3.6.2
         version: 3.6.2(vue@2.7.16)
@@ -4639,9 +4636,6 @@ packages:
 
   vue-template-es2015-compiler@1.9.1:
     resolution: {integrity: sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==}
-
-  vue-waterfall@1.0.6:
-    resolution: {integrity: sha512-jjOlFLj37SDoxoRQALZrXnEJ4JpQXwQbiz6upxdutpBaKbe/mA+SN+65S15fvm/WUZnVsPUc+vsXC+OXAlkSsw==}
 
   vue@2.7.16:
     resolution: {integrity: sha512-4gCtFXaAA3zYZdTp5s4Hl2sozuySsgz4jy1EnpBHNfpMa9dK1ZCG7viqBPCwXtmgc8nHqUsAu3G4gtmXkkY3Sw==}
@@ -10444,8 +10438,6 @@ snapshots:
       he: 1.2.0
 
   vue-template-es2015-compiler@1.9.1: {}
-
-  vue-waterfall@1.0.6: {}
 
   vue@2.7.16:
     dependencies:

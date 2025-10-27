@@ -247,17 +247,17 @@ export default {
       // 基础数据
       category: {},
       allCategories: [],
-      
+
       // 文章数据
       availableArticles: [],
       categoryArticles: [],
       selectedArticles: [],
-      
+
       // 搜索和筛选
       articleSearch: '',
       categoryArticleSearch: '',
       filterCategoryId: '',
-      
+
       // 分页数据
       availableArticlesPage: 1,
       availableArticlesPageSize: 20,
@@ -265,12 +265,12 @@ export default {
       categoryArticlesPageSize: 20,
       totalArticleCount: 0,
       totalAvailableCount: 0,
-      
+
       // 加载状态
       loadingAvailableArticles: false,
       loadingCategoryArticles: false,
       saving: false,
-      
+
       // 变更追踪
       pendingChanges: {
         added: [],
@@ -349,22 +349,22 @@ export default {
         const res = await this.$api.blogPost.getList(
           false, '', this.filterCategoryId || null, this.articleSearch, '', page, this.availableArticlesPageSize
         )
-        
-        console.log('loadAvailableArticles response:', res.data)
-        
-        const articles = res.data.items || res.data
+
+        console.log('loadAvailableArticles response:', res)
+
+        const articles = Array.isArray(res.data) ? res.data : []
         if (append) {
           this.availableArticles = [...this.availableArticles, ...articles]
         } else {
           this.availableArticles = articles
         }
-        
-        if (res.data.pagination) {
-          this.totalAvailableCount = res.data.pagination.totalCount
+
+        if (res.pagination && typeof res.pagination.totalItemCount === 'number') {
+          this.totalAvailableCount = res.pagination.totalItemCount
         } else {
           this.totalAvailableCount = this.availableArticles.length
         }
-        
+
         this.availableArticlesPage = page
       } catch (error) {
         console.error('加载可用文章失败:', error)
@@ -380,24 +380,24 @@ export default {
         const res = await this.$api.blogPost.getList(
           false, '', categoryId, '', '', page, this.categoryArticlesPageSize
         )
-        
-        console.log('loadCategoryArticles response:', res.data)
-        
-        const articles = res.data.items || res.data
+
+        console.log('loadCategoryArticles response:', res)
+
+        const articles = Array.isArray(res.data) ? res.data : []
         if (append) {
           this.categoryArticles = [...this.categoryArticles, ...articles]
         } else {
           this.categoryArticles = articles
         }
-        
-        if (res.data.pagination) {
-          this.totalArticleCount = res.data.pagination.totalCount
+
+        if (res.pagination && typeof res.pagination.totalItemCount === 'number') {
+          this.totalArticleCount = res.pagination.totalItemCount
         } else {
           this.totalArticleCount = this.categoryArticles.length
         }
-        
+
         this.categoryArticlesPage = page
-        
+
         console.log('categoryArticles count:', this.categoryArticles.length, 'total:', this.totalArticleCount)
       } catch (error) {
         console.error('加载分类文章失败:', error)
@@ -515,24 +515,37 @@ export default {
 
       this.saving = true
       try {
-        // 这里需要根据实际API实现文章分类的更新
-        // 由于当前API中没有直接的文章分类管理接口，这里模拟保存过程
-        
-        for (const articleId of this.pendingChanges.added) {
-          // 调用API将文章添加到分类
-          // await this.$api.blogPost.updateCategory(articleId, this.category.id)
-        }
+        // 实际调用后端：为新增文章设置分类，为移除文章清空分类
+        const addedPromises = this.pendingChanges.added.map(articleId => {
+          const article = this.availableArticles.find(a => a.id === articleId)
+            || this.categoryArticles.find(a => a.id === articleId)
+          if (!article) return Promise.resolve()
+          return this.$api.blogPost.update({
+            ...article,
+            categoryId: this.category.id
+          })
+        })
 
-        for (const articleId of this.pendingChanges.removed) {
-          // 调用API将文章从分类中移除
-          // await this.$api.blogPost.updateCategory(articleId, null)
-        }
+        const removedPromises = this.pendingChanges.removed.map(articleId => {
+          const article = this.categoryArticles.find(a => a.id === articleId)
+            || this.availableArticles.find(a => a.id === articleId)
+          if (!article) return Promise.resolve()
+          return this.$api.blogPost.update({
+            ...article,
+            categoryId: null
+          })
+        })
+
+        await Promise.all([...addedPromises, ...removedPromises])
 
         this.pendingChanges = { added: [], removed: [] }
         this.$message.success('保存成功')
-        
-        // 刷新数据
-        await this.refreshCategoryArticles()
+
+        // 刷新两侧数据
+        await Promise.all([
+          this.refreshCategoryArticles(),
+          this.refreshAvailableArticles()
+        ])
       } catch (error) {
         console.error('保存失败:', error)
         this.$message.error('保存失败：' + error.message)
@@ -552,7 +565,7 @@ export default {
     },
 
     goBack() {
-      this.$router.push('/categories')
+      this.$router.back()
     },
 
     formatDate(dateString) {
@@ -790,7 +803,7 @@ export default {
     flex-direction: column;
     height: auto;
   }
-  
+
   .articles-panel {
     height: 500px;
   }
@@ -800,34 +813,34 @@ export default {
   .category-detail-container {
     padding: 12px;
   }
-  
+
   .detail-header {
     flex-direction: column;
     gap: 16px;
     align-items: stretch;
   }
-  
+
   .category-info {
     margin: 0;
     justify-content: center;
     text-align: center;
   }
-  
+
   .header-actions {
     justify-content: center;
   }
-  
+
   .panel-controls {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .article-item {
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
   }
-  
+
   .article-actions {
     margin-left: 0;
     text-align: center;

@@ -43,7 +43,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/super-cat/',
+    assetsPublicPath: process.env.ASSETS_PUBLIC_PATH || '/admin/',
 
     /**
      * Source Maps

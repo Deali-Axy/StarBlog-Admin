@@ -1,6 +1,9 @@
 'use strict'
 require('./check-versions')()
 
+// 加载 .env 文件中的环境变量
+require('dotenv').config()
+
 process.env.NODE_ENV = 'production'
 
 const ora = require('ora')

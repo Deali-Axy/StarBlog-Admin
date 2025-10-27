@@ -1,4 +1,7 @@
 'use strict'
+// 加载 .env 文件中的环境变量
+require('dotenv').config()
+
 const utils = require('./utils')
 const webpack = require('webpack')
 const config = require('../config')

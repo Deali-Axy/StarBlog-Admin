@@ -57,6 +57,18 @@
         <div class="section-header">
           <h3>分类文章</h3>
           <div class="section-actions">
+            <el-button
+              size="mini"
+              icon="el-icon-s-grid"
+              :type="displayMode === 'card' ? 'primary' : 'default'"
+              @click="displayMode = 'card'"
+            ></el-button>
+            <el-button
+              size="mini"
+              icon="el-icon-menu"
+              :type="displayMode === 'icon' ? 'primary' : 'default'"
+              @click="displayMode = 'icon'"
+            ></el-button>
             <el-button size="mini" @click="refreshPosts">
               <i class="el-icon-refresh"></i> 刷新
             </el-button>
@@ -64,16 +76,30 @@
         </div>
 
         <div class="posts-content" v-loading="postsLoading">
-          <!-- 文章卡片列表 -->
-          <div v-if="categoryPosts.length > 0" class="posts-grid">
-            <ArticleCard
-              v-for="post in categoryPosts"
-              :key="post.id"
-              :post="post"
-              @click="viewPost"
-              @edit="editPost"
-              @delete="deletePost"
-            />
+          <!-- 文章列表 -->
+          <div v-if="categoryPosts.length > 0">
+            <!-- 卡片视图 -->
+            <div v-if="displayMode === 'card'" class="posts-grid">
+              <ArticleCard
+                v-for="post in categoryPosts"
+                :key="post.id"
+                :post="post"
+                @click="viewPost"
+                @edit="editPost"
+                @delete="deletePost"
+              />
+            </div>
+
+            <!-- 图标视图 -->
+            <div v-else-if="displayMode === 'icon'" class="posts-icon-grid">
+              <ArticleIcon
+                v-for="post in categoryPosts"
+                :key="post.id"
+                :post="post"
+                @select="viewPost" 
+                @view="viewPost"
+              />
+            </div>
           </div>
 
           <!-- 空状态 -->
@@ -94,11 +120,13 @@
 
 <script>
 import ArticleCard from './ArticleCard.vue'
+import ArticleIcon from './ArticleIcon.vue'
 
 export default {
   name: "CategoryDetailPanel",
   components: {
-    ArticleCard
+    ArticleCard,
+    ArticleIcon
   },
   props: {
     selectedCategory: {
@@ -112,6 +140,11 @@ export default {
     postsLoading: {
       type: Boolean,
       default: false
+    }
+  },
+  data() {
+    return {
+      displayMode: 'card' // 'card' or 'icon'
     }
   },
   methods: {
@@ -158,9 +191,13 @@ export default {
       this.$emit('edit-post', post);
     },
 
-    // 删除文章
     deletePost(post) {
       this.$emit('delete-post', post);
+    },
+
+    handleIconSelect(post) {
+      // 在图标模式下，单击图标等同于查看文章
+      this.viewPost(post);
     }
   }
 }
@@ -295,9 +332,15 @@ export default {
 }
 
 .posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.posts-icon-grid {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 /* 空状态样式 */

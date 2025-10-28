@@ -127,7 +127,8 @@
                   <el-dropdown-item command="cancelFeatured" :disabled="!scope.row.isFeatured">取消推荐</el-dropdown-item>
                   <el-dropdown-item command="setTop" :disabled="scope.row.isTop">设置置顶</el-dropdown-item>
                   <el-dropdown-item command="cancelTop" :disabled="!scope.row.isTop">取消置顶</el-dropdown-item>
-                  <el-dropdown-item command="delete" divided>
+                  <el-dropdown-item command="moveToCategory" divided>移动到分类</el-dropdown-item>
+                  <el-dropdown-item command="delete">
                     <span style="color: #f56c6c;">删除文章</span>
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -161,6 +162,30 @@
         <el-button type="primary" @click="confirmBatchMoveCategory" :loading="batchOperationLoading">确定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 单个文章移动分类对话框 -->
+    <el-dialog title="移动到分类" :visible.sync="moveCategoryVisible" width="500px">
+      <el-form>
+        <el-form-item label="文章标题">
+          <span>{{ currentMovingPost ? currentMovingPost.title : '' }}</span>
+        </el-form-item>
+        <el-form-item label="当前分类">
+          <span>{{ currentMovingPost && currentMovingPost.category ? currentMovingPost.category.name : '未分类' }}</span>
+        </el-form-item>
+        <el-form-item label="目标分类">
+          <el-cascader v-model="singleTargetCategoryId" :options="categoriesTree" placeholder="请选择目标分类" :props="{
+            checkStrictly: true,
+            expandTrigger: 'hover',
+            emitPath: false,
+          }" style="width: 100%">
+          </el-cascader>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="moveCategoryVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmSingleMoveCategory" :loading="batchOperationLoading">确定</el-button>
+      </div>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -190,7 +215,11 @@ export default {
       searchTimer: null, // 搜索防抖定时器
       batchMoveCategoryVisible: false,
       targetCategoryId: null,
-      batchOperationLoading: false
+      batchOperationLoading: false,
+      // 单个文章移动分类相关
+      moveCategoryVisible: false,
+      currentMovingPost: null,
+      singleTargetCategoryId: null
     }
   },
   mounted() {
@@ -658,6 +687,11 @@ export default {
               .catch(res => this.$message.error(`操作失败。${res.message}`))
           }).catch(() => this.$message('已取消删除'))
           break
+        case 'moveToCategory':
+          this.currentMovingPost = post
+          this.singleTargetCategoryId = post.categoryId || null
+          this.moveCategoryVisible = true
+          break
       }
     },
 
@@ -696,6 +730,40 @@ export default {
     handleSelectionChange(val) {
       this.selectedPosts = val
       this.hasSelection = this.selectedPosts.length > 0
+    },
+
+    /**
+     * 确认单个文章移动分类
+     */
+    confirmSingleMoveCategory() {
+      if (!this.singleTargetCategoryId) {
+        this.$message.warning('请选择目标分类')
+        return
+      }
+
+      if (!this.currentMovingPost) {
+        this.$message.error('未找到要移动的文章')
+        return
+      }
+
+      this.batchOperationLoading = true
+      this.$api.blogPost.update({
+        ...this.currentMovingPost,
+        categoryId: this.singleTargetCategoryId
+      })
+        .then(() => {
+          this.$message.success('文章移动分类成功')
+          this.moveCategoryVisible = false
+          this.currentMovingPost = null
+          this.singleTargetCategoryId = null
+          this.loadBlogPosts()
+        })
+        .catch(err => {
+          this.$message.error(`移动分类失败：${err.message}`)
+        })
+        .finally(() => {
+          this.batchOperationLoading = false
+        })
     }
   }
 }

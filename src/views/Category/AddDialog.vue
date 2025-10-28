@@ -40,7 +40,27 @@
 
         <!-- 父级分类 -->
         <el-form-item label="父级分类" prop="parentId" class="form-item">
+          <!-- 子分类模式：显示只读的父分类信息 -->
+          <div v-if="isSubCategoryMode && presetParentCategory" class="preset-parent-info">
+            <el-input 
+              :value="presetParentCategory.name"
+              readonly
+              class="modern-input readonly-input"
+              :prefix-icon="'el-icon-folder'"
+            >
+              <template slot="suffix">
+                <span class="readonly-label">已锁定</span>
+              </template>
+            </el-input>
+            <div class="preset-parent-desc">
+              <i class="el-icon-info"></i>
+              <span>将在"{{ presetParentCategory.name }}"分类下创建子分类</span>
+            </div>
+          </div>
+          
+          <!-- 普通模式：可选择父分类 -->
           <el-cascader 
+            v-else
             v-model="form.parentId" 
             :options="categoriesTree" 
             placeholder="请选择父级分类（留空为顶级分类）"
@@ -138,6 +158,8 @@ export default {
       categories: [],
       categoriesTree: [],
       submitLoading: false,
+      isSubCategoryMode: false, // 是否为添加子分类模式
+      presetParentCategory: null, // 预设的父分类信息
       form: {
         name: '',
         url: '',
@@ -198,6 +220,9 @@ export default {
         parentId: null
       }
       this.submitLoading = false
+      // 重置子分类模式相关状态
+      this.isSubCategoryMode = false
+      this.presetParentCategory = null
     },
 
     /**
@@ -235,6 +260,21 @@ export default {
     add() {
       this.mode = 'add'
       this.resetForm()
+      this.show()
+    },
+
+    /**
+     * 添加子分类
+     */
+    addSubCategory(parentCategory) {
+      this.mode = 'add'
+      this.resetForm()
+      
+      // 设置子分类模式
+      this.isSubCategoryMode = true
+      this.presetParentCategory = parentCategory
+      this.form.parentId = parentCategory.id
+      
       this.show()
     },
 
@@ -692,6 +732,45 @@ $bg-color: #f5f7fa;
   
   .el-icon-loading {
     margin-right: 6px;
+  }
+}
+
+// 预设父分类信息样式
+.preset-parent-info {
+  .readonly-input {
+    ::v-deep .el-input__inner {
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      color: #495057;
+      cursor: not-allowed;
+    }
+    
+    .readonly-label {
+      font-size: 12px;
+      color: #6c757d;
+      background: #e9ecef;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-right: 8px;
+    }
+  }
+  
+  .preset-parent-desc {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(25, 147, 223, 0.05);
+    border: 1px solid rgba(25, 147, 223, 0.15);
+    border-radius: 6px;
+    font-size: 13px;
+    color: #495057;
+    
+    i {
+      color: $primary-color;
+      margin-right: 6px;
+      font-size: 14px;
+    }
   }
 }
 </style>

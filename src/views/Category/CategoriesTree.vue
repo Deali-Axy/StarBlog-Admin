@@ -53,7 +53,7 @@
         class="category-tree"
       >
         <span class="tree-node" slot-scope="{ node, data }">
-          <div class="node-content">
+          <div class="node-content" @mouseenter="showHoverMenu(data.id)" @mouseleave="hideHoverMenu(data.id)">
             <div class="node-info">
               <i class="el-icon-folder-opened node-icon"></i>
               <span class="node-label">
@@ -71,40 +71,52 @@
                 {{ data.tags[0] }}篇
               </el-tag>
             </div>
-            <div class="node-actions">
-              <el-button
-                size="mini"
-                type="text"
-                @click="viewCategoryPosts(data)"
-                icon="el-icon-document"
+            
+            <!-- 悬停操作菜单 -->
+            <div class="hover-menu" :class="{ 'show': hoveredNodeId === data.id }">
+              <el-dropdown 
+                trigger="click" 
+                placement="bottom-end"
+                @command="handleMenuCommand"
+                :hide-on-click="true"
               >
-                查看文章
-              </el-button>
-              <el-button
-                size="mini"
-                type="text"
-                @click="addSubCategory(data)"
-                icon="el-icon-plus"
-              >
-                添加子分类
-              </el-button>
-              <el-button
-                size="mini"
-                type="text"
-                @click="editCategory(data)"
-                icon="el-icon-edit"
-              >
-                编辑
-              </el-button>
-              <el-button
-                size="mini"
-                type="text"
-                @click="deleteCategory(data)"
-                icon="el-icon-delete"
-                class="delete-btn"
-              >
-                删除
-              </el-button>
+                <el-button 
+                  size="mini" 
+                  type="text" 
+                  icon="el-icon-more"
+                  class="menu-trigger"
+                  @click.stop
+                >
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item 
+                    :command="{ action: 'addSubCategory', data: data }"
+                    icon="el-icon-plus"
+                  >
+                    添加子分类
+                  </el-dropdown-item>
+                  <el-dropdown-item 
+                    :command="{ action: 'viewPosts', data: data }"
+                    icon="el-icon-document"
+                  >
+                    查看文章
+                  </el-dropdown-item>
+                  <el-dropdown-item 
+                    :command="{ action: 'editCategory', data: data }"
+                    icon="el-icon-edit"
+                  >
+                    编辑分类
+                  </el-dropdown-item>
+                  <el-dropdown-item 
+                    :command="{ action: 'deleteCategory', data: data }"
+                    icon="el-icon-delete"
+                    class="danger-item"
+                    divided
+                  >
+                    删除分类
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </div>
           </div>
         </span>
@@ -140,6 +152,7 @@ export default {
       loading: false,
       treeData: [],
       searchText: '',
+      hoveredNodeId: null, // 当前悬停的节点ID
       treeProps: {
         children: 'nodes',
         label: 'text'
@@ -155,6 +168,39 @@ export default {
     this.loadData()
   },
   methods: {
+    // 悬停菜单控制
+    showHoverMenu(nodeId) {
+      this.hoveredNodeId = nodeId
+    },
+
+    hideHoverMenu(nodeId) {
+      // 延迟隐藏，避免鼠标移动到菜单时闪烁
+      setTimeout(() => {
+        if (this.hoveredNodeId === nodeId) {
+          this.hoveredNodeId = null
+        }
+      }, 100)
+    },
+
+    // 处理菜单命令
+    handleMenuCommand(command) {
+      const { action, data } = command
+      switch (action) {
+        case 'addSubCategory':
+          this.addSubCategory(data)
+          break
+        case 'viewPosts':
+          this.viewCategoryPosts(data)
+          break
+        case 'editCategory':
+          this.editCategory(data)
+          break
+        case 'deleteCategory':
+          this.deleteCategory(data)
+          break
+      }
+    },
+
     // 数据加载
     async loadData() {
       this.loading = true
@@ -217,7 +263,11 @@ export default {
 
     // 添加子分类
     addSubCategory(parentCategory) {
-      this.$refs.addDialog.add(parentCategory.id)
+      // 调用对话框的addSubCategory方法，传入父分类信息
+      this.$refs.addDialog.addSubCategory({
+        id: parentCategory.id,
+        name: parentCategory.text
+      })
     },
 
     // 编辑分类
@@ -352,6 +402,42 @@ export default {
 
 .post-count-tag {
   margin-left: 8px;
+}
+
+/* 悬停菜单样式 */
+.hover-menu {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  transform: translateX(10px);
+}
+
+.hover-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.menu-trigger {
+  padding: 4px 8px !important;
+  font-size: 16px !important;
+  color: #909399 !important;
+  border-radius: 4px;
+}
+
+.menu-trigger:hover {
+  color: #409eff !important;
+  background-color: #ecf5ff !important;
+}
+
+/* 下拉菜单项样式 */
+.el-dropdown-menu__item.danger-item {
+  color: #f56c6c;
+}
+
+.el-dropdown-menu__item.danger-item:hover {
+  background-color: #fef0f0;
+  color: #f56c6c;
 }
 
 .node-actions {

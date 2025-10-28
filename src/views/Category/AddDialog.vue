@@ -144,12 +144,12 @@ import {getNodes} from "@/http/modules/category";
 export default {
   name: "addCategoryDialog",
   props: {
-    onAddSucceed: {
-      type: Function
-    },
-    onUpdateSucceed: {
-      type: Function
-    }
+    // onAddSucceed: {
+    //   type: Function
+    // },
+    // onUpdateSucceed: {
+    //   type: Function
+    // }
   },
   data() {
     return {
@@ -329,7 +329,7 @@ export default {
                   type: 'success',
                   duration: 3000
                 })
-                this.$emit('onAddSucceed')
+                this.$emit('add-succeed')
                 this.close()
                 // 重新加载分类数据
                 this.loadCategories()
@@ -356,7 +356,7 @@ export default {
                   type: 'success',
                   duration: 3000
                 })
-                this.$emit('onUpdateSucceed')
+                this.$emit('update-succeed')
                 this.close()
                 // 重新加载分类数据
                 this.loadCategories()

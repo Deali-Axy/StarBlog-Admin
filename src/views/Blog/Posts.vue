@@ -109,17 +109,17 @@
             <span v-else>未分类</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="300" fixed="right">
+        <el-table-column align="center" label="操作" width="240" fixed="right">
           <template v-slot="scope">
             <div class="action-buttons">
-              <el-button type="text" size="small" @click="onItemEditClick(scope.row)">
+              <el-button type="text" size="mini" @click="onItemEditClick(scope.row)">
                 <i class="el-icon-edit"></i> 编辑
               </el-button>
-              <el-button type="text" size="small" @click="copyPostLink(scope.row)">
+              <el-button type="text" size="mini" @click="copyPostLink(scope.row)">
                 <i class="el-icon-link"></i> 复制链接
               </el-button>
-              <el-dropdown @command="cmd => onItemDropdownClick(scope.row, cmd)" size="small">
-                <el-button type="text" size="small">
+              <el-dropdown @command="cmd => onItemDropdownClick(scope.row, cmd)" size="mini">
+                <el-button type="text" size="mini">
                   更多<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
@@ -818,13 +818,15 @@ export default {
 .action-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 4px;
   justify-content: center;
+  align-items: center;
 }
 
 .action-buttons .el-button {
   margin: 0;
-  padding: 4px 8px;
+  padding: 2px 6px;
+  font-size: 12px;
 }
 
 /* 响应式设计 */

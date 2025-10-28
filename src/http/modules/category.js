@@ -18,7 +18,15 @@ export const getList = (page = 1, pageSize = 10) => {
   return axios({
     url: 'Category',
     method: 'get',
-    params: {page, pageSize}
+    params: { page, pageSize }
+  })
+}
+
+export const getPosts = (itemId, page = 1, pageSize = 20) => {
+  return axios({
+    url: 'BlogPost',
+    method: 'get',
+    params: { categoryId: itemId, page, pageSize }
   })
 }
 

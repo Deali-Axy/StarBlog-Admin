@@ -5,6 +5,7 @@
       <CategoryTreePanel
         :tree-data="treeData"
         :loading="loading"
+        :selected-category="selectedCategory"
         @node-click="handleNodeClick"
         @menu-command="handleMenuCommand"
         @add-category="handleAdd"
@@ -115,19 +116,16 @@ export default {
     // 加载分类文章
     async loadCategoryPosts() {
       if (!this.selectedCategory) return
-      
+
       this.postsLoading = true
       try {
-        const res = await this.$api.blogPost.getList(
-          false, // isPublish
-          '', // status
+        const res = await this.$api.category.getPosts(
           this.selectedCategory.id, // categoryId
-          '', // search
-          '', // sortBy
           1, // page
           50 // pageSize
         )
-        this.categoryPosts = (res.data && res.data.data) || []
+        console.log('加载分类文章成功:', res.data);
+        this.categoryPosts = res.data || []
       } catch (error) {
         console.error('加载分类文章失败:', error)
         this.$message.error('加载分类文章失败')
@@ -145,11 +143,11 @@ export default {
 
     handleResize(e) {
       if (!this.isResizing) return
-      
+
       const container = this.$el
       const containerRect = container.getBoundingClientRect()
       const newWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100
-      
+
       // 限制宽度范围在20%-60%之间
       if (newWidth >= 20 && newWidth <= 60) {
         this.leftPanelWidth = newWidth
@@ -334,7 +332,7 @@ export default {
     flex-direction: column;
     height: auto;
   }
-  
+
   .left-panel,
   .right-panel {
     width: 100% !important;

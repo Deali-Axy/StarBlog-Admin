@@ -31,7 +31,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="info-stats">
           <div class="stat-item">
             <div class="stat-label">分类ID</div>
@@ -39,7 +39,7 @@
           </div>
           <div class="stat-item">
             <div class="stat-label">文章数量</div>
-            <div class="stat-value">{{ categoryPosts.length }}</div>
+            <div class="stat-value">{{ selectedCategory.tags[0] }}</div>
           </div>
           <div class="stat-item">
             <div class="stat-label">创建时间</div>

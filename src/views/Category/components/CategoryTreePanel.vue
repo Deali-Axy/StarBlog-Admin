@@ -9,7 +9,7 @@
           </el-button>
         </div>
       </div>
-      
+
       <div class="search-section">
         <el-input
           v-model="searchText"
@@ -47,47 +47,49 @@
         <div
           slot-scope="{ node, data }"
           class="tree-node"
-          @mouseenter="showHoverMenu(data.id)"
-          @mouseleave="hideHoverMenu(data.id)"
+          :class="{ 'is-selected': selectedNodeId === data.id }"
         >
           <div class="node-content">
+            <i class="node-icon el-icon-folder" v-if="hasChildren(data)"></i>
+            <i class="node-icon el-icon-price-tag" v-else></i>
             <span class="node-label">{{ node.label }}</span>
-            <span class="node-count" v-if="data.count !== undefined">({{ data.count }})</span>
+            <span class="node-count" v-if="data.count !== undefined">({{ data.count }}篇)</span>
+            <span class="sub-category-count" v-if="hasChildren(data)">
+              ({{ getChildrenCount(data) }}个子分类)
+            </span>
           </div>
-          
-          <!-- 悬停菜单 -->
-          <div class="hover-menu" v-show="hoveredNodeId === data.id">
-            <el-dropdown
-              trigger="click"
-              @command="handleMenuCommand"
-              placement="bottom-end"
-            >
-              <el-button
-                type="text"
-                size="mini"
-                class="menu-trigger"
-                @click.stop
-              >
-                <i class="el-icon-more"></i>
-              </el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{ action: 'addSubCategory', data }">
-                  <i class="el-icon-plus"></i> 添加子分类
-                </el-dropdown-item>
-                <el-dropdown-item :command="{ action: 'viewPosts', data }">
-                  <i class="el-icon-document"></i> 查看文章
-                </el-dropdown-item>
-                <el-dropdown-item :command="{ action: 'editCategory', data }">
-                  <i class="el-icon-edit"></i> 编辑分类
-                </el-dropdown-item>
-                <el-dropdown-item
-                  :command="{ action: 'deleteCategory', data }"
-                  class="danger-item"
-                >
-                  <i class="el-icon-delete"></i> 删除分类
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+
+          <!-- 操作按钮 -->
+          <div class="action-buttons">
+            <el-button
+              type="text"
+              size="mini"
+              icon="el-icon-plus"
+              title="添加子分类"
+              @click.stop="handleMenuCommand({ action: 'addSubCategory', data })"
+            ></el-button>
+            <el-button
+              type="text"
+              size="mini"
+              icon="el-icon-document"
+              title="查看文章"
+              @click.stop="handleMenuCommand({ action: 'viewPosts', data })"
+            ></el-button>
+            <el-button
+              type="text"
+              size="mini"
+              icon="el-icon-edit"
+              title="编辑分类"
+              @click.stop="handleMenuCommand({ action: 'editCategory', data })"
+            ></el-button>
+            <el-button
+              type="text"
+              size="mini"
+              icon="el-icon-delete"
+              title="删除分类"
+              class="danger-item"
+              @click.stop="handleMenuCommand({ action: 'deleteCategory', data })"
+            ></el-button>
           </div>
         </div>
       </el-tree>
@@ -113,12 +115,16 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    selectedCategory: {
+      type: Object,
+      default: null
     }
   },
   data() {
     return {
       searchText: '',
-      hoveredNodeId: null,
+      selectedNodeId: null,
       treeProps: {
         children: 'nodes',
         label: 'text'
@@ -128,21 +134,16 @@ export default {
   watch: {
     searchText(val) {
       this.$refs.categoryTree.filter(val);
+    },
+    selectedCategory: {
+      handler(newVal) {
+        this.selectedNodeId = newVal ? newVal.id : null;
+      },
+      immediate: true
     }
   },
   methods: {
-    // 悬停菜单控制
-    showHoverMenu(nodeId) {
-      this.hoveredNodeId = nodeId
-    },
 
-    hideHoverMenu(nodeId) {
-      setTimeout(() => {
-        if (this.hoveredNodeId === nodeId) {
-          this.hoveredNodeId = null
-        }
-      }, 100)
-    },
 
     // 节点过滤
     filterNode(value, data) {
@@ -189,6 +190,16 @@ export default {
     // 添加分类
     handleAdd() {
       this.$emit('add-category');
+    },
+
+    // 检查节点是否有子节点
+    hasChildren(data) {
+      return data.nodes && data.nodes.length > 0;
+    },
+
+    // 获取子分类数量
+    getChildrenCount(data) {
+      return data.nodes ? data.nodes.length : 0;
     }
   }
 }
@@ -200,109 +211,201 @@ export default {
   display: flex;
   flex-direction: column;
   background: #fff;
+  border-right: 1px solid #e6e6e6;
 }
 
-.tree-header {
-  padding: 20px;
-  border-bottom: 1px solid #ebeef5;
-  flex-shrink: 0;
-}
-
-.header-title {
+.panel-header {
+  padding: 16px;
+  border-bottom: 1px solid #e6e6e6;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
 }
 
-.header-title h2 {
-  margin: 0;
-  font-size: 18px;
+.panel-title {
+  font-size: 16px;
   font-weight: 600;
   color: #303133;
 }
 
 .search-section {
-  margin-bottom: 16px;
+  padding: 16px;
+  border-bottom: 1px solid #e6e6e6;
 }
 
 .tree-actions {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e6e6e6;
   display: flex;
-  justify-content: center;
+  gap: 8px;
 }
 
-.tree-content {
+.tree-container {
   flex: 1;
   overflow-y: auto;
-  padding: 0 20px 20px;
+  padding: 8px 0;
 }
 
+/* 树节点样式 */
 .tree-node {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding-right: 8px;
-  position: relative;
+  padding: 4px 8px;
+  margin: 2px 0;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.tree-node:hover {
+  background-color: #f5f7fa;
+}
+
+.tree-node.is-selected {
+  background-color: #ecf5ff;
+  border-left: 3px solid #409eff;
 }
 
 .node-content {
-  flex: 1;
   display: flex;
   align-items: center;
+  gap: 6px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.node-icon {
+  font-size: 14px;
+  color: #909399;
+  flex-shrink: 0;
 }
 
 .node-label {
+  flex: 1;
   font-size: 14px;
-  color: #606266;
+  color: #303133;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .node-count {
-  margin-left: 8px;
   font-size: 12px;
   color: #909399;
+  flex-shrink: 0;
 }
 
-.hover-menu {
+.sub-category-count {
+  font-size: 12px;
+  color: #999;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+/* 操作按钮样式 */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  gap: 4px;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity 0.3s ease;
 }
 
-.tree-node:hover .hover-menu {
+.tree-node:hover .action-buttons {
   opacity: 1;
 }
 
-.menu-trigger {
-  padding: 4px 8px;
-  color: #909399;
-}
-
-.menu-trigger:hover {
-  color: #409eff;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: #909399;
-}
-
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-}
-
-.empty-text {
+.action-buttons .el-button {
+  padding: 4px;
   font-size: 14px;
 }
 
-/* 危险操作样式 */
-:deep(.el-dropdown-menu__item.danger-item) {
+.action-buttons .el-button.danger-item {
   color: #f56c6c;
 }
 
-:deep(.el-dropdown-menu__item.danger-item:hover) {
-  background-color: #fef0f0;
-  color: #f56c6c;
+.action-buttons .el-button.danger-item:hover {
+  color: #f89898;
+}
+
+/* 空状态样式 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #909399;
+}
+
+.empty-state i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: #c0c4cc;
+}
+
+.empty-state p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Element UI 树组件自定义样式 */
+::v-deep .el-tree {
+  background: transparent;
+}
+
+::v-deep .el-tree-node {
+  position: relative;
+}
+
+::v-deep .el-tree-node__content {
+  padding: 0;
+  height: auto;
+  background: transparent;
+}
+
+::v-deep .el-tree-node__content:hover {
+  background: transparent;
+}
+
+::v-deep .el-tree-node__expand-icon {
+  padding: 6px;
+  color: #c0c4cc;
+  transition: transform 0.3s ease;
+}
+
+::v-deep .el-tree-node__expand-icon.expanded {
+  transform: rotate(90deg);
+}
+
+::v-deep .el-tree-node__expand-icon.is-leaf {
+  color: transparent;
+  cursor: default;
+}
+
+/* 展开/折叠动画 */
+::v-deep .el-tree-node__children {
+  transition: all 0.3s ease;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .panel-header {
+    padding: 12px;
+  }
+
+  .search-section {
+    padding: 12px;
+  }
+
+  .tree-actions {
+    padding: 8px 12px;
+  }
+
+  .tree-node {
+    padding: 6px 12px;
+  }
 }
 </style>

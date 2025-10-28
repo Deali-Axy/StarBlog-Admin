@@ -145,28 +145,52 @@ export default {
 
     // 展开所有节点
     expandAll() {
-      const tree = this.$refs.categoryTree;
-      if (tree) {
-        const keys = [];
-        const traverse = (nodes) => {
-          nodes.forEach(node => {
-            keys.push(node.id);
-            if (node.nodes && node.nodes.length > 0) {
-              traverse(node.nodes);
-            }
-          });
-        };
-        traverse(this.treeData);
-        tree.setExpandedKeys(keys);
-      }
+      this.$nextTick(() => {
+        const tree = this.$refs.categoryTree;
+        if (tree && this.treeData.length > 0) {
+          // 递归展开所有节点
+          const expandAllNodes = (nodes) => {
+            nodes.forEach(nodeData => {
+              const node = tree.getNode(nodeData);
+              if (node && !node.expanded && node.childNodes.length > 0) {
+                node.expanded = true;
+              }
+              if (nodeData.nodes && nodeData.nodes.length > 0) {
+                expandAllNodes(nodeData.nodes);
+              }
+            });
+          };
+          
+          setTimeout(() => {
+            expandAllNodes(this.treeData);
+          }, 50);
+        }
+      });
     },
 
     // 折叠所有节点
     collapseAll() {
-      const tree = this.$refs.categoryTree;
-      if (tree) {
-        tree.setExpandedKeys([]);
-      }
+      this.$nextTick(() => {
+        const tree = this.$refs.categoryTree;
+        if (tree) {
+          // 递归折叠所有节点
+          const collapseAllNodes = (nodes) => {
+            nodes.forEach(nodeData => {
+              const node = tree.getNode(nodeData);
+              if (node && node.expanded) {
+                node.expanded = false;
+              }
+              if (nodeData.nodes && nodeData.nodes.length > 0) {
+                collapseAllNodes(nodeData.nodes);
+              }
+            });
+          };
+          
+          setTimeout(() => {
+            collapseAllNodes(this.treeData);
+          }, 50);
+        }
+      });
     },
 
     // 节点点击事件

@@ -1,187 +1,87 @@
 <template>
   <div class="categories-tree-container">
-    <!-- 头部操作栏 -->
-    <div class="header-actions">
-      <div class="search-section">
-        <el-input
-          v-model="searchText"
-          placeholder="搜索分类..."
-          prefix-icon="el-icon-search"
-          size="medium"
-          style="width: 300px;"
-          clearable
-        />
-      </div>
-      <div class="action-buttons">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleAdd"
-          size="medium"
-        >
-          添加分类
-        </el-button>
-        <el-button
-          type="default"
-          icon="el-icon-s-unfold"
-          @click="expandAll"
-          size="medium"
-        >
-          展开全部
-        </el-button>
-        <el-button
-          type="default"
-          icon="el-icon-s-fold"
-          @click="collapseAll"
-          size="medium"
-        >
-          折叠全部
-        </el-button>
-      </div>
+    <!-- 左侧面板 -->
+    <div class="left-panel" :style="{ width: leftPanelWidth + '%' }">
+      <CategoryTreePanel
+        :tree-data="treeData"
+        :loading="loading"
+        @node-click="handleNodeClick"
+        @menu-command="handleMenuCommand"
+        @add-category="handleAdd"
+      />
     </div>
 
-    <!-- 树形分类展示 -->
-    <div class="tree-container" v-loading="loading">
-      <el-tree
-        ref="categoryTree"
-        :data="treeData"
-        :props="treeProps"
-        :filter-node-method="filterNode"
-        :expand-on-click-node="true"
-        :default-expand-all="false"
-        node-key="id"
-        class="category-tree"
-      >
-        <span class="tree-node" slot-scope="{ node, data }">
-          <div class="node-content" @mouseenter="showHoverMenu(data.id)" @mouseleave="hideHoverMenu(data.id)">
-            <div class="node-info">
-              <i class="el-icon-folder-opened node-icon"></i>
-              <span class="node-label">
-                {{ data.text }}
-                <span v-if="data.nodes && data.nodes.length > 0" class="sub-category-count">
-                  （{{ data.nodes.length }}个子分类）
-                </span>
-              </span>
-              <el-tag 
-                v-if="data.tags && data.tags.length > 0" 
-                size="mini" 
-                type="info"
-                class="post-count-tag"
-              >
-                {{ data.tags[0] }}篇
-              </el-tag>
-            </div>
-            
-            <!-- 悬停操作菜单 -->
-            <div class="hover-menu" :class="{ 'show': hoveredNodeId === data.id }">
-              <el-dropdown 
-                trigger="click" 
-                placement="bottom-end"
-                @command="handleMenuCommand"
-                :hide-on-click="true"
-              >
-                <el-button 
-                  size="mini" 
-                  type="text" 
-                  icon="el-icon-more"
-                  class="menu-trigger"
-                  @click.stop
-                >
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item 
-                    :command="{ action: 'addSubCategory', data: data }"
-                    icon="el-icon-plus"
-                  >
-                    添加子分类
-                  </el-dropdown-item>
-                  <el-dropdown-item 
-                    :command="{ action: 'viewPosts', data: data }"
-                    icon="el-icon-document"
-                  >
-                    查看文章
-                  </el-dropdown-item>
-                  <el-dropdown-item 
-                    :command="{ action: 'editCategory', data: data }"
-                    icon="el-icon-edit"
-                  >
-                    编辑分类
-                  </el-dropdown-item>
-                  <el-dropdown-item 
-                    :command="{ action: 'deleteCategory', data: data }"
-                    icon="el-icon-delete"
-                    class="danger-item"
-                    divided
-                  >
-                    删除分类
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </div>
-          </div>
-        </span>
-      </el-tree>
+    <!-- 分割线 -->
+    <ResizableDivider
+      :is-resizing="isResizing"
+      @start-resize="startResize"
+    />
 
-      <!-- 空状态 -->
-      <div v-if="treeData.length === 0 && !loading" class="empty-state">
-        <i class="el-icon-folder-opened empty-icon"></i>
-        <p class="empty-text">暂无分类数据</p>
-        <el-button type="primary" @click="handleAdd">创建第一个分类</el-button>
-      </div>
+    <!-- 右侧面板 -->
+    <div class="right-panel" :style="{ width: (100 - leftPanelWidth) + '%' }">
+      <CategoryDetailPanel
+        :selected-category="selectedCategory"
+        :category-posts="categoryPosts"
+        :posts-loading="postsLoading"
+        @create-post="createPost"
+        @add-subcategory="addSubCategory"
+        @edit-category="editCategory"
+        @refresh-posts="loadCategoryPosts"
+        @view-post="viewPost"
+        @edit-post="editPost"
+        @delete-post="deletePost"
+      />
     </div>
 
-    <!-- 对话框组件 -->
-    <add-category-dialog
+    <!-- 添加分类对话框 -->
+    <AddCategoryDialog
       ref="addDialog"
-      @onAddSucceed="onAddSucceed"
-      @onUpdateSucceed="onUpdateSucceed"
+      @add-succeed="onAddSucceed"
+      @update-succeed="onUpdateSucceed"
     />
   </div>
 </template>
 
 <script>
 import AddCategoryDialog from "@/views/Category/AddDialog.vue";
+import CategoryTreePanel from "./components/CategoryTreePanel.vue";
+import CategoryDetailPanel from "./components/CategoryDetailPanel.vue";
+import ResizableDivider from "./components/ResizableDivider.vue";
 
 export default {
   name: "CategoriesTree",
   components: {
-    AddCategoryDialog
+    AddCategoryDialog,
+    CategoryTreePanel,
+    CategoryDetailPanel,
+    ResizableDivider
   },
   data() {
     return {
       loading: false,
       treeData: [],
-      searchText: '',
-      hoveredNodeId: null, // 当前悬停的节点ID
-      treeProps: {
-        children: 'nodes',
-        label: 'text'
-      }
+      selectedCategory: null, // 当前选中的分类
+      categoryPosts: [], // 当前分类的文章列表
+      postsLoading: false, // 文章加载状态
+      leftPanelWidth: 35, // 左侧面板宽度百分比
+      isResizing: false // 是否正在调整大小
     }
   },
   watch: {
-    searchText(val) {
-      this.$refs.categoryTree.filter(val);
-    }
+    // 移除searchText的watch，因为搜索功能已经移到子组件中
   },
   mounted() {
     this.loadData()
+    // 添加鼠标事件监听器用于调整面板大小
+    document.addEventListener('mousemove', this.handleResize)
+    document.addEventListener('mouseup', this.stopResize)
+  },
+  beforeDestroy() {
+    // 清理事件监听器
+    document.removeEventListener('mousemove', this.handleResize)
+    document.removeEventListener('mouseup', this.stopResize)
   },
   methods: {
-    // 悬停菜单控制
-    showHoverMenu(nodeId) {
-      this.hoveredNodeId = nodeId
-    },
-
-    hideHoverMenu(nodeId) {
-      // 延迟隐藏，避免鼠标移动到菜单时闪烁
-      setTimeout(() => {
-        if (this.hoveredNodeId === nodeId) {
-          this.hoveredNodeId = null
-        }
-      }, 100)
-    },
-
     // 处理菜单命令
     handleMenuCommand(command) {
       const { action, data } = command
@@ -201,6 +101,65 @@ export default {
       }
     },
 
+    // 处理节点点击事件
+    handleNodeClick(data) {
+      this.selectCategory(data)
+    },
+
+    // 选择分类
+    selectCategory(category) {
+      this.selectedCategory = category
+      this.loadCategoryPosts()
+    },
+
+    // 加载分类文章
+    async loadCategoryPosts() {
+      if (!this.selectedCategory) return
+      
+      this.postsLoading = true
+      try {
+        const res = await this.$api.blogPost.getList(
+          false, // isPublish
+          '', // status
+          this.selectedCategory.id, // categoryId
+          '', // search
+          '', // sortBy
+          1, // page
+          50 // pageSize
+        )
+        this.categoryPosts = (res.data && res.data.data) || []
+      } catch (error) {
+        console.error('加载分类文章失败:', error)
+        this.$message.error('加载分类文章失败')
+        this.categoryPosts = []
+      } finally {
+        this.postsLoading = false
+      }
+    },
+
+    // 面板大小调整
+    startResize(e) {
+      this.isResizing = true
+      e.preventDefault()
+    },
+
+    handleResize(e) {
+      if (!this.isResizing) return
+      
+      const container = this.$el
+      const containerRect = container.getBoundingClientRect()
+      const newWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100
+      
+      // 限制宽度范围在20%-60%之间
+      if (newWidth >= 20 && newWidth <= 60) {
+        this.leftPanelWidth = newWidth
+      }
+    },
+
+    stopResize() {
+      this.isResizing = false
+    },
+
     // 数据加载
     async loadData() {
       this.loading = true
@@ -213,23 +172,6 @@ export default {
       } finally {
         this.loading = false
       }
-    },
-
-    // 树形搜索过滤
-    filterNode(value, data) {
-      if (!value) return true;
-      return data.text.toLowerCase().indexOf(value.toLowerCase()) !== -1;
-    },
-
-    // 展开全部节点
-    expandAll() {
-      const allKeys = this.getAllNodeKeys(this.treeData)
-      this.$refs.categoryTree.setExpandedKeys(allKeys)
-    },
-
-    // 折叠全部节点
-    collapseAll() {
-      this.$refs.categoryTree.setExpandedKeys([])
     },
 
     // 获取所有节点的key
@@ -246,14 +188,51 @@ export default {
 
     // 查看分类文章
     viewCategoryPosts(category) {
-      // 根据href跳转到文章列表页面
-      if (category.href) {
-        // 这里可以根据实际路由配置进行跳转
-        this.$router.push({
-          path: '/blog/list',
-          query: { categoryId: category.id }
-        })
-      }
+      this.selectCategory(category)
+    },
+
+    // 查看文章详情
+    viewPost(post) {
+      // 跳转到文章编辑页面
+      this.$router.push({
+        path: '/blog/edit',
+        query: { id: post.id }
+      })
+    },
+
+    // 编辑文章
+    editPost(post) {
+      this.$router.push({
+        path: '/blog/edit',
+        query: { id: post.id }
+      })
+    },
+
+    // 删除文章
+    deletePost(post) {
+      this.$confirm(`确定要删除文章"${post.title}"吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        try {
+          await this.$api.blogPost.deleteItem(post.id)
+          this.$message.success('删除成功')
+          this.loadCategoryPosts() // 重新加载文章列表
+        } catch (error) {
+          this.$message.error(`删除失败：${error.message}`)
+        }
+      }).catch(() => {
+        this.$message('已取消删除')
+      })
+    },
+
+    // 创建文章
+    createPost() {
+      this.$router.push({
+        path: '/blog/add',
+        query: { categoryId: this.selectedCategory && this.selectedCategory.id }
+      })
     },
 
     // 添加分类
@@ -292,6 +271,11 @@ export default {
           const res = await this.$api.category.deleteItem(category.id)
           this.$message.success(`删除成功。${res.message || ''}`)
           this.loadData()
+          // 如果删除的是当前选中的分类，清空选择
+          if (this.selectedCategory && this.selectedCategory.id === category.id) {
+            this.selectedCategory = null
+            this.categoryPosts = []
+          }
         } catch (error) {
           this.$message.error(`操作失败。${error.message}`)
         }
@@ -310,6 +294,10 @@ export default {
     onUpdateSucceed() {
       this.$message.success('保存成功')
       this.loadData()
+      // 如果更新的是当前选中的分类，重新加载文章
+      if (this.selectedCategory) {
+        this.loadCategoryPosts()
+      }
     }
   }
 }
@@ -317,234 +305,40 @@ export default {
 
 <style scoped>
 .categories-tree-container {
-  padding: 20px;
-  background-color: #f5f7fa;
-  min-height: 100vh;
+  display: flex;
+  height: 100vh;
+  background: #f5f5f5;
 }
 
-/* 头部操作栏 */
-.header-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  padding: 16px 20px;
+/* 左侧面板样式 */
+.left-panel {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.action-buttons {
+  border-right: 1px solid #e4e7ed;
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  min-width: 250px;
+  max-width: 500px;
 }
 
-/* 树形容器 */
-.tree-container {
+/* 右侧面板样式 */
+.right-panel {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  min-height: 400px;
-}
-
-/* 树形组件样式 */
-.category-tree {
-  font-size: 14px;
-}
-
-.category-tree .el-tree-node__content {
-  height: auto;
-  padding: 8px 0;
-}
-
-.tree-node {
-  flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 14px;
-  padding-right: 8px;
-}
-
-.node-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 4px 0;
-}
-
-.node-info {
-  display: flex;
-  align-items: center;
-  flex: 1;
-}
-
-.node-icon {
-  color: #409eff;
-  margin-right: 8px;
-  font-size: 16px;
-}
-
-.node-label {
-  font-weight: 500;
-  color: #303133;
-  margin-right: 12px;
-}
-
-.sub-category-count {
-  font-weight: 400;
-  color: #909399;
-  font-size: 12px;
-  margin-left: 4px;
-}
-
-.post-count-tag {
-  margin-left: 8px;
-}
-
-/* 悬停菜单样式 */
-.hover-menu {
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-  transform: translateX(10px);
-}
-
-.hover-menu.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(0);
-}
-
-.menu-trigger {
-  padding: 4px 8px !important;
-  font-size: 16px !important;
-  color: #909399 !important;
-  border-radius: 4px;
-}
-
-.menu-trigger:hover {
-  color: #409eff !important;
-  background-color: #ecf5ff !important;
-}
-
-/* 下拉菜单项样式 */
-.el-dropdown-menu__item.danger-item {
-  color: #f56c6c;
-}
-
-.el-dropdown-menu__item.danger-item:hover {
-  background-color: #fef0f0;
-  color: #f56c6c;
-}
-
-.node-actions {
-  display: flex;
-  gap: 4px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.tree-node:hover .node-actions {
-  opacity: 1;
-}
-
-.node-actions .el-button {
-  padding: 2px 6px;
-  font-size: 12px;
-}
-
-.delete-btn {
-  color: #f56c6c !important;
-}
-
-.delete-btn:hover {
-  background-color: #fef0f0 !important;
-}
-
-/* 空状态 */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.empty-icon {
-  font-size: 64px;
-  color: #c0c4cc;
-  margin-bottom: 16px;
-}
-
-.empty-text {
-  font-size: 16px;
-  color: #909399;
-  margin: 0 0 20px 0;
+  flex-direction: column;
+  min-width: 400px;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .header-actions {
-    flex-direction: column;
-    gap: 16px;
-    align-items: stretch;
-  }
-
-  .action-buttons {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .node-actions {
-    opacity: 1;
-  }
-
-  .node-actions .el-button {
-    padding: 1px 4px;
-  }
-}
-
-@media (max-width: 480px) {
   .categories-tree-container {
-    padding: 12px;
-  }
-
-  .tree-container {
-    padding: 12px;
-  }
-
-  .node-content {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    height: auto;
   }
-
-  .node-actions {
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+  
+  .left-panel,
+  .right-panel {
+    width: 100% !important;
+    min-width: auto;
   }
-}
-
-/* 自定义树形组件样式 */
-.category-tree >>> .el-tree-node__expand-icon {
-  color: #409eff;
-}
-
-.category-tree >>> .el-tree-node__expand-icon.expanded {
-  transform: rotate(90deg);
-}
-
-/* 隐藏没有子节点的展开图标 */
-.category-tree >>> .el-tree-node.is-leaf > .el-tree-node__content > .el-tree-node__expand-icon {
-  visibility: hidden;
-}
-
-.category-tree >>> .el-tree-node:focus > .el-tree-node__content {
-  background-color: #f5f7fa;
-}
-
-.category-tree >>> .el-tree-node__content:hover {
-  background-color: #f5f7fa;
 }
 </style>

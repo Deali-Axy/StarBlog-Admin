@@ -186,7 +186,10 @@ export default {
 
     // 查看分类文章
     viewCategoryPosts(category) {
-      this.selectCategory(category)
+      // 跳转到分类详情页面
+      this.$router.push({
+        path: `/category/detail/${category.id}`,
+      })
     },
 
     // 查看文章详情

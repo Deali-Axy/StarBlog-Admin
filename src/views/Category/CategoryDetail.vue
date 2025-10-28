@@ -103,8 +103,8 @@
               刷新
             </el-button>
             <el-button size="small" type="danger" icon="el-icon-delete" @click="removeSelectedArticles"
-              :disabled="selectedArticles.length === 0">
-              批量移除 ({{ selectedArticles.length }})
+              :disabled="newlyAddedSelectedCount === 0">
+              移除新添加 ({{ newlyAddedSelectedCount }})
             </el-button>
           </div>
         </div>
@@ -122,9 +122,10 @@
               </p>
             </div>
             <div class="article-actions">
-              <el-button size="mini" type="danger" icon="el-icon-minus" @click="removeArticleFromCategory(article)">
+              <el-button v-if="isNewlyAddedArticle(article.id)" size="mini" type="danger" icon="el-icon-minus" @click="removeArticleFromCategory(article)">
                 移除
               </el-button>
+              <span v-else class="cannot-remove">已保存</span>
             </div>
           </div>
 
@@ -191,14 +192,13 @@ export default {
 
       // 变更追踪
       pendingChanges: {
-        added: [],
-        removed: []
+        added: []
       }
     }
   },
   computed: {
     hasChanges() {
-      return this.pendingChanges.added.length > 0 || this.pendingChanges.removed.length > 0
+      return this.pendingChanges.added.length > 0
     },
     hasMoreAvailableArticles() {
       return this.availableArticles.length < this.totalAvailableCount
@@ -213,6 +213,12 @@ export default {
       return this.categoryArticles.filter(article =>
         article.title.toLowerCase().includes(this.categoryArticleSearch.toLowerCase())
       )
+    },
+    // 计算可移除的新添加文章数量
+    newlyAddedSelectedCount() {
+      return this.selectedArticles.filter(articleId => 
+        this.pendingChanges.added.includes(articleId)
+      ).length
     }
   },
   async mounted() {
@@ -398,28 +404,32 @@ export default {
         this.pendingChanges.added.includes(articleId)
     },
 
+    // 判断是否为本次新添加的文章
+    isNewlyAddedArticle(articleId) {
+      return this.pendingChanges.added.includes(articleId)
+    },
+
     addArticleToCategory(article) {
       if (this.isArticleInCategory(article.id)) return
 
       this.categoryArticles.push(article)
       this.pendingChanges.added.push(article.id)
 
-      // 如果之前在移除列表中，则从移除列表中删除
-      const removeIndex = this.pendingChanges.removed.indexOf(article.id)
-      if (removeIndex > -1) {
-        this.pendingChanges.removed.splice(removeIndex, 1)
-      }
-
       this.$message.success(`已添加文章: ${article.title}`)
     },
 
     removeArticleFromCategory(article) {
+      // 只允许移除本次添加的文章
+      if (!this.pendingChanges.added.includes(article.id)) {
+        this.$message.warning('只能移除本次添加的文章')
+        return
+      }
+
       const index = this.categoryArticles.findIndex(a => a.id === article.id)
       if (index > -1) {
         this.categoryArticles.splice(index, 1)
-        this.pendingChanges.removed.push(article.id)
-
-        // 如果之前在添加列表中，则从添加列表中删除
+        
+        // 从添加列表中删除
         const addIndex = this.pendingChanges.added.indexOf(article.id)
         if (addIndex > -1) {
           this.pendingChanges.added.splice(addIndex, 1)
@@ -432,25 +442,31 @@ export default {
         this.selectedArticles.splice(selectedIndex, 1)
       }
 
-      this.$message.success(`已移除文章: ${article.title}`)
+      this.$message.success(`已移除新添加的文章: ${article.title}`)
     },
 
     removeSelectedArticles() {
-      if (this.selectedArticles.length === 0) return
+      const newlyAddedSelected = this.selectedArticles.filter(articleId => 
+        this.pendingChanges.added.includes(articleId)
+      )
+      
+      if (newlyAddedSelected.length === 0) {
+        this.$message.warning('请选择要移除的新添加文章')
+        return
+      }
 
-      this.$confirm(`确定要移除选中的 ${this.selectedArticles.length} 篇文章吗？`, '确认操作', {
+      this.$confirm(`确定要移除这 ${newlyAddedSelected.length} 篇新添加的文章吗？`, '确认移除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.selectedArticles.forEach(articleId => {
+        newlyAddedSelected.forEach(articleId => {
           const article = this.categoryArticles.find(a => a.id === articleId)
           if (article) {
             this.removeArticleFromCategory(article)
           }
         })
-        this.selectedArticles = []
-        this.$message.success('批量移除成功')
+        this.$message.success(`已移除 ${newlyAddedSelected.length} 篇新添加的文章`)
       })
     },
 
@@ -463,7 +479,7 @@ export default {
 
       this.saving = true
       try {
-        // 实际调用后端：为新增文章设置分类，为移除文章清空分类
+        // 只处理新增文章：为新增文章设置分类
         const addedPromises = this.pendingChanges.added.map(articleId => {
           const article = this.availableArticles.find(a => a.id === articleId)
             || this.categoryArticles.find(a => a.id === articleId)
@@ -474,19 +490,9 @@ export default {
           })
         })
 
-        const removedPromises = this.pendingChanges.removed.map(articleId => {
-          const article = this.categoryArticles.find(a => a.id === articleId)
-            || this.availableArticles.find(a => a.id === articleId)
-          if (!article) return Promise.resolve()
-          return this.$api.blogPost.update({
-            ...article,
-            categoryId: null
-          })
-        })
+        await Promise.all(addedPromises)
 
-        await Promise.all([...addedPromises, ...removedPromises])
-
-        this.pendingChanges = { added: [], removed: [] }
+        this.pendingChanges = { added: [] }
         this.$message.success('保存成功')
 
         // 刷新两侧数据

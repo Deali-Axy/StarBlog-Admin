@@ -3,12 +3,7 @@
     <!-- 头部信息 -->
     <div class="detail-header">
       <div class="header-left">
-        <el-button
-          type="text"
-          icon="el-icon-arrow-left"
-          @click="goBack"
-          class="back-button"
-        >
+        <el-button type="text" icon="el-icon-arrow-left" @click="goBack" class="back-button">
           返回分类列表
         </el-button>
       </div>
@@ -29,20 +24,10 @@
         </div>
       </div>
       <div class="header-actions">
-        <el-button
-          type="primary"
-          icon="el-icon-edit"
-          @click="editCategory"
-        >
+        <el-button type="primary" icon="el-icon-edit" @click="editCategory">
           编辑分类
         </el-button>
-        <el-button
-          type="success"
-          icon="el-icon-check"
-          @click="saveChanges"
-          :loading="saving"
-          :disabled="!hasChanges"
-        >
+        <el-button type="success" icon="el-icon-check" @click="saveChanges" :loading="saving" :disabled="!hasChanges">
           保存修改
         </el-button>
       </div>
@@ -55,49 +40,25 @@
         <div class="panel-header">
           <h3>可添加的文章</h3>
           <div class="panel-controls">
-            <el-input
-              v-model="articleSearch"
-              placeholder="搜索文章..."
-              prefix-icon="el-icon-search"
-              size="small"
-              style="width: 200px;"
-              clearable
-              @input="searchArticles"
-            />
-            <el-select
-              v-model="filterCategoryId"
-              placeholder="筛选分类"
-              size="small"
-              style="width: 150px; margin-left: 10px;"
-              clearable
-              @change="filterArticles"
-            >
-              <el-option label="全部分类" value=""></el-option>
-              <el-option
-                v-for="cat in allCategories"
-                :key="cat.id"
-                :label="cat.name"
-                :value="cat.id"
-              />
-            </el-select>
-            <el-button
-              size="small"
-              icon="el-icon-refresh"
-              @click="refreshAvailableArticles"
-              :loading="loadingAvailableArticles"
-            >
+            <el-input v-model="articleSearch" placeholder="搜索文章..." prefix-icon="el-icon-search" size="small"
+              style="width: 200px;" clearable @input="searchArticles" />
+            <el-cascader v-model="filterCategoryId" :options="categoriesTree" filterable clearable
+              placeholder="筛选分类" size="small" style="width: 150px; margin-left: 10px;" :props="{
+                checkStrictly: true,
+                expandTrigger: 'hover',
+                emitPath: false,
+              }" @change="filterArticles">
+            </el-cascader>
+            <el-button size="small" icon="el-icon-refresh" @click="refreshAvailableArticles"
+              :loading="loadingAvailableArticles">
               刷新
             </el-button>
           </div>
         </div>
 
         <div class="articles-list" v-loading="loadingAvailableArticles">
-          <div
-            v-for="article in availableArticles"
-            :key="article.id"
-            class="article-item"
-            :class="{ 'disabled': isArticleInCategory(article.id) }"
-          >
+          <div v-for="article in availableArticles" :key="article.id" class="article-item"
+            :class="{ 'disabled': isArticleInCategory(article.id) }">
             <div class="article-info">
               <h4 class="article-title">{{ article.title }}</h4>
               <p class="article-meta">
@@ -106,13 +67,8 @@
               </p>
             </div>
             <div class="article-actions">
-              <el-button
-                v-if="!isArticleInCategory(article.id)"
-                size="mini"
-                type="primary"
-                icon="el-icon-plus"
-                @click="addArticleToCategory(article)"
-              >
+              <el-button v-if="!isArticleInCategory(article.id)" size="mini" type="primary" icon="el-icon-plus"
+                @click="addArticleToCategory(article)">
                 添加
               </el-button>
               <span v-else class="already-added">已添加</span>
@@ -127,12 +83,8 @@
 
           <!-- 加载更多 -->
           <div v-if="availableArticles.length > 0 && hasMoreAvailableArticles" class="load-more-section">
-            <el-button
-              type="text"
-              @click="loadMoreAvailableArticles"
-              :loading="loadingAvailableArticles"
-              icon="el-icon-more"
-            >
+            <el-button type="text" @click="loadMoreAvailableArticles" :loading="loadingAvailableArticles"
+              icon="el-icon-more">
               加载更多
             </el-button>
           </div>
@@ -144,61 +96,33 @@
         <div class="panel-header">
           <h3>当前分类文章</h3>
           <div class="panel-controls">
-            <el-input
-              v-model="categoryArticleSearch"
-              placeholder="搜索当前分类文章..."
-              prefix-icon="el-icon-search"
-              size="small"
-              style="width: 200px;"
-              clearable
-            />
-            <el-button
-              size="small"
-              type="primary"
-              icon="el-icon-refresh"
-              @click="refreshCategoryArticles"
-              :loading="loadingCategoryArticles"
-            >
+            <el-input v-model="categoryArticleSearch" placeholder="搜索当前分类文章..." prefix-icon="el-icon-search"
+              size="small" style="width: 200px;" clearable />
+            <el-button size="small" type="primary" icon="el-icon-refresh" @click="refreshCategoryArticles"
+              :loading="loadingCategoryArticles">
               刷新
             </el-button>
-            <el-button
-              size="small"
-              type="danger"
-              icon="el-icon-delete"
-              @click="removeSelectedArticles"
-              :disabled="selectedArticles.length === 0"
-            >
+            <el-button size="small" type="danger" icon="el-icon-delete" @click="removeSelectedArticles"
+              :disabled="selectedArticles.length === 0">
               批量移除 ({{ selectedArticles.length }})
             </el-button>
           </div>
         </div>
 
         <div class="articles-list" v-loading="loadingCategoryArticles">
-          <div
-            v-for="article in filteredCategoryArticles"
-            :key="article.id"
-            class="article-item current-category"
-          >
+          <div v-for="article in filteredCategoryArticles" :key="article.id" class="article-item current-category">
             <div class="article-checkbox">
-              <el-checkbox
-                v-model="selectedArticles"
-                :label="article.id"
-              />
+              <el-checkbox v-model="selectedArticles" :label="article.id" />
             </div>
             <div class="article-info">
               <h4 class="article-title">{{ article.title }}</h4>
               <p class="article-meta">
                 <span>{{ formatDate(article.creationTime) }}</span>
-                <span class="article-status">{{ article.status }}</span>
+                <span class="article-status">{{ article.slug }}</span>
               </p>
             </div>
             <div class="article-actions">
-              <el-button
-                size="mini"
-                type="danger"
-                icon="el-icon-minus"
-                @click="removeArticleFromCategory(article)"
-              >
+              <el-button size="mini" type="danger" icon="el-icon-minus" @click="removeArticleFromCategory(article)">
                 移除
               </el-button>
             </div>
@@ -213,12 +137,8 @@
 
           <!-- 加载更多 -->
           <div v-if="categoryArticles.length > 0 && hasMoreCategoryArticles" class="load-more-section">
-            <el-button
-              type="text"
-              @click="loadMoreCategoryArticles"
-              :loading="loadingCategoryArticles"
-              icon="el-icon-more"
-            >
+            <el-button type="text" @click="loadMoreCategoryArticles" :loading="loadingCategoryArticles"
+              icon="el-icon-more">
               加载更多 ({{ categoryArticles.length }}/{{ totalArticleCount }})
             </el-button>
           </div>
@@ -227,10 +147,7 @@
     </div>
 
     <!-- 编辑分类对话框 -->
-    <add-category-dialog
-      ref="editDialog"
-      @onUpdateSucceed="onCategoryUpdated"
-    />
+    <add-category-dialog ref="editDialog" @onUpdateSucceed="onCategoryUpdated" />
   </div>
 </template>
 
@@ -247,6 +164,7 @@ export default {
       // 基础数据
       category: {},
       allCategories: [],
+      categoriesTree: [],
 
       // 文章数据
       availableArticles: [],
@@ -314,6 +232,7 @@ export default {
         await Promise.all([
           this.loadCategory(categoryId),
           this.loadAllCategories(),
+          this.loadCategoriesTree(),
           this.loadAvailableArticles(),
           this.loadCategoryArticles(categoryId)
         ])
@@ -343,11 +262,40 @@ export default {
       }
     },
 
+    async loadCategoriesTree() {
+      const mapNodes = (nodes) => {
+        let items = []
+        if (!nodes) return null
+        for (const node of nodes) {
+          items.push({
+            label: `${node.text} (${node.tags[0]})`,
+            value: node.id,
+            children: mapNodes(node.nodes)
+          })
+        }
+        return items
+      }
+
+      try {
+        const res = await this.$api.category.getNodes()
+        this.categoriesTree = mapNodes(res.data)
+      } catch (error) {
+        console.error('加载分类树失败:', error)
+        throw error
+      }
+    },
+
     async loadAvailableArticles(page = 1, append = false) {
       this.loadingAvailableArticles = true
       try {
         const res = await this.$api.blogPost.getList(
-          false, '', this.filterCategoryId || null, this.articleSearch, '', page, this.availableArticlesPageSize
+          null,                                    // isPublish - 是否已发布（null表示不筛选）
+          null,                                    // status - 文章状态（null表示不筛选）
+          this.filterCategoryId || null,           // categoryId - 分类ID筛选
+          this.articleSearch,                      // search - 搜索关键字
+          null,                                      // sortBy - 排序方式（空字符串表示默认排序）
+          page,                                    // page - 页码
+          this.availableArticlesPageSize           // pageSize - 每页数量
         )
 
         console.log('loadAvailableArticles response:', res)
@@ -377,8 +325,8 @@ export default {
     async loadCategoryArticles(categoryId, page = 1, append = false) {
       this.loadingCategoryArticles = true
       try {
-        const res = await this.$api.blogPost.getList(
-          false, '', categoryId, '', '', page, this.categoryArticlesPageSize
+        const res = await this.$api.category.getPosts(
+          categoryId, page, this.categoryArticlesPageSize
         )
 
         console.log('loadCategoryArticles response:', res)
@@ -447,7 +395,7 @@ export default {
     // 文章管理
     isArticleInCategory(articleId) {
       return this.categoryArticles.some(article => article.id === articleId) ||
-             this.pendingChanges.added.includes(articleId)
+        this.pendingChanges.added.includes(articleId)
     },
 
     addArticleToCategory(article) {

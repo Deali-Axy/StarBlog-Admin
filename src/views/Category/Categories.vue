@@ -54,7 +54,7 @@
           <div class="stats">
             <div class="stat-item">
               <span class="stat-label">文章数量</span>
-              <span class="stat-value">{{ category.postCount || 0 }}</span>
+              <span class="stat-value">{{ category.posts || 0 }}</span>
             </div>
             <div class="stat-item">
               <span class="stat-label">上级分类</span>

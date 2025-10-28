@@ -5,6 +5,7 @@ import Framework from "@/views/Framework";
 import NotFound from '@/views/404'
 import Home from "@/views/Home"
 import Categories from "@/views/Category/Categories"
+import CategoriesTree from "@/views/Category/CategoriesTree"
 import CategoryDetail from "@/views/Category/CategoryDetail"
 import FeaturedCategories from "@/views/Category/FeaturedCategories"
 import Comments from '@/views/Comment/Comments.vue'
@@ -47,6 +48,7 @@ const router = new Router({
           }
         },
         {path: 'category/list', name: '分类列表', component: Categories},
+        {path: 'category/tree', name: '分类树', component: CategoriesTree},
         {path: 'category/detail/:id', name: '分类详情', component: CategoryDetail},
         {path: 'category/featured', name: '推荐分类', component: FeaturedCategories},
         {path: 'comment/list', name: '审核评论', component: Comments},

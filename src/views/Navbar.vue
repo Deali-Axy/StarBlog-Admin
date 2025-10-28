@@ -29,6 +29,7 @@
         </template>
         <el-menu-item-group title="分类管理">
           <el-menu-item index="/category/list">分类列表</el-menu-item>
+          <el-menu-item index="/category/tree">分类树</el-menu-item>
           <el-menu-item index="/category/featured">推荐分类</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group title="文章管理">

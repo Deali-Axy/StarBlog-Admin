@@ -4,47 +4,26 @@
       <el-row type="flex" justify="space-between">
         <el-row :gutter="10">
           <el-col :span="8">
-            <el-input
-              v-model="search"
-              placeholder="请输入关键字"
-              prefix-icon="el-icon-search"
-              clearable
-              @input="handleSearchInput"
-              @clear="handleSearchClear">
+            <el-input v-model="search" placeholder="请输入关键字" prefix-icon="el-icon-search" clearable
+              @input="handleSearchInput" @clear="handleSearchClear">
             </el-input>
           </el-col>
           <el-col :span="8">
-            <el-cascader
-              class="w-100"
-              :options="categoriesTree"
-              v-model="currentCategoryId"
-              filterable
-              clearable
-              placeholder="分类筛选"
-              :props="{
+            <el-cascader class="w-100" :options="categoriesTree" v-model="currentCategoryId" filterable clearable
+              placeholder="分类筛选" :props="{
                 checkStrictly: true,
                 expandTrigger: 'hover',
                 emitPath: false,
-              }"
-              @change="handleCategoryChange">
+              }" @change="handleCategoryChange">
             </el-cascader>
           </el-col>
           <el-col :span="3">
-            <el-select
-              v-model="currentStatus"
-              clearable
-              filterable
-              placeholder="文章标记"
-              @change="handleStatusChange">
+            <el-select v-model="currentStatus" clearable filterable placeholder="文章标记" @change="handleStatusChange">
               <el-option v-for="item in statusList" :key="item" :label="item" :value="item" />
             </el-select>
           </el-col>
           <el-col :span="3">
-            <el-select
-              v-model="currentIsPublish"
-              clearable
-              placeholder="文章状态"
-              @change="handlePublishStatusChange">
+            <el-select v-model="currentIsPublish" clearable placeholder="文章状态" @change="handlePublishStatusChange">
               <el-option label="全部" :value="null" />
               <el-option label="已发布" :value="true" />
               <el-option label="草稿" :value="false" />
@@ -81,27 +60,15 @@
       </div>
 
       <!-- 表格 -->
-      <el-table
-        v-else
-        v-loading="loading"
-        ref="table"
-        :data="posts"
-        stripe
-        style="width: 100%"
-        height="calc(100vh - 280px)"
-        @selection-change="handleSelectionChange"
-        :default-sort="{ prop: 'lastUpdateTime', order: 'descending' }"
-        empty-text="暂无数据">
+      <el-table v-else v-loading="loading" ref="table" :data="posts" stripe style="width: 100%"
+        height="calc(100vh - 280px)" @selection-change="handleSelectionChange"
+        :default-sort="{ prop: 'lastUpdateTime', order: 'descending' }" empty-text="暂无数据">
         <el-table-column type="selection" width="50" fixed="left" />
         <el-table-column prop="id" label="ID" width="80" :show-overflow-tooltip="true" />
         <el-table-column prop="isPublish" label="状态" width="150" fixed="left">
           <template v-slot="scope">
-            <el-switch
-              v-model="scope.row.isPublish"
-              active-text="已发布"
-              inactive-text="草稿"
-              @change="handlePublishToggle(scope.row)"
-              :loading="scope.row.statusLoading">
+            <el-switch v-model="scope.row.isPublish" active-text="已发布" inactive-text="草稿"
+              @change="handlePublishToggle(scope.row)" :loading="scope.row.statusLoading">
             </el-switch>
           </template>
         </el-table-column>
@@ -171,16 +138,9 @@
       </el-table>
 
       <!-- 分页 -->
-      <el-pagination
-        class="py-3 text-center"
-        @size-change="handlePageSizeChange"
-        @current-change="handleCurrentPageChange"
-        :current-page="currentPage"
-        :page-sizes="[10, 20, 40, 60, 80, 100]"
-        :page-size="pageSize"
-        background
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="totalCount">
+      <el-pagination class="py-3 text-center" @size-change="handlePageSizeChange"
+        @current-change="handleCurrentPageChange" :current-page="currentPage" :page-sizes="[10, 20, 40, 60, 80, 100]"
+        :page-size="pageSize" background layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
       </el-pagination>
     </el-main>
 
@@ -188,16 +148,11 @@
     <el-dialog title="批量移动分类" :visible.sync="batchMoveCategoryVisible" width="500px">
       <el-form>
         <el-form-item label="目标分类">
-          <el-cascader
-            v-model="targetCategoryId"
-            :options="categoriesTree"
-            placeholder="请选择目标分类"
-            :props="{
-              checkStrictly: true,
-              expandTrigger: 'hover',
-              emitPath: false,
-            }"
-            style="width: 100%">
+          <el-cascader v-model="targetCategoryId" :options="categoriesTree" placeholder="请选择目标分类" :props="{
+            checkStrictly: true,
+            expandTrigger: 'hover',
+            emitPath: false,
+          }" style="width: 100%">
           </el-cascader>
         </el-form-item>
       </el-form>

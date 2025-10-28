@@ -16,7 +16,7 @@
         <el-button
           type="primary"
           icon="el-icon-plus"
-          @click="showAddDialog = true"
+          @click="handleAdd"
           size="medium"
         >
           添加分类
@@ -104,14 +104,13 @@
       <div v-if="filteredCategories.length === 0 && !loading" class="empty-state">
         <i class="el-icon-folder-opened empty-icon"></i>
         <p class="empty-text">暂无分类数据</p>
-        <el-button type="primary" @click="showAddDialog = true">创建第一个分类</el-button>
+        <el-button type="primary" @click="handleAdd">创建第一个分类</el-button>
       </div>
     </div>
 
     <!-- 对话框组件 -->
     <add-category-dialog
       ref="addDialog"
-      :visible.sync="showAddDialog"
       @onAddSucceed="onAddSucceed"
       @onUpdateSucceed="onUpdateSucceed"
     />
@@ -139,8 +138,7 @@ export default {
       loading: false,
       saving: false,
       data: [],
-      search: '',
-      showAddDialog: false
+      search: ''
     }
   },
   computed: {
@@ -177,6 +175,10 @@ export default {
     },
 
     // 原有功能
+    handleAdd() {
+      this.$refs.addDialog.add()
+    },
+
     handleEdit(item) {
       this.$refs.addDialog.edit(item)
     },

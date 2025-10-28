@@ -49,7 +49,7 @@
             <i class="node-icon el-icon-folder" v-if="hasChildren(data)"></i>
             <i class="node-icon el-icon-price-tag" v-else></i>
             <span class="node-label">{{ node.label }}</span>
-            <span class="node-count" v-if="data.count !== undefined">({{ data.count }}篇)</span>
+            <span class="node-count" v-if="getCategoryPostsCount(data)">({{ getCategoryPostsCount(data) }}篇)</span>
             <span class="sub-category-count" v-if="hasChildren(data)">
               ({{ getChildrenCount(data) }}个子分类)
             </span>
@@ -137,8 +137,6 @@ export default {
     }
   },
   methods: {
-
-
     // 节点过滤
     filterNode(value, data) {
       if (!value) return true;
@@ -194,7 +192,14 @@ export default {
     // 获取子分类数量
     getChildrenCount(data) {
       return data.nodes ? data.nodes.length : 0;
-    }
+    },
+
+    getCategoryPostsCount(data) {
+      if (!data.tags || data.tags.length === 0) {
+        return 0;
+      }
+      return data.tags[0];
+    },
   }
 }
 </script>

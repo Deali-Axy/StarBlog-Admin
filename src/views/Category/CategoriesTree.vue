@@ -193,16 +193,14 @@ export default {
     viewPost(post) {
       // 跳转到文章编辑页面
       this.$router.push({
-        path: '/blog/edit',
-        query: { id: post.id }
+        path: `/post/edit/${post.id}`,
       })
     },
 
     // 编辑文章
     editPost(post) {
       this.$router.push({
-        path: '/blog/edit',
-        query: { id: post.id }
+        path: `/post/edit/${post.id}`,
       })
     },
 

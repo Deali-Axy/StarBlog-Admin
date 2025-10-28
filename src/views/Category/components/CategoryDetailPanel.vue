@@ -96,7 +96,7 @@
                 v-for="post in categoryPosts"
                 :key="post.id"
                 :post="post"
-                @select="viewPost" 
+                @select="viewPost"
                 @view="viewPost"
               />
             </div>
@@ -144,7 +144,7 @@ export default {
   },
   data() {
     return {
-      displayMode: 'card' // 'card' or 'icon'
+      displayMode: 'icon' // 'card' or 'icon'
     }
   },
   methods: {

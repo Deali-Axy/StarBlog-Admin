@@ -1,38 +1,34 @@
 <template>
   <div class="category-tree-panel">
-    <div class="tree-header">
-      <div class="header-title">
-        <h2>分类管理</h2>
-        <div class="header-actions">
-          <el-button type="primary" size="small" @click="handleAdd">
-            <i class="el-icon-plus"></i> 添加分类
-          </el-button>
-        </div>
-      </div>
-
-      <div class="search-section">
-        <el-input
-          v-model="searchText"
-          placeholder="搜索分类..."
-          prefix-icon="el-icon-search"
-          size="small"
-          clearable
-        />
-      </div>
-
-      <div class="tree-actions">
-        <el-button-group size="mini">
-          <el-button @click="expandAll">
-            <i class="el-icon-arrow-down"></i> 展开全部
-          </el-button>
-          <el-button @click="collapseAll">
-            <i class="el-icon-arrow-up"></i> 折叠全部
-          </el-button>
-        </el-button-group>
-      </div>
+    <div class="panel-header">
+      <h2 class="panel-title">分类管理</h2>
+      <el-button type="primary" size="small" @click="handleAdd">
+        <i class="el-icon-plus"></i> 添加分类
+      </el-button>
     </div>
 
-    <div class="tree-content">
+    <div class="search-section">
+      <el-input
+        v-model="searchText"
+        placeholder="搜索分类..."
+        prefix-icon="el-icon-search"
+        size="small"
+        clearable
+      />
+    </div>
+
+    <div class="tree-actions">
+      <el-button-group size="mini">
+        <el-button @click="expandAll">
+          <i class="el-icon-arrow-down"></i> 展开全部
+        </el-button>
+        <el-button @click="collapseAll">
+          <i class="el-icon-arrow-up"></i> 折叠全部
+        </el-button>
+      </el-button-group>
+    </div>
+
+    <div class="tree-container">
       <el-tree
         ref="categoryTree"
         :data="treeData"
@@ -95,10 +91,8 @@
       </el-tree>
 
       <div v-if="!loading && treeData.length === 0" class="empty-state">
-        <div class="empty-icon">
-          <i class="el-icon-folder-opened"></i>
-        </div>
-        <div class="empty-text">暂无分类数据</div>
+        <i class="el-icon-folder-opened"></i>
+        <p>暂无分类数据</p>
       </div>
     </div>
   </div>
@@ -243,7 +237,12 @@ export default {
 .tree-container {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 0;
+  padding: 8px;
+  position: relative;
+}
+
+.el-tree {
+  height: 100%;
 }
 
 /* 树节点样式 */
